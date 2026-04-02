@@ -1,5 +1,14 @@
 # Pedidos
-from fastapi import APIRouter
+from pydantic import EmailStr
+
+from sqlalchemy.orm import Session
+
+from dependencies import get_db
+
+from models import UserTable
+
+from fastapi import APIRouter, Depends
+
 
 order_router = APIRouter(prefix = "/order", tags=["order"])   # define o caminho = domínio/order/(rota esolhinha)
 

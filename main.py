@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import EmailStr
 
 
 from sqlalchemy import create_engine, Column, Integer, String
