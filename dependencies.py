@@ -1,10 +1,10 @@
-from sqlalchemy.orm import Session
+from models import SessionLocal
 
 
 #sessão pra mexer no banco de forma prática
 def get_db():
-    db = Session()    # abre a session
+    db = SessionLocal()    # abre a session
     try:
         yield db    # retorna a váriavel sem fechar a sessão
-    finally:
+    finally:    
         db.close()     # fecha a session

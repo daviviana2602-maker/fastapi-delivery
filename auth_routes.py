@@ -3,9 +3,16 @@ from pydantic import EmailStr
 
 from sqlalchemy.orm import Session
 
+from dotenv import load_dotenv
+import os
+load_dotenv()
+SECRET_KEY = os.getenv("SECRET_KEY")
+
 from dependencies import get_db
 
 from models import UserTable
+
+from security import bcrypt_context
 
 from fastapi import APIRouter, Depends
 
@@ -23,6 +30,7 @@ async def home():
 async def criar_conta(
                     email: EmailStr,
                     senha: str,
+                    nome: str,
                     db: Session = Depends(get_db)
                     ):
     
@@ -32,13 +40,13 @@ async def criar_conta(
     ).first()
     
     if usuario:
-        return{"já existe um usuário com esse email"}
+        return {"erro": "já existe um usuário com esse email"}
     
-    
+    senha_criptografada = bcrypt_context.hash(senha)    # criptografando senha
     novo_usuario = UserTable(
         email=email,
-        senha=senha,   # futuramente usar hash
-        nome="default"
+        senha=senha_criptografada, 
+        nome=nome
     )
 
     db.add(novo_usuario)

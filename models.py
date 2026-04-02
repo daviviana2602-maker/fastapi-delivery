@@ -1,11 +1,14 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey    # import used types
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-from config import DATABASE_URL
+from dotenv import load_dotenv
+import os
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 
 engine = create_engine(DATABASE_URL)   # connect with the database
-Session = sessionmaker(bind=engine)
+SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
 
@@ -38,6 +41,3 @@ class ItemTable(Base):   # class is mandatory with database
     tamanho = Column(String, nullable=False)
     preco_unit = Column(Float, nullable=False)
     pedido_id = Column(Integer, ForeignKey("pedidos.id"), nullable=False)
-    
-    
-Base.metadata.create_all(engine) # create all tables in database

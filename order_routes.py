@@ -3,9 +3,16 @@ from pydantic import EmailStr
 
 from sqlalchemy.orm import Session
 
+from dotenv import load_dotenv
+import os
+load_dotenv()
+SECRET_KEY = os.getenv("SECRET_KEY")
+
 from dependencies import get_db
 
 from models import UserTable
+
+from security import bcrypt_context
 
 from fastapi import APIRouter, Depends
 
