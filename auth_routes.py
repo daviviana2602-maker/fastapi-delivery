@@ -3,54 +3,53 @@ from pydantic import EmailStr
 
 from sqlalchemy.orm import Session
 
-from dotenv import load_dotenv
-import os
-load_dotenv()
-SECRET_KEY = os.getenv("SECRET_KEY")
-
 from dependencies import get_db
 
 from models import UserTable
 
-from security import bcrypt_context
+from schemas import UserSchema
 
-from fastapi import APIRouter, Depends
+from security import argon_context
+
+from fastapi import APIRouter, Depends, HTTPException
 
 
 auth_router = APIRouter(prefix = "/auth", tags=["auth"])   # define o caminho = domínio/auth/(rota esolhinha)
 
 
-@auth_router.get("/")
+
+@auth_router.get("/")   # rota de entrada (inicial)
 async def home():
     
     return {"msg": "você acessou a tela de autenticação"}
     
 
-@auth_router.post("/criar_conta")
+@auth_router.post("/criar_conta")   # rota para criação de conta
 async def criar_conta(
-                    email: EmailStr,
-                    senha: str,
-                    nome: str,
+                    UserSchema: UserSchema,
                     db: Session = Depends(get_db)
                     ):
     
     # checa se usuário já existe
     usuario = db.query(UserTable).filter_by(
-    email=email
+    email=UserSchema.email
     ).first()
     
     if usuario:
-        return {"erro": "já existe um usuário com esse email"}
+        raise HTTPException(status_code = 400, detail = "já existe um usuário com esse email")     # Retornando código do erro e mensagem
     
-    senha_criptografada = bcrypt_context.hash(senha)    # criptografando senha
+    senha_criptografada = argon_context.hash(UserSchema.senha)    # criptografando senha
+    
     novo_usuario = UserTable(
-        email=email,
-        senha=senha_criptografada, 
-        nome=nome
+        nome=UserSchema.nome,
+        email=UserSchema.email,
+        senha=senha_criptografada,
+        ativo = UserSchema.ativo,
+        admin = UserSchema.admin
     )
 
     db.add(novo_usuario)
     db.commit()
-    db.refresh(novo_usuario)
+    db.refresh(novo_usuario)    # garante que campos gerados pelo banco (como id) estejam disponíveis (atualiza)
 
-    return {"msg": "usuário criado", "id": novo_usuario.id}
+    return {"msg": f"usuário {UserSchema.nome} criado com sucesso!", "id": novo_usuario.id}     # Retornando mensagem de sucesso

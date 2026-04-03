@@ -1,8 +1,5 @@
 from fastapi import FastAPI
 
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.orm import declarative_base, sessionmaker, Session
-
 
 import models
 models.Base.metadata.create_all(bind=models.engine)
