@@ -1,6 +1,4 @@
 # Autenticação
-from pydantic import EmailStr
-
 from sqlalchemy.orm import Session
 
 from dependencies import get_db
@@ -38,12 +36,13 @@ async def criar_conta(
     if usuario:
         raise HTTPException(status_code = 400, detail = "já existe um usuário com esse email")     # Retornando código do erro e mensagem
     
+    
     senha_criptografada = argon_context.hash(UserSchema.senha)    # criptografando senha
     
     novo_usuario = UserTable(
-        nome=UserSchema.nome,
-        email=UserSchema.email,
-        senha=senha_criptografada,
+        nome = UserSchema.nome,
+        email = UserSchema.email,
+        senha = senha_criptografada,
         ativo = UserSchema.ativo,
         admin = UserSchema.admin
     )

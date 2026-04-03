@@ -28,9 +28,9 @@ class UserTable(Base):   # class is mandatory with database
 class OrderTable(Base):   # class is mandatory with database
     __tablename__ = "pedidos"   # criando tabela pedidos
     id = Column(Integer, primary_key=True)
-    status = Column(String, nullable=False)
+    status = Column(String, nullable=False, default="PENDENTE")
     usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
-    preco = Column(Float, nullable=False)
+    preco = Column(Float, nullable=False, default=0)
     
     
 class ItemTable(Base):   # class is mandatory with database
