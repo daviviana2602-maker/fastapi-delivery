@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+# Arquivo Principal
 
+from fastapi import FastAPI
 
 import models
 models.Base.metadata.create_all(bind=models.engine)

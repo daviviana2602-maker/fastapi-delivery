@@ -1,11 +1,9 @@
+# Relacionamento com DB
+
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey    # import used types
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-from dotenv import load_dotenv
-import os
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
-
+from config import DATABASE_URL
 
 engine = create_engine(DATABASE_URL)   # connect with the database
 SessionLocal = sessionmaker(bind=engine)

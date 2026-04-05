@@ -1,4 +1,5 @@
-# Autenticação
+# Rotas para Autenticação
+
 from sqlalchemy.orm import Session
 
 from dependencies import get_db
@@ -9,6 +10,12 @@ from schemas import UserSchema, LoginSchema
 
 from security import argon_context
 
+from jose import jwt, JWTError
+
+from config import ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY
+
+from datetime import datetime, timedelta, timezone
+
 from fastapi import APIRouter, Depends, HTTPException
 
 
@@ -16,10 +23,17 @@ auth_router = APIRouter(prefix = "/auth", tags=["auth"])   # define o caminho = 
 
 
 
-# Função para criação de tokens
-def criar_token(usuario_id):
-    token = f"akgywsndfirf{usuario_id}" 
-    return token
+# Função para criação de tokens JWT
+def criar_token(usuario_id):   
+    prazo_token = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)    # especificando tempo de duração do token de acesso 
+    dic_infos = {
+        "sub": usuario_id,  # identificador do dono do token (utilizar "sub" por padrão JWT)
+        "exp": prazo_token  # definindo prazo do token
+    }
+    
+    jwt_codificado = jwt.encode(dic_infos, SECRET_KEY, ALGORITHM)    # Gerando token JWT a partir dos dados do usuário, assinando com a SECRET_KEY
+
+    return jwt_codificado
     
 
 

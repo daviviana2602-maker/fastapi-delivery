@@ -1,3 +1,5 @@
+# Função para sessões em rotas
+
 from models import SessionLocal
 
 
