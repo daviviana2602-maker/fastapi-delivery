@@ -8,8 +8,6 @@ from models import OrderTable, UserTable
 
 from schemas import OrderSchema
 
-from security import argon_context
-
 from fastapi import APIRouter, Depends, HTTPException
 
 

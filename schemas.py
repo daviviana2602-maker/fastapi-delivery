@@ -2,10 +2,8 @@
 
 from pydantic import BaseModel, EmailStr
 
-from typing import Optional
 
 
-# Feito com base nas tabelas do models.py
 class UserSchema(BaseModel):
     nome: str
     email: EmailStr
@@ -18,8 +16,7 @@ class UserSchema(BaseModel):
         from_attributes = True
         
         
-        
-# Feito com base nas tabelas do models.py
+
 class OrderSchema(BaseModel):
     usuario_id: int
     
@@ -29,10 +26,18 @@ class OrderSchema(BaseModel):
         
         
      
-# Feito com base nas tabelas do models.py
 class LoginSchema(BaseModel):
     email: EmailStr
     senha: str
+    
+    # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
+    class Config:
+        from_attributes = True   
+        
+        
+
+class TokenSchema(BaseModel):
+    refresh_token: str
     
     # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
     class Config:

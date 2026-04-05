@@ -3,15 +3,16 @@
 from fastapi import FastAPI
 
 import models
-models.Base.metadata.create_all(bind=models.engine)
+models.Base.metadata.create_all(bind=models.engine)     # Criando tabelas no db
 
 
 app = FastAPI()     # python -m uvicorn main:app --reload
 
 
-from auth_routes import auth_router
-from order_routes import order_router
+from auth_routes import auth_router    # chamando as rotas de autenticação
+from order_routes import order_router   # chamando as rotas de pedidos
 
 
+# Registro dos routers no app principal. Isso integra as rotas ao sistema e as torna acessíveis via HTTP
 app.include_router(auth_router)
 app.include_router(order_router)    
