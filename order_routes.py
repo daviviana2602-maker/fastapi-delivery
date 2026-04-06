@@ -2,7 +2,7 @@
 
 from sqlalchemy.orm import Session
 
-from dependencies import get_db
+from dependencies import get_db, usuario_logado
 
 from models import OrderTable, UserTable
 

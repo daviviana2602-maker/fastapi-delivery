@@ -10,45 +10,15 @@ from schemas import UserSchema, LoginSchema, TokenSchema
 
 from security import argon_context
 
-from jose import jwt, JWTError
+from token_utils import criar_token, verificar_token
 
-from config import ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY
-
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
 
 
 auth_router = APIRouter(prefix = "/auth", tags=["auth"])   # define o caminho = domínio/auth/(rota esolhinha)
 
-
-
-# Função para criação de tokens JWT
-def criar_token(usuario_id, duracao_token=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)):   
-    prazo_token = datetime.now(timezone.utc) + duracao_token    # especificando tempo de duração do token de acesso
-    dic_infos = {
-        "sub": str(usuario_id),  # identificador do dono do token (transformar em string sempre e nome "sub" é padrão JWT)
-        "exp": prazo_token  # definindo prazo do token
-    }
-    
-    jwt_codificado = jwt.encode(dic_infos, SECRET_KEY, ALGORITHM)    # Gerando token JWT a partir dos dados do usuário, assinado com a SECRET_KEY
-
-    return jwt_codificado
-    
-
-# Função para verificação de tokens
-def verificar_token(token: str):
-    try:
-        jwt_decodificado = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])    # decodificando JWT, assinado com a SECRET_KEY  
-        usuario_id = jwt_decodificado.get("sub")
-
-        if not usuario_id:
-            raise HTTPException(status_code=401, detail="token inválido")
-        
-        return jwt_decodificado
-
-    except JWTError:
-        raise HTTPException(status_code=401, detail="token inválido ou expirado")   # Retornando erro caso ocorra qualquer problema com o JWT
 
 
 @auth_router.get("/")   # rota de entrada (inicial)
