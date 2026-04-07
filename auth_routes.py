@@ -27,6 +27,7 @@ async def home():
     return {"msg": "você acessou a tela de autenticação"}
     
 
+
 @auth_router.post("/criar_conta")
 async def criar_conta(
                     user_schema: UserSchema,
@@ -59,6 +60,7 @@ async def criar_conta(
     return {"msg": f"usuário {user_schema.nome} criado com sucesso!", "id": novo_usuario.id} 
 
 
+
 @auth_router.post("/login") 
 async def login(
                 login_schema: LoginSchema,
@@ -87,10 +89,14 @@ async def login(
            }
     
     
-@auth_router.post("/refresh")   # usa refresh token para gerar um novo access token sem exigir login novamente
-async def use_refresh_token(token_schema: TokenSchema):     # cliente manda refresh_token (front end decide quando usar essa rota)
     
-    jwt_decodificado = verificar_token(token_schema.refresh_token)    # Decodificando JWT
+@auth_router.post("/refresh")   # usa refresh token para gerar um novo access token sem exigir login novamente
+async def use_refresh_token(
+                        token_schema: TokenSchema,   # cliente manda refresh_token (front end decide quando usar essa rota)
+                        db: Session = Depends(get_db)
+                        ):     
+    
+    jwt_decodificado = verificar_token(token_schema.refresh_token, db)    # Decodificando JWT
 
     usuario_id = jwt_decodificado.get("sub")    # descobrindo a quem pertence o token (decodificando o JWT e pegando usuario_id no "sub")
 

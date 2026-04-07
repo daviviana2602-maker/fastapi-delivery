@@ -1,3 +1,5 @@
+# Requisitos para rodar o programa
+
 fastapi==0.111.0
 uvicorn[standard]==0.23.2
 sqlalchemy==2.0.23

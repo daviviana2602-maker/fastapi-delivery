@@ -7,7 +7,7 @@ const url = "http://127.0.0.1:8000/auth/refresh";   // entrando no /auth/refresh
 
 // corpo da requisição conforme meu TokenSchema pede
 const data = {
-    refresh_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MTAzNzcxfQ.R2LSsuFA05CatQZM-7TEqBoDKUZMj_A_PTFbVs6iBeA"
+    refresh_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MTkxNDQwfQ.rS4H25JCxeXbkpngCFK73NkgkwjpXf-ZxV09-qoXnJE"
 };
 
 
