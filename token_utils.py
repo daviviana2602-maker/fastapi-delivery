@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi import HTTPException
 
+from models import UserTable
 
 
 # Função para criação de tokens JWT
@@ -25,13 +26,18 @@ def criar_token(usuario_id, duracao_token=timedelta(minutes=ACCESS_TOKEN_EXPIRE_
     
 
 # Função para verificação de tokens
-def verificar_token(token: str):
+def verificar_token(token: str, db):
     try:
         jwt_decodificado = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])    # decodificando JWT, assinado com a SECRET_KEY  
         usuario_id = jwt_decodificado.get("sub")
 
-        if not usuario_id:
-            raise HTTPException(status_code=401, detail="token inválido")
+        # Verificando se o usuário existe de fato no DB (segurança adicional)
+        usuario = db.query(UserTable).filter(
+            UserTable.id == usuario_id
+            ).first()
+        
+        if not usuario:
+            raise HTTPException(status_code=401, detail="usuário não encontrado")
         
         return jwt_decodificado
 

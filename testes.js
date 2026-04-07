@@ -1,4 +1,5 @@
 // Exemplo de uma requisição do front end para a API
+// node testes.js (use no terminal para rodar)   
 
 
 const url = "http://127.0.0.1:8000/auth/refresh";   // entrando no /auth/refresh
