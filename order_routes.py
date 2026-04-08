@@ -56,12 +56,17 @@ async def cancelar_pedido(
     if not pedido:
         raise HTTPException(status_code=404, detail="Pedido não encontrado")
 
+    if pedido.status in ("CANCELADO", "CONCLUIDO"):     # verifica se o pedido já foi cancelado ou concluído
+        raise HTTPException(status_code=400, detail="esse pedido não pode ser cancelado")   
+
+
     # Verifica se o usuário logado é dono do pedido ou admin
     checar_dono_ou_admin(
                         recurso_usuario_id=pedido.usuario_id,   # Pega o id de quem criou esse pedido
                         usuario_id=usuario_id,
                         db=db
                         )
+
 
     # Se passou na checagem, pode cancelar
     pedido.status = "CANCELADO"

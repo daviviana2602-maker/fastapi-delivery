@@ -49,3 +49,19 @@ def checar_dono_ou_admin(
         raise HTTPException(status_code=403, detail="Você não tem permissão para realizar essa ação")   # se não for o dono do recurso ou o admin
 
     return True     # se passou na verificação, libera o acesso
+
+
+
+def checar_admin(
+    usuario_id: int = Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
+     
+    usuario = db.query(UserTable).filter_by(
+        id=usuario_id
+        ).first()
+    
+    if not usuario or not usuario.admin:
+        raise HTTPException(status_code=403, detail="Você não tem permissão para essa ação") # não é administrador
+    
+    return usuario  # retorna o objeto do usuário logado se for admin (linha inteira do banco referente ao id em questão)
