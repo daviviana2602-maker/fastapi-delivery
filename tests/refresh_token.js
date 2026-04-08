@@ -1,17 +1,18 @@
-// Exemplo de uma requisição do front end para a API
-// node testes.js (use no terminal para rodar)   
+// Exemplo de uma requisição do front end para a rota refresh (criar novo access_token com base no refresh_token)
+// node tests/nome_do_arquivo.js (use no terminal para rodar)   
 
 
-const url = "http://127.0.0.1:8000/auth/refresh";   // entrando no /auth/refresh
+const url = "http://127.0.0.1:8000/auth/refresh";
 
 
 // corpo da requisição conforme meu TokenSchema pede
+// refresh_token não precisa do Bearer, pois não depende da função usuario_logado
 const data = {
-    refresh_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MTkxNDQwfQ.rS4H25JCxeXbkpngCFK73NkgkwjpXf-ZxV09-qoXnJE"
+    refresh_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MjExNjkzfQ.v9GzTQCTqvyfp2BQvpWJEKFq3SGpDZHIe07xxV5ezTo"
 };
 
 
-// usando fetch com POST que é o metodo do meu endpoint em questão
+// usando fetch com POST que é o metodo do endpoint em questão
 fetch(url, {
     method: "POST",
     headers: {

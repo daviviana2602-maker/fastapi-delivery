@@ -2,7 +2,7 @@
 
 from sqlalchemy.orm import Session
 
-from dependencies import get_db, usuario_logado
+from dependencies import get_db, usuario_logado, checar_dono_ou_admin
 
 from models import OrderTable
 
@@ -43,21 +43,32 @@ async def criar_pedido(
 
 @order_router.post("/pedido/cancelar")
 async def cancelar_pedido(
-                        cancel_pedido_schema: CancelPedidoSchema, 
-                        db: Session = Depends(get_db),
-                        usuario_id: int = Depends(usuario_logado)  # pegando id do usuário e validando se está autenticado
-                        ):
+    cancel_pedido_schema: CancelPedidoSchema,
+    db: Session = Depends(get_db),
+    usuario_id: int = Depends(usuario_logado)  # pegando id do usuário e validando se está autenticado
+):
     
+    # Pega o pedido no banco
     pedido = db.query(OrderTable).filter_by(
         id=cancel_pedido_schema.pedido_id
-    ).first()
+        ).first()
     
     if not pedido:
-         raise HTTPException(status_code=404, detail="pedido não encontrado")    # caso pedido não exista retorna erro
-     
-    pedido.status = "CANCELADO"    # caso exista muda o status no banco
-    
+        raise HTTPException(status_code=404, detail="Pedido não encontrado")
+
+    # Verifica se o usuário logado é dono do pedido ou admin
+    checar_dono_ou_admin(
+                        recurso_usuario_id=pedido.usuario_id,   # Pega o id de quem criou esse pedido
+                        usuario_id=usuario_id,
+                        db=db
+                        )
+
+    # Se passou na checagem, pode cancelar
+    pedido.status = "CANCELADO"
     db.commit()
-    db.refresh(pedido)  # atualiza pedido no banco
-    
-    return{"msg": "Pedido cancelado", "id": cancel_pedido_schema.pedido_id}
+    db.refresh(pedido)
+
+    return {
+        "msg": f"Pedido de id {pedido.id} foi cancelado",
+        "pedido": pedido
+    }
