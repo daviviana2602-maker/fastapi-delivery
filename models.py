@@ -54,4 +54,15 @@ class ItemCardapioTable(Base):
     id = Column(Integer, primary_key=True)  
     categoria = Column(String, nullable=False)  # tipo de comida: lanche, pizza, sobremesa etc
     nome = Column(String, unique=True, nullable=False)  # nome do item
-    preco = Column(Float, nullable=False)               
+    preco = Column(Float, nullable=False)         
+    
+    
+class TempItemsTable(Base):
+    __tablename__ = "temporarios"  
+    id = Column(Integer, primary_key=True)
+    quantidade = Column(Integer, nullable=False)
+    nome = Column(String, nullable=False)
+    tamanho = Column(String, nullable=False)
+    preco_unit = Column(Float, nullable=False)
+    preco_total = Column(Float, nullable=False)
+    pedido_id = Column(Integer, ForeignKey("pedidos.id"), nullable=False)      

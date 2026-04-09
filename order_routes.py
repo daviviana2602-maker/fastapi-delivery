@@ -6,11 +6,11 @@ from dependencies import get_db, usuario_logado, checar_admin
 
 from permissions import checar_dono_ou_admin
 
-from models import OrderTable, UserTable, STATUS_VALIDOS, ItemCardapioTable, ItemsTable, TAMANHOS_VALIDOS
+from models import OrderTable, UserTable, STATUS_VALIDOS, ItemCardapioTable, ItemsTable, TAMANHOS_VALIDOS, TempItemsTable
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from schemas import CancelPedidoSchema, AddItemSchema
+from schemas import CancelPedidoSchema, AddItemSchema, ConcludeOrderSchema
 
 
 order_router = APIRouter(prefix = "/order", tags=["order"])   # define o caminho = domínio/order/(rota esolhinha)
@@ -107,69 +107,119 @@ async def listar_todos_pedidos(
 
 
 @order_router.post("/pedido/adicionar_item")
-async def adicionar_item(
+async def adicionar_item_temp(
     add_item_schema: AddItemSchema,
     db: Session = Depends(get_db),
     usuario_id: int = Depends(usuario_logado)
 ):
     
-    if add_item_schema.tamanho.upper() not in TAMANHOS_VALIDOS:
-        raise HTTPException(status_code=400, detail="Tamanho inválido")  # verifica se o tamanho está nas opções válidas
-
-    add_item_schema.nome = add_item_schema.nome.title()  # usando title pra bater com o nome dos alimentos no cardápio
-    
-    # verifica se o pedido existe
+    # pega o pedido
     pedido = db.query(OrderTable).filter_by(
         id=add_item_schema.pedido_id
         ).first()
     
     if not pedido:
         raise HTTPException(status_code=404, detail="Pedido não encontrado")
+    
+    if pedido.status != "PENDENTE":
+        raise HTTPException(status_code=400, detail="Pedido não pode ser editado") # pedido já cancelado ou concluído
 
-    if pedido.status in ("CANCELADO", "CONCLUIDO"):
-        raise HTTPException(status_code=400, detail="Esse pedido não pode ser editado")
-    
-    
-    # Verifica se o usuário logado é dono do pedido ou admin
+    # checa dono ou admin
     checar_dono_ou_admin(
-                        recurso_usuario_id=pedido.usuario_id,   # Pega o id de quem criou esse pedido
-                        usuario_id=usuario_id,
-                        db=db
-                        )
+                    recurso_usuario_id=pedido.usuario_id,
+                    usuario_id=usuario_id,
+                    db=db
+                    )
 
-
-    # busca o item no cardápio
+    # valida tamanho e item
+    if add_item_schema.tamanho.upper() not in TAMANHOS_VALIDOS:
+        raise HTTPException(status_code=400, detail="Tamanho inválido")
+    
+    # busca item no cardápio
     item_cardapio = db.query(ItemCardapioTable).filter_by(
-        nome=add_item_schema.nome
+        nome=add_item_schema.nome.title()
         ).first()
     
+    # caso item não exista no cardápio
     if not item_cardapio:
-        raise HTTPException(status_code=404, detail="Item não encontrado no cardápio")    # validando se existe o item no cardápio
+        raise HTTPException(status_code=404, detail="Item não encontrado no cardápio")
 
-    # calcula preço dos itens com base na quantidade
-    preco_total_item = item_cardapio.preco * add_item_schema.quantidade
+    preco_total=item_cardapio.preco * add_item_schema.quantidade
 
-    # cria o item do pedido
-    novo_item = ItemsTable(
+    # cria item temporário
+    novo_item_temp = TempItemsTable(
         quantidade=add_item_schema.quantidade,
-        tipo=item_cardapio.nome,
+        nome=item_cardapio.nome,
         tamanho=add_item_schema.tamanho,
         preco_unit=item_cardapio.preco,
-        preco_total=preco_total_item,
-        pedido_id=add_item_schema.pedido_id
+        preco_total=preco_total,
+        pedido_id=pedido.id
     )
-
-    db.add(novo_item)
-
-    # atualiza o preço total do pedido
-    pedido.preco = (pedido.preco or 0) + preco_total_item   # se pedido.preco for none ele vira 0 pra poder ser somado
-
+    
+    db.add(novo_item_temp)
     db.commit()
-    db.refresh(novo_item)
-    db.refresh(pedido)
+    db.refresh(novo_item_temp)
+
+    return {"msg": f"{novo_item_temp.quantidade} {novo_item_temp.nome} adicionados temporariamente"}
+    
+    
+    
+@order_router.post("/pedido/concluir")
+async def concluir_pedido(
+                        conclude_order_schema: ConcludeOrderSchema,
+                        db: Session = Depends(get_db),
+                        usuario_id: int = Depends(usuario_logado)
+                        ):
+    
+    
+    pedido = db.query(OrderTable).filter_by(
+        id=conclude_order_schema.pedido_id
+        ).first()
+    
+    
+    if not pedido or pedido.status != "PENDENTE":
+        raise HTTPException(status_code=400, detail="Pedido não encontrado ou já concluído")
+    
+    # checa dono ou admin
+    checar_dono_ou_admin(recurso_usuario_id=pedido.usuario_id,
+                         usuario_id=usuario_id,
+                         db=db)
+
+    # pega itens temporários
+    temp_itens = db.query(TempItemsTable).filter_by(
+        pedido_id=pedido.id
+        ).all()
+    
+    if not temp_itens:
+        raise HTTPException(status_code=400, detail="Pedido não possui itens")
+    
+    # cria itens reais
+    total = 0   # para total não ser none e quebrar quando for somar preço total
+    for t in temp_itens:
+        item_real = ItemsTable(
+            quantidade=t.quantidade,
+            tipo=t.nome,
+            tamanho=t.tamanho,
+            preco_unit=t.preco_unit,
+            preco_total=t.quantidade * t.preco_unit,
+            pedido_id=pedido.id
+        )
+        
+        db.add(item_real)
+        total = total + t.quantidade * t.preco_unit
+
+    # atualiza preço total e status
+    pedido.preco = total
+    pedido.status = "CONCLUIDO"
+
+    # limpa temporários
+    db.query(TempItemsTable).filter_by(
+        pedido_id=pedido.id
+        ).delete()
+    
+    db.commit()
 
     return {
-        "msg": f"{novo_item.quantidade} e {novo_item.tipo} adicionados ao pedido {pedido.id}",
-        "pedido_id": pedido.id,
-        "preco_pedido": pedido.preco
-    }
+        "msg": f"Pedido {pedido.id} concluído",
+        "preco_total": pedido.preco
+        }

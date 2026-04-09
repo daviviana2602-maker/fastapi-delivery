@@ -80,3 +80,12 @@ class AddItemSchema(BaseModel):
     # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
     class Config:
         from_attributes = True
+        
+        
+        
+class ConcludeOrderSchema(BaseModel):
+    pedido_id: int
+    
+    # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
+    class Config:
+        from_attributes = True
