@@ -69,12 +69,3 @@ class DemoteUserSchema(BaseModel):
     # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
     class Config:
         from_attributes = True
-        
-        
-
-class DeleteUserSchema(BaseModel):
-    usuario_a_deletar_id: int   
-    
-    # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
-    class Config:
-        from_attributes = True

@@ -73,7 +73,10 @@ async def login(
     ).first()
     
     if not usuario:
-        raise HTTPException(status_code = 400, detail = "email ou senha inválidos")    
+        raise HTTPException(status_code = 400, detail = "email ou senha inválidos")   
+    
+    if not usuario.ativo:
+        raise HTTPException(status_code=403, detail="usuário desativado") 
     
     if not argon_context.verify(login_schema.senha, usuario.senha):     # verifica se a senha está correta, mesmo estando criptografada
         raise HTTPException(status_code=400, detail="email ou senha inválidos")     

@@ -20,7 +20,7 @@ def get_db():
         
         
         
-# Função para proteger rotas somente para usuários autenticados
+# Função para proteger rotas somente para usuários autenticados e ativados
 def usuario_logado(
                 authorization: str = Header(...),    # (... = obrigatório) (front envia authorization já em JWT com Bearer)
                 db: Session = Depends(get_db)
@@ -28,7 +28,17 @@ def usuario_logado(
     
     token = authorization.replace("Bearer ", "")    # remove o "Bearer ", sobrando só o JWT puro
     jwt_decodificado = verificar_token(token, db)    # chama verificar_token que valida e decodifica o token e se o usuário existe no banco (com o db)
-    return int(jwt_decodificado.get("sub"))
+    
+    usuario_id = int(jwt_decodificado.get("sub"))
+    
+    usuario = db.query(UserTable).filter_by(    # checando quem é o usuário
+        id=usuario_id
+    ).first()
+    
+    if not usuario.ativo:
+        raise HTTPException(status_code=403, detail="usuário desativado")
+    
+    return usuario_id
 
 
 

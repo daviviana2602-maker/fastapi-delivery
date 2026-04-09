@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from models import UserTable
 
-from schemas import PromoteUserSchema, DemoteUserSchema, DeleteUserSchema
+from schemas import PromoteUserSchema, DemoteUserSchema
 
 
 management_router = APIRouter(prefix = "/management", tags=["management"])   # define o caminho = domínio/management/(rota esolhinha)
@@ -26,6 +26,9 @@ async def promover_usuario(
     usuario_a_promover = db.query(UserTable).filter_by(
         id=promote_user_schema.usuario_a_promover_id
         ).first()
+    
+    if not usuario_a_promover.ativo:
+        raise HTTPException(status_code=400, detail="usuário está desativado e não pode ser promovido")
     
     if not usuario_a_promover:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")   # usuário inexistente retorna erro
@@ -76,29 +79,64 @@ async def rebaixar_usuario(
     
     
     
-@management_router.delete("/deletar_usuario")
-async def deletar_usuario(
-                    delete_user_schema: DeleteUserSchema,
-                    db: Session = Depends(get_db),
-                    admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
-                    ):
+@management_router.patch("/desativar_usuario")
+async def desativar_usuario(
+    delete_user_id: int,
+    db: Session = Depends(get_db),
+    admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
+):
     
-    # Procura o usuário a ser deletado
-    usuario_a_deletar = db.query(UserTable).filter_by(
-        id=delete_user_schema.usuario_a_deletar_id
-        ).first()
+    # Procura o usuário a ser desativado
+    usuario = db.query(UserTable).filter_by(
+        id=delete_user_id
+    ).first()
     
-    if not usuario_a_deletar:
-        raise HTTPException(status_code=404, detail="Usuário não encontrado")   # usuário inexistente retorna erro
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
     
-    if usuario_a_deletar.admin == True:
-        raise HTTPException(status_code=403, detail="O usuário escolhido é administrador e não pode ser deletado")  # não deixa se deletar e nem deletar outro adm
+    if usuario.admin:
+        raise HTTPException(status_code=403, detail="O usuário escolhido é administrador e não pode ser desativado")
+    
+    if not usuario.ativo:
+        raise HTTPException(status_code=400, detail="Usuário já está desativado")   # contas "banidas"/desativadas
     
     
-    db.delete(usuario_a_deletar)    # deletando usuario
+    usuario.ativo = False   # desativando usuário
+    
     db.commit()
+    db.refresh(usuario)
     
     return {
-            "msg": f"Usuário {usuario_a_deletar.nome} foi deletado",
-            "usuario_id":usuario_a_deletar.id
-            }    
+        "msg": f"Usuário {usuario.nome} foi desativado",
+        "usuario_id": usuario.id
+    }
+    
+    
+    
+@management_router.patch("/reativar_usuario")
+async def reativar_usuario(
+    user_id: int,
+    db: Session = Depends(get_db),
+    admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
+):
+    
+    # Procura o usuário a ser reativado
+    usuario = db.query(UserTable).filter_by(
+        id=user_id
+        ).first()
+    
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    if usuario.ativo:
+        raise HTTPException(status_code=400, detail="Usuário já está ativo")
+    
+    usuario.ativo = True    # reativando o usuário
+    
+    db.commit()
+    db.refresh(usuario)
+    
+    return {
+        "msg": f"Usuário {usuario.nome} foi reativado",
+        "usuario_id": usuario.id
+    }

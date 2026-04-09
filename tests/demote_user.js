@@ -6,11 +6,11 @@ fetch("http://127.0.0.1:8000/management/rebaixar_usuario", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzc1NjcwMTc1fQ.H-y34jDBPXdJ5PvVlFsF00IRWNIWx3UcefuXTu2Seak"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzc1NzA1NDk3fQ.dvvnvEVTa4tpkS6WQ-07bGmoytiKgDXB_n8izHa3NMo"
   },
 
   body: JSON.stringify({
-    usuario_a_rebaixar_id: 1    // passando no body pois vem como resposta do CancelPedidoSchema
+    usuario_a_rebaixar_id: 2   // passando no body pois vem como resposta do DemoteUserSchema
   })
 
 })

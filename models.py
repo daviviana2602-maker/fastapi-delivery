@@ -22,13 +22,15 @@ class UserTable(Base):   # class is mandatory with database
     ativo = Column(Boolean, nullable=False, default = True)
     admin = Column(Boolean, nullable=False, default=False)
         
-    
+
 class OrderTable(Base):   # class is mandatory with database
     __tablename__ = "pedidos"   # criando tabela pedidos
     id = Column(Integer, primary_key=True)
     status = Column(String, nullable=False, default="PENDENTE")     # PENDENTE, CANCELADO, CONCLUIDO
     usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
     preco = Column(Float, nullable=False, default=0)
+    
+STATUS_VALIDOS = ("PENDENTE", "CANCELADO", "CONCLUIDO")     # status validos para pedidos
     
     
 class ItemTable(Base):   # class is mandatory with database

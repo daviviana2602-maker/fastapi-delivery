@@ -2,9 +2,9 @@
 
 from sqlalchemy.orm import Session
 
-from dependencies import get_db, usuario_logado, checar_dono_ou_admin
+from dependencies import get_db, usuario_logado, checar_dono_ou_admin, checar_admin
 
-from models import OrderTable
+from models import OrderTable, UserTable, STATUS_VALIDOS
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -77,3 +77,27 @@ async def cancelar_pedido(
         "msg": f"Pedido de id {pedido.id} foi cancelado",
         "pedido": pedido
     }
+    
+    
+    
+@order_router.get("/listar")
+async def listar_todos_pedidos(
+    status_type: str,
+    db: Session = Depends(get_db),
+    admin: UserTable = Depends(checar_admin)    # verifica se o usuario é um adm (função somente para adms)
+):
+    
+    status_type = status_type.upper()   # transformando em maiúsculas pra bater com os nomes de status do sistema
+    
+    
+    if status_type not in STATUS_VALIDOS:
+        raise HTTPException(status_code=400, detail="status inválido")   # verifica se o status existe no sistema
+    
+    pedidos = db.query(OrderTable).filter_by(
+        status=status_type
+        ).all()
+    
+    if not pedidos:
+        raise HTTPException(status_code=404, detail="nenhum pedido encontrado")   # verifica se existem pedidos de determinado status no sistema
+
+    return pedidos
