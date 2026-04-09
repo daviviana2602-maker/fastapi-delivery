@@ -1,6 +1,7 @@
 # Criação de Esquemas
 
-from pydantic import BaseModel, EmailStr
+from typing import Annotated
+from pydantic import BaseModel, EmailStr, Field
 
 
 
@@ -63,6 +64,18 @@ class PromoteUserSchema(BaseModel):
         
 class DemoteUserSchema(BaseModel):
     usuario_a_rebaixar_id: int   
+    
+    # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
+    class Config:
+        from_attributes = True
+        
+        
+        
+class AddItemSchema(BaseModel):
+    quantidade: Annotated[int, Field(gt=0)]   # garante que seja > 0 
+    nome: str
+    tamanho: str
+    pedido_id: int
     
     # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
     class Config:

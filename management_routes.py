@@ -2,7 +2,7 @@
 
 from sqlalchemy.orm import Session
 
-from dependencies import get_db, usuario_logado, checar_admin
+from dependencies import get_db, checar_admin
 
 from fastapi import APIRouter, Depends, HTTPException
 

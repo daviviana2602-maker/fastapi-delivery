@@ -41,27 +41,7 @@ def usuario_logado(
     return usuario_id
 
 
-
-def checar_dono_ou_admin(
-    recurso_usuario_id: int,          # id do dono do recurso
-    usuario_id: int = Depends(usuario_logado),
-    db: Session = Depends(get_db)
-):
-
-    usuario = db.query(UserTable).filter_by(
-        id=usuario_id
-        ).first()
-    
-    if not usuario:
-        raise HTTPException(status_code=401, detail="Usuário não encontrado")
-
-    if recurso_usuario_id != usuario_id and not usuario.admin:
-        raise HTTPException(status_code=403, detail="Você não tem permissão para realizar essa ação")   # se não for o dono do recurso ou o admin
-
-    return True     # se passou na verificação, libera o acesso
-
-
-
+# Função que checa se um usuário é admin
 def checar_admin(
     usuario_id: int = Depends(usuario_logado),
     db: Session = Depends(get_db)

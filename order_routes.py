@@ -2,13 +2,15 @@
 
 from sqlalchemy.orm import Session
 
-from dependencies import get_db, usuario_logado, checar_dono_ou_admin, checar_admin
+from dependencies import get_db, usuario_logado, checar_admin
 
-from models import OrderTable, UserTable, STATUS_VALIDOS
+from permissions import checar_dono_ou_admin
+
+from models import OrderTable, UserTable, STATUS_VALIDOS, ItemCardapioTable, ItemsTable, TAMANHOS_VALIDOS
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from schemas import CancelPedidoSchema
+from schemas import CancelPedidoSchema, AddItemSchema
 
 
 order_router = APIRouter(prefix = "/order", tags=["order"])   # define o caminho = domínio/order/(rota esolhinha)
@@ -56,8 +58,8 @@ async def cancelar_pedido(
     if not pedido:
         raise HTTPException(status_code=404, detail="Pedido não encontrado")
 
-    if pedido.status in ("CANCELADO", "CONCLUIDO"):     # verifica se o pedido já foi cancelado ou concluído
-        raise HTTPException(status_code=400, detail="esse pedido não pode ser cancelado")   
+    if pedido.status in ("CANCELADO", "CONCLUIDO"):     
+        raise HTTPException(status_code=400, detail="esse pedido não pode ser cancelado")   # verifica se o pedido já foi cancelado ou concluído
 
 
     # Verifica se o usuário logado é dono do pedido ou admin
@@ -101,3 +103,73 @@ async def listar_todos_pedidos(
         raise HTTPException(status_code=404, detail="nenhum pedido encontrado")   # verifica se existem pedidos de determinado status no sistema
 
     return pedidos
+
+
+
+@order_router.post("/pedido/adicionar_item")
+async def adicionar_item(
+    add_item_schema: AddItemSchema,
+    db: Session = Depends(get_db),
+    usuario_id: int = Depends(usuario_logado)
+):
+    
+    if add_item_schema.tamanho.upper() not in TAMANHOS_VALIDOS:
+        raise HTTPException(status_code=400, detail="Tamanho inválido")  # verifica se o tamanho está nas opções válidas
+
+    add_item_schema.nome = add_item_schema.nome.title()  # usando title pra bater com o nome dos alimentos no cardápio
+    
+    # verifica se o pedido existe
+    pedido = db.query(OrderTable).filter_by(
+        id=add_item_schema.pedido_id
+        ).first()
+    
+    if not pedido:
+        raise HTTPException(status_code=404, detail="Pedido não encontrado")
+
+    if pedido.status in ("CANCELADO", "CONCLUIDO"):
+        raise HTTPException(status_code=400, detail="Esse pedido não pode ser editado")
+    
+    
+    # Verifica se o usuário logado é dono do pedido ou admin
+    checar_dono_ou_admin(
+                        recurso_usuario_id=pedido.usuario_id,   # Pega o id de quem criou esse pedido
+                        usuario_id=usuario_id,
+                        db=db
+                        )
+
+
+    # busca o item no cardápio
+    item_cardapio = db.query(ItemCardapioTable).filter_by(
+        nome=add_item_schema.nome
+        ).first()
+    
+    if not item_cardapio:
+        raise HTTPException(status_code=404, detail="Item não encontrado no cardápio")    # validando se existe o item no cardápio
+
+    # calcula preço dos itens com base na quantidade
+    preco_total_item = item_cardapio.preco * add_item_schema.quantidade
+
+    # cria o item do pedido
+    novo_item = ItemsTable(
+        quantidade=add_item_schema.quantidade,
+        tipo=item_cardapio.nome,
+        tamanho=add_item_schema.tamanho,
+        preco_unit=item_cardapio.preco,
+        preco_total=preco_total_item,
+        pedido_id=add_item_schema.pedido_id
+    )
+
+    db.add(novo_item)
+
+    # atualiza o preço total do pedido
+    pedido.preco = (pedido.preco or 0) + preco_total_item   # se pedido.preco for none ele vira 0 pra poder ser somado
+
+    db.commit()
+    db.refresh(novo_item)
+    db.refresh(pedido)
+
+    return {
+        "msg": f"{novo_item.quantidade} e {novo_item.tipo} adicionados ao pedido {pedido.id}",
+        "pedido_id": pedido.id,
+        "preco_pedido": pedido.preco
+    }
