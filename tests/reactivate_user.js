@@ -1,4 +1,4 @@
-// Exemplo de uma requisição do front end para a rota de listar pedidos
+// Exemplo de uma requisição do front end para a rota de reativar usuários
 // node tests/nome_do_arquivo.js (use no terminal para rodar) 
 
 

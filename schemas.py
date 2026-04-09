@@ -8,8 +8,6 @@ class UserSchema(BaseModel):
     nome: str
     email: EmailStr
     senha: str
-    ativo: bool = True
-    admin: bool = False
     
     # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
     class Config:

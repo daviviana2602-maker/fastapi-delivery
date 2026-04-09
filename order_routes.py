@@ -87,7 +87,7 @@ async def listar_todos_pedidos(
     admin: UserTable = Depends(checar_admin)    # verifica se o usuario é um adm (função somente para adms)
 ):
     
-    status_type = status_type.upper()   # transformando em maiúsculas pra bater com os nomes de status do sistema
+    status_type = status_type.upper()   # transformando em maiúsculas pra bater com os nomes de status da tabela pedidos
     
     
     if status_type not in STATUS_VALIDOS:

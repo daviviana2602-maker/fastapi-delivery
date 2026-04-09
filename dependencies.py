@@ -71,7 +71,10 @@ def checar_admin(
         id=usuario_id
         ).first()
     
-    if not usuario or not usuario.admin:
-        raise HTTPException(status_code=403, detail="Você não tem permissão para essa ação") # não é administrador
+    if not usuario:
+        raise HTTPException(status_code=401, detail="Usuário não encontrado")
+    
+    if not usuario.admin:
+        raise HTTPException(status_code=403, detail="Você não tem permissão para essa ação")   # não é administrador
     
     return usuario  # retorna o objeto do usuário logado se for admin (linha inteira do banco referente ao id em questão)

@@ -1,4 +1,4 @@
-// Exemplo de uma requisição do front end para a rota de promover_usuários
+// Exemplo de uma requisição do front end para a rota de promover usuários
 // node tests/nome_do_arquivo.js (use no terminal para rodar) 
 
 

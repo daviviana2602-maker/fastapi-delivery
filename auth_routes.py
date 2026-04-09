@@ -49,13 +49,20 @@ async def criar_conta(
         nome = user_schema.nome,
         email = user_schema.email,
         senha = senha_criptografada,
-        ativo = user_schema.ativo,
-        admin = user_schema.admin
-    )
-
+    )   # colunas ativo e admin já são definidos por padrão default na UserTable no models 
+    
     db.add(novo_usuario)
     db.commit()
     db.refresh(novo_usuario)    # garante que campos gerados pelo banco (como id) estejam disponíveis (atualiza)
+    
+    
+    # o primeiro usuário sempre se torna admin
+    if novo_usuario.id == 1:
+        novo_usuario.admin = True   
+        db.commit()
+        db.refresh(novo_usuario)
+        return {"msg": f"usuário {user_schema.nome} criado com sucesso como admin!", "id": novo_usuario.id} 
+    
 
     return {"msg": f"usuário {user_schema.nome} criado com sucesso!", "id": novo_usuario.id} 
 
