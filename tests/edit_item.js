@@ -6,12 +6,12 @@ fetch("http://127.0.0.1:8000/order/pedido/item", {
   method: "PATCH",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzc1ODQ0NzE5fQ.GQlH9aaMsaCQvnzsPbQNvDxMSB_-a1ph2IS9vCUXHIU"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc1ODQ4ODY5fQ.krOn4EO6qozWN0yTNFDPqnbxzrlrBED3KJlqLgeNtYM"
   },
 
   body: JSON.stringify({    // passando no body pois vem como resposta do AdjustItemSchema
     item_id: 2,       
-    ajuste: 20        // quantidade de itens a serem removidos ou adicionados (positivo/negativo)
+    ajuste: 2        // quantidade de itens a serem removidos ou adicionados (positivo/negativo)
   })
 
 })

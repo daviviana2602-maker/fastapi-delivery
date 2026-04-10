@@ -288,3 +288,53 @@ async def ajustar_item_pedido(
         "quantidade": item.quantidade,
         "preco_total": item.preco_total
     }
+    
+    
+    
+@order_router.get("/pedido/item/listar_pedido_temp")
+async def listar_pedido_temporario(
+    pedido_id: int,
+    db: Session = Depends(get_db),
+    usuario_id: int = Depends(usuario_logado)
+):
+
+    # segurança extra
+    pedido = db.query(OrderTable).filter_by(
+        id=pedido_id
+    ).first()
+
+
+    if not pedido:
+        raise HTTPException(status_code=404, detail="Pedido não encontrado")    
+
+
+    # checa dono ou admin
+    checar_dono_ou_admin(
+                        recurso_usuario_id=pedido.usuario_id,
+                        usuario_id=usuario_id,
+                        db=db
+                        )
+    
+    
+    pedido_temp = db.query(TempItemsTable).filter_by(
+        pedido_id=pedido_id
+    ).all()
+
+
+    if not pedido_temp:
+        return {
+            "pedido_id": pedido_id,
+            "status": pedido.status,
+            "itens": [],    # retornando que o carrinhon está vazio
+            "total": 0
+                }
+
+
+    total = sum(p.preco_total for p in pedido_temp) # para cada item no pedido temporário some o item.preco_total na várivael total
+
+    return {
+        "pedido_id": pedido_id,
+        "status": pedido.status,
+        "itens": pedido_temp,
+        "total": total 
+    }
