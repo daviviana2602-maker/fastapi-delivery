@@ -6,7 +6,7 @@ fetch("http://127.0.0.1:8000/order/pedido/concluir", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc1NzY2NDY1fQ.TppF0pLO5sLoIS6vbQnE2fTXF4_JK3UgnGowoJdQYp8"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzc1ODQwNzEyfQ.wxNenBbiAtxToeEJb-LZKUrz1wIyujVMWQ7YrfJxSs8"
   },
 
   body: JSON.stringify({    // passando no body pois vem como resposta do ConcludeOrderSchema

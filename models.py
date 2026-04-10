@@ -36,8 +36,8 @@ class OrderTable(Base):
 STATUS_VALIDOS = ("PENDENTE", "CANCELADO", "CONCLUIDO")     # status válidos para pedidos
     
     
-class ItemsTable(Base):   
-    __tablename__ = "itens"   # criando tabela itens
+class CompletedOrderItem(Base):  # itens de pedidos já finalizados (concluídos)  
+    __tablename__ = "itens_concluidos"   # criando tabela itens
     id = Column(Integer, primary_key=True)
     quantidade = Column(Integer, nullable=False)
     tipo = Column(String, nullable=False)
@@ -49,7 +49,7 @@ class ItemsTable(Base):
 TAMANHOS_VALIDOS = ("GRANDE", "TRADICIONAL", "PEQUENO")     # status válidos para pedidos
 
 
-class ItemCardapioTable(Base):
+class CardapioTable(Base):
     __tablename__ = "cardapio"
     id = Column(Integer, primary_key=True)  
     categoria = Column(String, nullable=False)  # tipo de comida: lanche, pizza, sobremesa etc

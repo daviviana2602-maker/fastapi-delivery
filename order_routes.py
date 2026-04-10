@@ -6,11 +6,11 @@ from dependencies import get_db, usuario_logado, checar_admin
 
 from permissions import checar_dono_ou_admin
 
-from models import OrderTable, UserTable, STATUS_VALIDOS, ItemCardapioTable, ItemsTable, TAMANHOS_VALIDOS, TempItemsTable
+from models import OrderTable, UserTable, STATUS_VALIDOS, CardapioTable, CompletedOrderItem, TAMANHOS_VALIDOS, TempItemsTable
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from schemas import CancelPedidoSchema, AddItemSchema, ConcludeOrderSchema
+from schemas import AddItemSchema, ConcludeOrderSchema, CancelOrderSchema
 
 
 order_router = APIRouter(prefix = "/order", tags=["order"])   # define o caminho = domínio/order/(rota esolhinha)
@@ -40,45 +40,6 @@ async def criar_pedido(
     db.refresh(novo_pedido)
 
     return {"msg": "pedido criado com sucesso!", "id": novo_pedido.id}
-
-
-
-@order_router.post("/pedido/cancelar")
-async def cancelar_pedido(
-    cancel_pedido_schema: CancelPedidoSchema,
-    db: Session = Depends(get_db),
-    usuario_id: int = Depends(usuario_logado)  # pegando id do usuário e validando se está autenticado
-):
-    
-    # Pega o pedido no banco
-    pedido = db.query(OrderTable).filter_by(
-        id=cancel_pedido_schema.pedido_id
-        ).first()
-    
-    if not pedido:
-        raise HTTPException(status_code=404, detail="Pedido não encontrado")
-
-    if pedido.status in ("CANCELADO", "CONCLUIDO"):     
-        raise HTTPException(status_code=400, detail="esse pedido não pode ser cancelado")   # verifica se o pedido já foi cancelado ou concluído
-
-
-    # Verifica se o usuário logado é dono do pedido ou admin
-    checar_dono_ou_admin(
-                        recurso_usuario_id=pedido.usuario_id,   # Pega o id de quem criou esse pedido
-                        usuario_id=usuario_id,
-                        db=db
-                        )
-
-
-    # Se passou na checagem, pode cancelar
-    pedido.status = "CANCELADO"
-    db.commit()
-    db.refresh(pedido)
-
-    return {
-        "msg": f"Pedido de id {pedido.id} foi cancelado",
-        "pedido": pedido
-    }
     
     
     
@@ -124,7 +85,7 @@ async def adicionar_item_temp(
     if pedido.status != "PENDENTE":
         raise HTTPException(status_code=400, detail="Pedido não pode ser editado") # pedido já cancelado ou concluído
 
-    # checa dono ou admin
+    # checa dono ou admin para conceder permissão
     checar_dono_ou_admin(
                     recurso_usuario_id=pedido.usuario_id,
                     usuario_id=usuario_id,
@@ -136,7 +97,7 @@ async def adicionar_item_temp(
         raise HTTPException(status_code=400, detail="Tamanho inválido")
     
     # busca item no cardápio
-    item_cardapio = db.query(ItemCardapioTable).filter_by(
+    item_cardapio = db.query(CardapioTable).filter_by(
         nome=add_item_schema.nome.title()
         ).first()
     
@@ -176,16 +137,21 @@ async def concluir_pedido(
         id=conclude_order_schema.pedido_id
         ).first()
     
-    
-    if not pedido or pedido.status != "PENDENTE":
-        raise HTTPException(status_code=400, detail="Pedido não encontrado ou já concluído")
+    if not pedido:
+        raise HTTPException(404, "Pedido não encontrado")
     
     # checa dono ou admin
-    checar_dono_ou_admin(recurso_usuario_id=pedido.usuario_id,
-                         usuario_id=usuario_id,
-                         db=db)
+    checar_dono_ou_admin(
+                        recurso_usuario_id=pedido.usuario_id,
+                        usuario_id=usuario_id,
+                        db=db
+                        )
 
-    # pega itens temporários
+    if pedido.status != "PENDENTE":
+        raise HTTPException(400, "Pedido não pode ser concluído")
+    
+
+    # # pega itens temporários do usuário em questão pelo pedido_id passado no schema
     temp_itens = db.query(TempItemsTable).filter_by(
         pedido_id=pedido.id
         ).all()
@@ -193,10 +159,12 @@ async def concluir_pedido(
     if not temp_itens:
         raise HTTPException(status_code=400, detail="Pedido não possui itens")
     
+    
+    total = 0   # para total não ser None e quebrar quando for somar preço total
+    
     # cria itens reais
-    total = 0   # para total não ser none e quebrar quando for somar preço total
     for t in temp_itens:
-        item_real = ItemsTable(
+        item_real = CompletedOrderItem(
             quantidade=t.quantidade,
             tipo=t.nome,
             tamanho=t.tamanho,
@@ -223,3 +191,41 @@ async def concluir_pedido(
         "msg": f"Pedido {pedido.id} concluído",
         "preco_total": pedido.preco
         }
+    
+    
+    
+@order_router.post("/pedido/cancelar")
+async def cancelar_pedido(
+                        cancel_order_schema: CancelOrderSchema,
+                        db: Session = Depends(get_db),
+                        usuario_id: int = Depends(usuario_logado)
+                        ):
+    
+    # pedido a ser cancelado
+    pedido = db.query(OrderTable).filter_by(
+        id=cancel_order_schema.pedido_id
+        ).first()
+    
+    if not pedido:
+        raise HTTPException(404, "Pedido não encontrado")
+    
+    # checa dono ou admin
+    checar_dono_ou_admin(
+                        recurso_usuario_id=pedido.usuario_id,
+                        usuario_id=usuario_id,
+                        db=db
+                        )
+
+    if pedido.status != "PENDENTE":
+        raise HTTPException(400, "Pedido não pode ser cancelado")
+    
+    pedido.status = "CANCELADO"
+
+    # limpa itens temporários do pedido
+    db.query(TempItemsTable).filter_by(
+        pedido_id=pedido.id
+        ).delete()
+    
+    db.commit()
+
+    return {"msg": f"Pedido {pedido.id} cancelado"}

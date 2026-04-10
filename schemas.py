@@ -42,15 +42,6 @@ class TokenSchema(BaseModel):
     class Config:
         from_attributes = True   
         
-
-
-class CancelPedidoSchema(BaseModel):
-    pedido_id: int
-    
-    # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
-    class Config:
-        from_attributes = True
-        
         
         
 class PromoteUserSchema(BaseModel):
@@ -75,7 +66,7 @@ class AddItemSchema(BaseModel):
     quantidade: Annotated[int, Field(gt=0)]   # garante que seja > 0 
     nome: str
     tamanho: str
-    pedido_id: int
+    pedido_id: int  # diz qual pedido você pretende mexer
     
     # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
     class Config:
@@ -84,6 +75,15 @@ class AddItemSchema(BaseModel):
         
         
 class ConcludeOrderSchema(BaseModel):
+    pedido_id: int
+    
+    # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
+    class Config:
+        from_attributes = True
+        
+        
+
+class CancelOrderSchema(BaseModel):
     pedido_id: int
     
     # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy

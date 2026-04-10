@@ -1,6 +1,6 @@
 # Arquivo para gerar o cardápio
 
-from models import ItemCardapioTable, SessionLocal  
+from models import CardapioTable, SessionLocal  
 
 # TUDO NO CARDÁPIO EM FORMATO .TITLE()
 ITENS_INICIAIS = [
@@ -33,12 +33,12 @@ def popular_cardapio():
         for item in ITENS_INICIAIS:
             
             # verifica se o item já existe, pra não duplicar
-            exists = db.query(ItemCardapioTable).filter_by(
+            exists = db.query(CardapioTable).filter_by(
                 nome=item["nome"]
                 ).first()
             
             if not exists:
-                novo_item = ItemCardapioTable(
+                novo_item = CardapioTable(
                     nome=item["nome"],
                     categoria=item["categoria"],
                     preco=item["preco"]

@@ -6,11 +6,11 @@ fetch("http://127.0.0.1:8000/order/pedido/cancelar", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc1NzA1NDM1fQ.c_dsiS4LQTDMvVXOiyThZzRX-dW_jCRO14vLu17zyDA"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc1ODQwNjc0fQ.vJLYG2APJ5P8mTFS8gqOiMISORECKRac90zacyPO7j4"
   },
 
   body: JSON.stringify({
-    pedido_id: 1   // passando no body pois vem como resposta do CancelPedidoSchema
+    pedido_id: 1   // passando no body pois vem como resposta do CancelOrderSchema
   })
 
 })

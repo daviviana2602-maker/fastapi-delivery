@@ -6,12 +6,12 @@ fetch("http://127.0.0.1:8000/order/pedido/adicionar_item", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc1NzY2NDY1fQ.TppF0pLO5sLoIS6vbQnE2fTXF4_JK3UgnGowoJdQYp8"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc1ODQwNjc0fQ.vJLYG2APJ5P8mTFS8gqOiMISORECKRac90zacyPO7j4"
   },
 
   body: JSON.stringify({    // passando no body pois vem como resposta do AddItemSchema
-    quantidade: 3,
-    nome: "arroz",
+    quantidade: 2,
+    nome: "pizza calabresa",
     tamanho: "tradicional",
     pedido_id: 1
   })
