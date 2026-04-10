@@ -66,8 +66,18 @@ class AddItemSchema(BaseModel):
     quantidade: Annotated[int, Field(gt=0)]   # garante que seja > 0 
     nome: str
     tamanho: str
-    pedido_id: int  # diz qual pedido você pretende mexer
+    pedido_id: int  # diz qual pedido você pretende adicionar
     
+    # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
+    class Config:
+        from_attributes = True
+        
+        
+
+class AdjustItemSchema(BaseModel):
+    item_id: int    # comparar id com o da TempItemsTable
+    ajuste: int     # quantidade de itens a serem removidos ou adicionados (positivo/negativo)
+        
     # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
     class Config:
         from_attributes = True

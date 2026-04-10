@@ -10,7 +10,7 @@ from models import OrderTable, UserTable, STATUS_VALIDOS, CardapioTable, Complet
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from schemas import AddItemSchema, ConcludeOrderSchema, CancelOrderSchema
+from schemas import AddItemSchema, ConcludeOrderSchema, CancelOrderSchema, AdjustItemSchema
 
 
 order_router = APIRouter(prefix = "/order", tags=["order"])   # define o caminho = domínio/order/(rota esolhinha)
@@ -125,7 +125,7 @@ async def adicionar_item_temp(
     
     
     
-@order_router.post("/pedido/concluir")
+@order_router.patch("/pedido/concluir")
 async def concluir_pedido(
                         conclude_order_schema: ConcludeOrderSchema,
                         db: Session = Depends(get_db),
@@ -176,7 +176,7 @@ async def concluir_pedido(
         db.add(item_real)
         total = total + t.quantidade * t.preco_unit
 
-    # atualiza preço total e status
+    # atualiza preço total e muda status
     pedido.preco = total
     pedido.status = "CONCLUIDO"
 
@@ -188,13 +188,13 @@ async def concluir_pedido(
     db.commit()
 
     return {
-        "msg": f"Pedido {pedido.id} concluído",
+        "msg": f"Pedido com id {pedido.id} concluído",
         "preco_total": pedido.preco
         }
     
     
     
-@order_router.post("/pedido/cancelar")
+@order_router.patch("/pedido/cancelar")
 async def cancelar_pedido(
                         cancel_order_schema: CancelOrderSchema,
                         db: Session = Depends(get_db),
@@ -228,4 +228,63 @@ async def cancelar_pedido(
     
     db.commit()
 
-    return {"msg": f"Pedido {pedido.id} cancelado"}
+    return {"msg": f"Pedido com id {pedido.id} cancelado"}
+
+
+
+@order_router.patch("/pedido/item")
+async def ajustar_item_pedido(
+    ajustar_item_schema: AdjustItemSchema,
+    db: Session = Depends(get_db),
+    usuario_id: int = Depends(usuario_logado)
+):
+    
+    # procura o id na temporarios com base no id passado 
+    item = db.query(TempItemsTable).filter_by(
+        id=ajustar_item_schema.item_id  
+        ).first()
+
+
+    if not item:
+        raise HTTPException(status_code=404, detail="Item não encontrado")  # verifica se existe o item
+
+
+    # associa o pedido temporario com o pedido já existente na OrderTable
+    pedido = db.query(OrderTable).filter_by(
+        id=item.pedido_id
+        ).first()
+
+
+    if not pedido:
+        raise HTTPException(status_code=404, detail="Pedido não encontrado")    # se não houver o pedido na OrderTable
+
+    if pedido.status != "PENDENTE":
+        raise HTTPException(status_code=400, detail="Pedido não pode ser editado")  # se o pedido já tiver sido finalizado
+
+    # permissão (dono ou admin)
+    checar_dono_ou_admin(
+        recurso_usuario_id=pedido.usuario_id,
+        usuario_id=usuario_id,
+        db=db
+    )
+
+    # ajuste de quantidade
+    nova_quantidade = item.quantidade + ajustar_item_schema.ajuste
+
+    if nova_quantidade <= 0:    # se a nova quantidade for 0 já é automaticamente deletado
+        db.delete(item)
+        db.commit()
+        return {"msg": "Item removido do pedido"}
+
+    item.quantidade = nova_quantidade
+    item.preco_total = item.preco_unit * nova_quantidade
+
+    db.commit()
+    db.refresh(item)
+
+    return {
+        "msg": "Item atualizado com sucesso",
+        "item_id": item.id,
+        "quantidade": item.quantidade,
+        "preco_total": item.preco_total
+    }
