@@ -9,9 +9,9 @@ fetch("http://127.0.0.1:8000/auth/criar_conta", {
   },
 
   body: JSON.stringify({    // passando no body pois vem como resposta do CreateUserSchema
-    "nome": "julia",
-    "email": "julia@gmail.com",
-    "senha": "julia123"
+    "nome": "davi",
+    "email": "davi@gmail.com",
+    "senha": "davi123"
   })
 
 })

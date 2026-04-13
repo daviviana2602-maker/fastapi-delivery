@@ -43,7 +43,7 @@ async def editar_perfil(
             raise HTTPException(status_code = 400, detail = "senha atual é obrigatória para mudanças de email e senha")
 
 
-        if not argon_context.verify(update_user.senha_atual, usuario.senha):   # verifica se a senha está correta, mesmo estando criptografada
+        if not argon_context.verify(update_user.senha_atual, usuario.senha):    # verifica se a senha está correta, mesmo estando criptografada por comparação de hash
             raise HTTPException(status_code = 400, detail = "senha atual inválida")
 
 
@@ -59,7 +59,7 @@ async def editar_perfil(
             ).first()
 
 
-         # se email existir e id for diferente do id do usuário (verificado pelo usuario_logado)
+        # se email existir e id for diferente do id do usuário (verificado pelo usuario_logado)
         if existing and existing.id != usuario.id:  
             raise HTTPException(status_code = 400, detail = "esse email já está em uso")
 
@@ -76,7 +76,7 @@ async def editar_perfil(
     db.refresh(usuario)    # atualizando usuario para as mudanças já serem realizadas no banco
     
     
-    return resposta_sucesso(            # success já vem como True pela função
+    return resposta_sucesso(    # success já vem como True pela função
         f"dados do usuário atualizados com sucesso!",   
         {
             "id": usuario.id,

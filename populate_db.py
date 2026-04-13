@@ -2,6 +2,7 @@
 
 from models import CardapioTable, SessionLocal  
 
+
 # TUDO NO CARDÁPIO EM FORMATO .TITLE()
 ITENS_INICIAIS = [
     

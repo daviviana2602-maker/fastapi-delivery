@@ -69,7 +69,7 @@ async def criar_conta(
     
 
     return resposta_sucesso(            # success já vem como True pela função
-        f"usuário {create_user.nome} criado com sucesso!",   # msg
+        f"usuário {create_user.nome} criado com sucesso!",   
         {
             "id": novo_usuario.id,
         }
@@ -94,7 +94,7 @@ async def login(
     if not usuario.ativo:
         raise HTTPException(status_code=403, detail="usuário desativado") 
     
-    if not argon_context.verify(user_login.senha, usuario.senha):     # verifica se a senha está correta, mesmo estando criptografada
+    if not argon_context.verify(user_login.senha, usuario.senha):     # verifica se a senha está correta, mesmo estando criptografada por comparação de hash
         raise HTTPException(status_code=400, detail="email ou senha inválidos")     
 
 
@@ -120,7 +120,7 @@ async def use_refresh_token(
                         db: Session = Depends(get_db)
                         ):     
     
-    jwt_decodificado = verificar_token(receive_refresh_token.refresh_token, db)    # Decodificando JWT
+    jwt_decodificado = verificar_token(receive_refresh_token.refresh_token, db)    # analisando JWT
 
     usuario_id = jwt_decodificado.get("sub")    # descobrindo a quem pertence o token (decodificando o JWT e pegando usuario_id no "sub")
 

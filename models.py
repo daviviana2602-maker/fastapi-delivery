@@ -1,6 +1,6 @@
 # Relacionamento com DB
 
-from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime    # import used types
+from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime 
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.sql import func
 

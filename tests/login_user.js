@@ -9,8 +9,8 @@ fetch("http://127.0.0.1:8000/auth/login", {
   },
 
   body: JSON.stringify({    // passando no body pois vem como resposta do CreateUserSchema
-    "email": "julia@gmail.com",
-    "senha": "julia123"
+    "email": "davi@gmail.com",
+    "senha": "davi123"
   })
 
 })

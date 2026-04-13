@@ -6,12 +6,12 @@ fetch("http://127.0.0.1:8000/order/pedido/adicionar_item", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MDQ1OTI2fQ.vA2I_6YL0WNPB_Ila5ZFB88BJqToJBMQHtyLCu7t3cs"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MTA4MTUwfQ.-pNjo4wzhwto9XxoEoddWxlmgOCyKRSKmxMGN-uLjKA"
   },
 
   body: JSON.stringify({    // passando no body pois vem como resposta do AddItemSchema
-    quantidade: 1,
-    nome: "frango",
+    quantidade: 2,
+    nome: "arroz",
     tamanho: "tradicional",
     pedido_id: 1
   })

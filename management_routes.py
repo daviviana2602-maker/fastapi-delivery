@@ -27,10 +27,12 @@ async def promover_usuario(
                     admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
                     ):
     
+    
     # Procura o usuário a ser promovido
     usuario_a_promover = db.query(UserTable).filter_by(
         id=promote_user.usuario_a_sofrer_alteracao
         ).first()
+    
     
     if not usuario_a_promover.ativo:
         raise HTTPException(status_code=400, detail="usuário está desativado e não pode ser promovido")
@@ -62,19 +64,22 @@ async def rebaixar_usuario(
                     admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
                     ):
     
+    
     # Procura o usuário a ser rebaixado
     usuario_a_rebaixar = db.query(UserTable).filter_by(
         id=demote_user.usuario_a_sofrer_alteracao
         ).first()
     
+    
     if not usuario_a_rebaixar:
-        raise HTTPException(status_code=404, detail="Usuário não encontrado")   # usuário inexistente retorna erro
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")   
     
     if usuario_a_rebaixar.admin == False:
         raise HTTPException(status_code=403, detail="O usuário escolhido não é administrador")
     
     if usuario_a_rebaixar.id == admin.id:
         raise HTTPException(status_code=403, detail="Você não pode se rebaixar")    # checagem pra não deixar se rebaixar sozinho
+    
     
     usuario_a_rebaixar.admin = False
     db.commit()
@@ -101,6 +106,7 @@ async def desativar_usuario(
     usuario = db.query(UserTable).filter_by(
         id=delete_user_id.usuario_a_sofrer_alteracao
     ).first()
+    
     
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")

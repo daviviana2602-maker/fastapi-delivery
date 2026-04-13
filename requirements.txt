@@ -1,4 +1,4 @@
-# Requisitos para rodar o programa
+# Tecnologias necessárias para rodar o programa sem problemas
 
 fastapi==0.111.0
 uvicorn[standard]==0.23.2

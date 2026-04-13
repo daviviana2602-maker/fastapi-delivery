@@ -36,10 +36,10 @@ async def criar_pedido(
     db.refresh(novo_pedido)
 
     return resposta_sucesso(            # success já vem como True pela função
-        "Pedido criado com sucesso",   # msg
+        "Pedido criado com sucesso",   
         {
             "id": novo_pedido.id,
-            "status": novo_pedido.status,   # data 
+            "status": novo_pedido.status,   
             "preco": novo_pedido.preco
         }
     )
@@ -59,12 +59,15 @@ async def listar_todos_pedidos(
     if status_type not in STATUS_VALIDOS:
         raise HTTPException(status_code=400, detail="status inválido")   # verifica se o status existe no sistema
     
+    
     pedidos = db.query(OrderTable).filter_by(
         status=status_type
         ).all()
     
+    
     if not pedidos:
         raise HTTPException(status_code=404, detail="nenhum pedido encontrado")   # verifica se existem pedidos de determinado status no sistema
+
 
     return resposta_sucesso(
     "Pedidos encontrados com sucesso",
@@ -75,7 +78,7 @@ async def listar_todos_pedidos(
             "status": pedido.status,
             "preco": pedido.preco
         }
-        for pedido in pedidos   # pois pedidos é uma lista, devido ao .all() então é retornado um formato desse de data pra cada pedido
+        for pedido in pedidos   # pedidos é uma lista, devido ao .all() então é retornado um formato desse de data pra cada pedido
     ]
 )
 
@@ -97,7 +100,7 @@ async def adicionar_item_temp(
         raise HTTPException(status_code=404, detail="Pedido não encontrado")
     
     if pedido.status != "PENDENTE":
-        raise HTTPException(status_code=400, detail="Pedido não pode ser editado") # pedido já cancelado ou concluído
+        raise HTTPException(status_code=400, detail="Pedido não pode ser editado")  # pedido já cancelado ou concluído
 
 
     # checa dono ou admin para conceder permissão
@@ -112,10 +115,12 @@ async def adicionar_item_temp(
     if add_item_schema.tamanho.upper() not in TAMANHOS_VALIDOS:
         raise HTTPException(status_code=400, detail="Tamanho inválido")
     
+    
     # busca item no cardápio
     item_cardapio = db.query(CardapioTable).filter_by(
         nome=add_item_schema.nome.title()
         ).first()
+    
     
     # caso item não exista no cardápio
     if not item_cardapio:
@@ -207,7 +212,7 @@ async def concluir_pedido(
     db.commit()
 
 
-    return resposta_sucesso(            # success já vem como True pela função
+    return resposta_sucesso(    # success já vem como True pela função
         "Pedido concluído",   
         {
             "id": pedido.id,
@@ -224,13 +229,16 @@ async def cancelar_pedido(
                         usuario_id: int = Depends(usuario_logado)
                         ):
     
+    
     # pedido a ser cancelado
     pedido = db.query(OrderTable).filter_by(
         id=cancel_order.pedido_id
         ).first()
     
+    
     if not pedido:
         raise HTTPException(404, "Pedido não encontrado")
+    
     
     # checa dono ou admin
     checar_dono_ou_admin(
@@ -239,19 +247,22 @@ async def cancelar_pedido(
                         db=db
                         )
 
+
     if pedido.status != "PENDENTE":
         raise HTTPException(400, "Pedido não pode ser cancelado")
     
     pedido.status = "CANCELADO"
+
 
     # limpa itens temporários do pedido
     db.query(TempItemsTable).filter_by(
         pedido_id=pedido.id
         ).delete()
     
+    
     db.commit()
 
-    return resposta_sucesso(            # success já vem como True pela função
+    return resposta_sucesso(  # success já vem como True pela função
         "Pedido cancelado", 
         {
             "id": pedido.id
@@ -274,7 +285,7 @@ async def ajustar_item_pedido(
 
 
     if not item:
-        raise HTTPException(status_code=404, detail="Item não encontrado")  # verifica se existe o item
+        raise HTTPException(status_code=404, detail="Item não encontrado")  
 
 
     # associa o pedido temporario com o pedido já existente na OrderTable
@@ -289,12 +300,14 @@ async def ajustar_item_pedido(
     if pedido.status != "PENDENTE":
         raise HTTPException(status_code=400, detail="Pedido não pode ser editado")  # se o pedido já tiver sido finalizado
 
+
     # permissão (dono ou admin)
     checar_dono_ou_admin(
         recurso_usuario_id=pedido.usuario_id,
         usuario_id=usuario_id,
         db=db
     )
+
 
     # ajuste de quantidade
     nova_quantidade = item.quantidade + ajustar_item_schema.ajuste
@@ -358,7 +371,7 @@ async def listar_pedido_temporario(
 
 
     if not pedido_temp:
-        return resposta_sucesso(            # success já vem como True pela função
+        return resposta_sucesso(       # success já vem como True pela função
             "Carrinho vazio até o momento", 
             {
             "pedido_id": pedido_id,

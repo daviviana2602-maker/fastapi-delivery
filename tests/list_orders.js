@@ -2,12 +2,12 @@
 // node tests/nome_do_arquivo.js (use no terminal para rodar) 
 
 
-const url = "http://127.0.0.1:8000/order/listar?status_type=pendente";  // passando na url pois não vem como reposta de schema 
+const url = "http://127.0.0.1:8000/order/listar?status_type=concluido";  // passando na url pois não vem como reposta de schema 
 
 fetch(url, {
   method: "GET",
   headers: {
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MDQ1OTI2fQ.vA2I_6YL0WNPB_Ila5ZFB88BJqToJBMQHtyLCu7t3cs"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MTA4MTUwfQ.-pNjo4wzhwto9XxoEoddWxlmgOCyKRSKmxMGN-uLjKA"
   }
 })
 .then(response => {
