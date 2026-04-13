@@ -92,8 +92,8 @@ O projeto segue uma estrutura modular baseada em:
 
 ### 1. Clonar repositório
 ```bash
-git clone https://github.com/seu-usuario/delivery-api.git
-cd delivery-api
+git clone https://github.com/daviviana2602-maker/fastapi-delivery.git
+cd fastapi-delivery
 ```
 
 ### 2. Criar ambiente virtual
