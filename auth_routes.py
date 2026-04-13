@@ -22,7 +22,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 
 
-auth_router = APIRouter(prefix = "/auth", tags=["auth"])   # define o caminho = domínio/auth/(rota esolhinha)
+auth_router = APIRouter(prefix = "/auth", tags=["auth"])   # define o caminho = domínio/auth/(rota escolhida)
     
 
 

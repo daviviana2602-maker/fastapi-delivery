@@ -1,8 +1,10 @@
 # Criação de Esquemas
 
 from typing import Annotated
+
 from pydantic import BaseModel, EmailStr, Field
 
+from typing import Optional, Any
 
 
 class CreateUserSchema(BaseModel):
@@ -77,6 +79,18 @@ class AdjustItemSchema(BaseModel):
         
 class FinishOrderSchema(BaseModel):
     pedido_id: int
+    
+    # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
+    class Config:
+        from_attributes = True
+        
+        
+        
+class UpdateProfileSchema(BaseModel):
+    nome: Optional[str] = None
+    email: Optional[EmailStr] = None
+    senha: Optional[str] = None
+    senha_atual: Optional[str] = None
     
     # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
     class Config:
