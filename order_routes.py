@@ -4,46 +4,49 @@ from sqlalchemy.orm import Session
 
 from dependencies import get_db, usuario_logado, checar_admin
 
-from permissions import checar_dono_ou_admin
+from helpers import checar_dono_ou_admin, resposta_sucesso
 
 from models import OrderTable, UserTable, STATUS_VALIDOS, CardapioTable, CompletedOrderItem, TAMANHOS_VALIDOS, TempItemsTable
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from schemas import AddItemSchema, ConcludeOrderSchema, CancelOrderSchema, AdjustItemSchema
+from schemas import AddItemSchema, FinishOrderSchema, AdjustItemSchema
+
+from response_schemas import CommonResponse
+
 
 
 order_router = APIRouter(prefix = "/order", tags=["order"])   # define o caminho = domínio/order/(rota esolhinha)
 
 
 
-@order_router.get("/")   # rota de entrada (inicial)
-async def pedidos():
-    return {"msg": "você entrou na tela de pedidos"}
-
-
-
-@order_router.post("/pedido")
+@order_router.post("/pedido", response_model=CommonResponse)
 async def criar_pedido(
     db: Session = Depends(get_db),
-    usuario_id: int = Depends(usuario_logado)  # pegando id do usuário e validando se está autenticado
+    usuario_id: int = Depends(usuario_logado)
 ):
   
     # cria o pedido com base no usuário logado
     novo_pedido = OrderTable(
         usuario_id=usuario_id
-    )
-    
+    )   
     
     db.add(novo_pedido)
     db.commit()
     db.refresh(novo_pedido)
 
-    return {"msg": "pedido criado com sucesso!", "id": novo_pedido.id}
+    return resposta_sucesso(            # success já vem como True pela função
+        "Pedido criado com sucesso",   # msg
+        {
+            "id": novo_pedido.id,
+            "status": novo_pedido.status,   # data 
+            "preco": novo_pedido.preco
+        }
+    )
     
     
     
-@order_router.get("/listar")
+@order_router.get("/listar", response_model=CommonResponse)
 async def listar_todos_pedidos(
     status_type: str,
     db: Session = Depends(get_db),
@@ -63,11 +66,22 @@ async def listar_todos_pedidos(
     if not pedidos:
         raise HTTPException(status_code=404, detail="nenhum pedido encontrado")   # verifica se existem pedidos de determinado status no sistema
 
-    return pedidos
+    return resposta_sucesso(
+    "Pedidos encontrados com sucesso",
+    [
+        {
+            "id": pedido.id,
+            "usuario_id": pedido.usuario_id,
+            "status": pedido.status,
+            "preco": pedido.preco
+        }
+        for pedido in pedidos   # pois pedidos é uma lista, devido ao .all() então é retornado um formato desse de data pra cada pedido
+    ]
+)
 
 
 
-@order_router.post("/pedido/adicionar_item")
+@order_router.post("/pedido/adicionar_item", response_model=CommonResponse)
 async def adicionar_item_temp(
     add_item_schema: AddItemSchema,
     db: Session = Depends(get_db),
@@ -85,12 +99,14 @@ async def adicionar_item_temp(
     if pedido.status != "PENDENTE":
         raise HTTPException(status_code=400, detail="Pedido não pode ser editado") # pedido já cancelado ou concluído
 
+
     # checa dono ou admin para conceder permissão
     checar_dono_ou_admin(
                     recurso_usuario_id=pedido.usuario_id,
                     usuario_id=usuario_id,
                     db=db
                     )
+
 
     # valida tamanho e item
     if add_item_schema.tamanho.upper() not in TAMANHOS_VALIDOS:
@@ -121,20 +137,23 @@ async def adicionar_item_temp(
     db.commit()
     db.refresh(novo_item_temp)
 
-    return {"msg": f"{novo_item_temp.quantidade} {novo_item_temp.nome} adicionados temporariamente"}
+
+    return resposta_sucesso(            # success já vem como True pela função
+        f"{novo_item_temp.quantidade} {novo_item_temp.nome} adicionados temporariamente"   
+    )
     
     
     
-@order_router.patch("/pedido/concluir")
+@order_router.patch("/pedido/concluir", response_model=CommonResponse)
 async def concluir_pedido(
-                        conclude_order_schema: ConcludeOrderSchema,
+                        conclude_order: FinishOrderSchema,
                         db: Session = Depends(get_db),
                         usuario_id: int = Depends(usuario_logado)
                         ):
     
     
     pedido = db.query(OrderTable).filter_by(
-        id=conclude_order_schema.pedido_id
+        id=conclude_order.pedido_id
         ).first()
     
     if not pedido:
@@ -187,23 +206,27 @@ async def concluir_pedido(
     
     db.commit()
 
-    return {
-        "msg": f"Pedido com id {pedido.id} concluído",
-        "preco_total": pedido.preco
+
+    return resposta_sucesso(            # success já vem como True pela função
+        "Pedido concluído",   
+        {
+            "id": pedido.id,
+            "preco": pedido.preco
         }
+    )
     
     
     
-@order_router.patch("/pedido/cancelar")
+@order_router.patch("/pedido/cancelar", response_model=CommonResponse)
 async def cancelar_pedido(
-                        cancel_order_schema: CancelOrderSchema,
+                        cancel_order: FinishOrderSchema,
                         db: Session = Depends(get_db),
                         usuario_id: int = Depends(usuario_logado)
                         ):
     
     # pedido a ser cancelado
     pedido = db.query(OrderTable).filter_by(
-        id=cancel_order_schema.pedido_id
+        id=cancel_order.pedido_id
         ).first()
     
     if not pedido:
@@ -228,11 +251,16 @@ async def cancelar_pedido(
     
     db.commit()
 
-    return {"msg": f"Pedido com id {pedido.id} cancelado"}
+    return resposta_sucesso(            # success já vem como True pela função
+        "Pedido cancelado", 
+        {
+            "id": pedido.id
+        }
+    )
 
 
 
-@order_router.patch("/pedido/item")
+@order_router.patch("/pedido/item", response_model=CommonResponse)
 async def ajustar_item_pedido(
     ajustar_item_schema: AdjustItemSchema,
     db: Session = Depends(get_db),
@@ -274,7 +302,10 @@ async def ajustar_item_pedido(
     if nova_quantidade <= 0:    # se a nova quantidade for 0 já é automaticamente deletado
         db.delete(item)
         db.commit()
-        return {"msg": "Item removido do pedido"}
+        return resposta_sucesso(            # success já vem como True pela função
+        "Item removido do pedido" 
+        )
+
 
     item.quantidade = nova_quantidade
     item.preco_total = item.preco_unit * nova_quantidade
@@ -282,16 +313,20 @@ async def ajustar_item_pedido(
     db.commit()
     db.refresh(item)
 
-    return {
-        "msg": "Item atualizado com sucesso",
+
+    return resposta_sucesso(            # success já vem como True pela função
+        "Item atualizado com sucesso", 
+        {
         "item_id": item.id,
+        "nome": item.nome,
         "quantidade": item.quantidade,
         "preco_total": item.preco_total
-    }
+        }
+    )
     
     
     
-@order_router.get("/pedido/item/listar_pedido_temp")
+@order_router.get("/pedido/item/listar_pedido_temp", response_model=CommonResponse)
 async def listar_pedido_temporario(
     pedido_id: int,
     db: Session = Depends(get_db),
@@ -316,25 +351,43 @@ async def listar_pedido_temporario(
                         )
     
     
+    # lista dos itens de determinado id presentes na tabela temporários que basicamente forma um pedido completo
     pedido_temp = db.query(TempItemsTable).filter_by(
         pedido_id=pedido_id
     ).all()
 
 
     if not pedido_temp:
-        return {
+        return resposta_sucesso(            # success já vem como True pela função
+            "Carrinho vazio até o momento", 
+            {
             "pedido_id": pedido_id,
             "status": pedido.status,
-            "itens": [],    # retornando que o carrinhon está vazio
+            "itens": [],    # retornando que o carrinho está vazio
             "total": 0
-                }
+            }
+        )
+        
+
+    total = sum(p.preco_total for p in pedido_temp)     # para cada item no pedido temporário some o item.preco_total na váriavel total para a resposta
 
 
-    total = sum(p.preco_total for p in pedido_temp) # para cada item no pedido temporário some o item.preco_total na várivael total
-
-    return {
+    return resposta_sucesso(    # success já vem como True pela função
+    "Itens temporários listados com sucesso", 
+    {
         "pedido_id": pedido_id,
         "status": pedido.status,
-        "itens": pedido_temp,
+        "itens": [      # colunas necessárias da TempItensTable
+            {
+                "id": item.id,
+                "quantidade": item.quantidade,
+                "nome": item.nome,
+                "tamanho": item.tamanho,
+                "preco_unit": item.preco_unit,
+                "preco_total": item.preco_total
+            }
+            for item in pedido_temp    # pois pedido_temp é uma lista devido ao .all
+        ],
         "total": total 
     }
+)

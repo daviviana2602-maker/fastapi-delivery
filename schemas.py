@@ -5,7 +5,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 
 
-class UserSchema(BaseModel):
+class CreateUserSchema(BaseModel):
     nome: str
     email: EmailStr
     senha: str
@@ -44,17 +44,8 @@ class TokenSchema(BaseModel):
         
         
         
-class PromoteUserSchema(BaseModel):
-    usuario_a_promover_id: int   
-    
-    # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
-    class Config:
-        from_attributes = True
-        
-        
-        
-class DemoteUserSchema(BaseModel):
-    usuario_a_rebaixar_id: int   
+class AlterationUserSchema(BaseModel):
+    usuario_a_sofrer_alteracao: int   
     
     # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
     class Config:
@@ -84,16 +75,7 @@ class AdjustItemSchema(BaseModel):
         
         
         
-class ConcludeOrderSchema(BaseModel):
-    pedido_id: int
-    
-    # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy
-    class Config:
-        from_attributes = True
-        
-        
-
-class CancelOrderSchema(BaseModel):
+class FinishOrderSchema(BaseModel):
     pedido_id: int
     
     # Faz não ser transformado em um dicionário Python comum, assim sendo melhor interpretado pelo SQLAlchemy

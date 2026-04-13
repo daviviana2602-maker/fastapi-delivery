@@ -8,7 +8,7 @@ const url = "http://127.0.0.1:8000/auth/refresh";
 // corpo da requisição conforme meu TokenSchema pede
 // refresh_token não precisa do Bearer, pois não depende da função usuario_logado
 const data = {
-    refresh_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZXhwIjoxNzc2MzA5Mzc3fQ.sQ-JrtNdu2UQFrVAMsnqEsACDXLMcK2c8AOVAuKL_8Q"
+    refresh_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2NjQ4NzE3fQ.D0PUKj5E9hzOWKL4y0cETTUzzGBLH87YwqfmbD6VTEA"
 };
 
 

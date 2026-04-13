@@ -1,4 +1,4 @@
-# Função para checar se um usuário é dono de tal recurso ou se é admin
+# Funções de apoio
 
 from fastapi import HTTPException, Depends
 
@@ -27,3 +27,16 @@ def checar_dono_ou_admin(
         raise HTTPException(status_code=403, detail="Você não tem permissão")   # se não for o dono do recurso e nem adm
 
     return True
+
+
+# deixa modelos de resposta mais práticos
+def resposta_sucesso(msg: str, data=None):
+    response = {
+        "success": True,
+        "msg": msg
+    }
+
+    if data is not None:
+        response["data"] = data    # se data não for vazio é inserido no response
+
+    return response

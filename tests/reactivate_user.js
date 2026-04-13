@@ -2,17 +2,18 @@
 // node tests/nome_do_arquivo.js (use no terminal para rodar) 
 
 
-const url = "http://127.0.0.1:8000/management/reativar_usuario?user_id=3";  // passando na url pois não vem como resposta de schema
-
-fetch(url, {
+fetch("http://127.0.0.1:8000/management/reativar_usuario", {
   method: "PATCH",
   headers: {
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzc1NzA1NDk3fQ.dvvnvEVTa4tpkS6WQ-07bGmoytiKgDXB_n8izHa3NMo"
-  }
+    "Content-Type": "application/json",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MDQ2NzY5fQ.YLKgLHxnmMm0D7slrCZFVj3har4T8s9G9u-yOtSKk5s"
+  },
+
+  body: JSON.stringify({
+    usuario_a_sofrer_alteracao: 2    // passando no body pois vem como resposta do AlterationUserSchema
+  })
+
 })
-.then(response => {
-  console.log(response.status);
-  return response.json();
-})
+.then(res => res.json())
 .then(data => console.log(data))
 .catch(err => console.error(err));

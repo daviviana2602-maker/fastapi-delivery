@@ -7,7 +7,7 @@ const url = "http://127.0.0.1:8000/order/listar?status_type=pendente";  // passa
 fetch(url, {
   method: "GET",
   headers: {
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzc1NzA1NDk3fQ.dvvnvEVTa4tpkS6WQ-07bGmoytiKgDXB_n8izHa3NMo"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MDQ1OTI2fQ.vA2I_6YL0WNPB_Ila5ZFB88BJqToJBMQHtyLCu7t3cs"
   }
 })
 .then(response => {

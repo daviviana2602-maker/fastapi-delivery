@@ -7,7 +7,7 @@ const url = "http://127.0.0.1:8000/order/pedido/item/listar_pedido_temp?pedido_i
 fetch(url, {
   method: "GET",
   headers: {
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc1ODQ4ODY5fQ.krOn4EO6qozWN0yTNFDPqnbxzrlrBED3KJlqLgeNtYM"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MDQ1OTI2fQ.vA2I_6YL0WNPB_Ila5ZFB88BJqToJBMQHtyLCu7t3cs"
   }
 })
 .then(response => {

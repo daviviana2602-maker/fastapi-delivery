@@ -8,23 +8,28 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from models import UserTable
 
-from schemas import PromoteUserSchema, DemoteUserSchema
+from schemas import AlterationUserSchema
+
+from response_schemas import CommonResponse
+
+from helpers import resposta_sucesso
+
 
 
 management_router = APIRouter(prefix = "/management", tags=["management"])   # define o caminho = domínio/management/(rota esolhinha)
 
 
 
-@management_router.post("/promover_usuario")
+@management_router.patch("/promover_usuario", response_model=CommonResponse)
 async def promover_usuario(
-                    promote_user_schema: PromoteUserSchema,
+                    promote_user: AlterationUserSchema,
                     db: Session = Depends(get_db),
                     admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
                     ):
     
     # Procura o usuário a ser promovido
     usuario_a_promover = db.query(UserTable).filter_by(
-        id=promote_user_schema.usuario_a_promover_id
+        id=promote_user.usuario_a_sofrer_alteracao
         ).first()
     
     if not usuario_a_promover.ativo:
@@ -40,23 +45,26 @@ async def promover_usuario(
     db.commit()
     db.refresh(usuario_a_promover)
     
-    return {
-            "msg": f"Usuário {usuario_a_promover.nome} agora é admin",
-            "usuario_id": usuario_a_promover.id
-            }
+    
+    return resposta_sucesso(            # success já vem como True pela função
+        f"Usuário {usuario_a_promover.nome} agora é admin",    
+        {
+            "id": usuario_a_promover.id,
+        }
+    )
         
         
         
-@management_router.post("/rebaixar_usuario")
+@management_router.patch("/rebaixar_usuario", response_model=CommonResponse)
 async def rebaixar_usuario(
-                    demote_user_schema: DemoteUserSchema,
+                    demote_user: AlterationUserSchema,
                     db: Session = Depends(get_db),
                     admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
                     ):
     
     # Procura o usuário a ser rebaixado
     usuario_a_rebaixar = db.query(UserTable).filter_by(
-        id=demote_user_schema.usuario_a_rebaixar_id
+        id=demote_user.usuario_a_sofrer_alteracao
         ).first()
     
     if not usuario_a_rebaixar:
@@ -72,23 +80,26 @@ async def rebaixar_usuario(
     db.commit()
     db.refresh(usuario_a_rebaixar)
     
-    return {
-            "msg": f"Usuário {usuario_a_rebaixar.nome} agora não é mais admin",
-            "usuario_id": usuario_a_rebaixar.id
-            }    
+    
+    return resposta_sucesso(            # success já vem como True pela função
+        f"Usuário {usuario_a_rebaixar.nome} agora não é mais admin",    
+        {
+            "id": usuario_a_rebaixar.id,
+        }
+    )
+   
     
     
-    
-@management_router.patch("/desativar_usuario")
+@management_router.patch("/desativar_usuario", response_model=CommonResponse)
 async def desativar_usuario(
-    delete_user_id: int,
+    delete_user_id: AlterationUserSchema,
     db: Session = Depends(get_db),
     admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
 ):
     
     # Procura o usuário a ser desativado
     usuario = db.query(UserTable).filter_by(
-        id=delete_user_id
+        id=delete_user_id.usuario_a_sofrer_alteracao
     ).first()
     
     if not usuario:
@@ -106,23 +117,26 @@ async def desativar_usuario(
     db.commit()
     db.refresh(usuario)
     
-    return {
-        "msg": f"Usuário {usuario.nome} foi desativado",
-        "usuario_id": usuario.id
-    }
+    
+    return resposta_sucesso(            # success já vem como True pela função
+        f"Usuário {usuario.nome} foi desativado",    
+        {
+            "id": usuario.id,
+        }
+    )
+   
     
     
-    
-@management_router.patch("/reativar_usuario")
+@management_router.patch("/reativar_usuario", response_model=CommonResponse)
 async def reativar_usuario(
-    user_id: int,
+    reactive_user_id: AlterationUserSchema,
     db: Session = Depends(get_db),
     admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
 ):
     
     # Procura o usuário a ser reativado
     usuario = db.query(UserTable).filter_by(
-        id=user_id
+        id=reactive_user_id.usuario_a_sofrer_alteracao
         ).first()
     
     if not usuario:
@@ -136,7 +150,10 @@ async def reativar_usuario(
     db.commit()
     db.refresh(usuario)
     
-    return {
-        "msg": f"Usuário {usuario.nome} foi reativado",
-        "usuario_id": usuario.id
-    }
+    
+    return resposta_sucesso(            # success já vem como True pela função
+        f"Usuário {usuario.nome} foi reativado",    
+        {
+            "id": usuario.id,
+        }
+    )
