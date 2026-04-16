@@ -4,11 +4,6 @@ from contextlib import asynccontextmanager
 
 from populate_db import popular_cardapio
 
-import models
-
-
-models.Base.metadata.create_all(bind=models.engine)    # criando as tabelas no db
-
 
 # rodando a função de popular cardápio (quando o sistema inicia)
 @asynccontextmanager
@@ -23,7 +18,7 @@ app = FastAPI(lifespan=lifespan) # python -m uvicorn main:app --reload para inic
 
 from auth_routes import auth_router     # importando rotas de autenticação
 from order_routes import order_router   # importando rotas de pedidos
-from management_routes import management_router     # importando rotas de administração
+from management_routes import management_router   # importando rotas de administração
 from profile_routes import profile_router   # importando rotas de perfil
 
 

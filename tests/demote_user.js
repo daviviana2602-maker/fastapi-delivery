@@ -6,7 +6,7 @@ fetch("http://127.0.0.1:8000/management/rebaixar_usuario", {
   method: "PATCH",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MTA4MTUwfQ.-pNjo4wzhwto9XxoEoddWxlmgOCyKRSKmxMGN-uLjKA"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MTIyMTgxfQ.BROUQud4EkEvHFgUFS1vGIxwwhWkzoieF1WsMUWPIKQ"
   },
 
   body: JSON.stringify({

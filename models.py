@@ -1,12 +1,15 @@
 # Relacionamento com DB
 
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime 
+
 from sqlalchemy.orm import declarative_base, sessionmaker
+
 from sqlalchemy.sql import func
 
 from config import DATABASE_URL
 
-engine = create_engine(DATABASE_URL)   # connect with the database
+
+engine = create_engine(DATABASE_URL)   
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 

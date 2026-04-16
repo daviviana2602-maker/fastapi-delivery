@@ -1,0 +1,30 @@
+---------- Iniciar o app ----------
+
+python -m uvicorn main:app --reload
+
+
+---------- ALEMBIC ----------
+
+# inicia o Alembic (cria estrutura de migrations - rodar só uma vez)
+python -m alembic init alembic
+
+
+# cria uma migration baseada nas mudanças nos models
+python -m alembic revision --autogenerate -m "mensagem"
+
+
+# aplica as migrations no banco e já entra na versão mais recente
+python -m alembic upgrade head
+
+
+# voltar/mudar para determinada versão do banco (usando versão de exemplo)
+python -m alembic downgrade d9cba3582855
+
+
+# resetar banco (DEV apenas - apaga tudo e recria)
+python -m alembic downgrade base
+python -m alembic upgrade head
+
+
+- alembic/versions = histórico completo
+- tabela alembic_version no db = “estado atual do banco”

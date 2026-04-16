@@ -65,6 +65,36 @@ O projeto segue uma estrutura modular baseada em:
 
 ---
 
+## 🗄️ Controle de Migrações (Alembic)
+
+O projeto utiliza **Alembic** para versionamento do banco de dados PostgreSQL.
+
+Isso permite evoluir o schema do banco de forma segura, sem precisar apagar tabelas manualmente durante o desenvolvimento.
+
+---
+
+### ⚙️ Fluxo básico de uso
+
+```bash
+# inicia o Alembic (apenas uma vez no projeto)
+python -m alembic init alembic
+
+# cria uma migration baseada nas mudanças dos models
+python -m alembic revision --autogenerate -m "mensagem da mudança"
+
+# aplica as migrations no banco (leva até a versão mais recente)
+python -m alembic upgrade head
+
+# voltar para uma versão anterior (rollback)
+python -m alembic downgrade <revision_id>
+
+# reset completo do banco (APENAS DEV)
+python -m alembic downgrade base
+python -m alembic upgrade head
+```
+
+---
+
 ## 📁 Estrutura
 
 ```
