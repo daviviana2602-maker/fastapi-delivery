@@ -17,6 +17,8 @@ Projeto criado como forma de estudo prático de backend moderno, arquitetura de 
 - Pydantic
 - Uvicorn
 - Dotenv
+- Alembic
+- Docker
 
 ---
 
@@ -69,33 +71,33 @@ O projeto segue uma estrutura modular baseada em:
 
 O projeto utiliza **Alembic** para versionamento do banco de dados PostgreSQL.
 
-Isso permite evoluir o schema do banco de forma segura, sem precisar apagar tabelas manualmente durante o desenvolvimento.
+Isso permite evoluir o schema do banco de forma segura durante o desenvolvimento, sem precisar apagar tabelas manualmente.
 
 ---
 
 ### ⚙️ Fluxo básico de uso
 
 ```bash
-# inicia o Alembic (apenas uma vez no projeto)
+# inicializa alembic (uma vez)
 python -m alembic init alembic
 
-# cria uma migration baseada nas mudanças dos models
-python -m alembic revision --autogenerate -m "mensagem da mudança"
+# cria migration automática
+python -m alembic revision --autogenerate -m "mensagem"
 
-# aplica as migrations no banco (leva até a versão mais recente)
+# aplica migrations
 python -m alembic upgrade head
 
-# voltar para uma versão anterior (rollback)
+# rollback
 python -m alembic downgrade <revision_id>
 
-# reset completo do banco (APENAS DEV)
+# reset completo (DEV apenas)
 python -m alembic downgrade base
 python -m alembic upgrade head
 ```
 
 ---
 
-## 📁 Estrutura
+## 📁 Estrutura do projeto
 
 ```
 .
@@ -113,7 +115,7 @@ python -m alembic upgrade head
 ├── config.py
 ├── populate_db.py
 ├── main.py
-└── tests/ (requests em JS)
+└── tests/
 ```
 
 ---
@@ -142,14 +144,24 @@ pip install -r requirements.txt
 
 Crie um arquivo `.env`:
 
-```
-DATABASE_URL=sua_url_do_postgres
+```env
+DATABASE_URL=postgresql+psycopg2://postgres:senha@db:5432/delivery_db
 SECRET_KEY=sua_chave_secreta
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 ```
 
-### 5. Rodar servidor
+---
+
+### 5. Rodar com Docker (recomendado)
+
+```bash
+docker compose up --build
+```
+
+---
+
+### 6. Rodar local (sem Docker)
 
 ```bash
 uvicorn main:app --reload
@@ -159,19 +171,18 @@ uvicorn main:app --reload
 
 ## 📌 Observações
 
-- O primeiro usuário criado automaticamente vira **admin**
-- O sistema já inicia com cardápio populado automaticamente
-- Todas as rotas são testáveis via Swagger:
-
+- O primeiro usuário criado vira **admin automaticamente**
+- Cardápio é populado automaticamente ao iniciar
+- API disponível em:
 ```
-http://127.0.0.1:8000/docs
+http://127.0.0.1:8000/docs    (Swagger UI)
 ```
 
 ---
 
 ## 🧪 Testes
 
-O projeto inclui arquivos de teste em JavaScript usando `fetch` para simular requisições de frontend.
+O projeto inclui testes em JavaScript usando `fetch` para simular requisições de frontend.
 
 ---
 
@@ -179,25 +190,26 @@ O projeto inclui arquivos de teste em JavaScript usando `fetch` para simular req
 
 Este projeto foi desenvolvido com foco em:
 
-- Prática real de backend
-- Estruturação de APIs profissionais
-- Autenticação segura com JWT
-- Controle de permissões
-- Organização de código escalável
+- prática real de backend
+- arquitetura de APIs profissionais
+- autenticação JWT
+- controle de permissões
+- estrutura escalável
 
 ---
 
 ## 👨‍💻 Autor
 
-Desenvolvido por **Davi**  
-Estudando backend com foco em Python, APIs e sistemas escaláveis.
+**Davi**
+
+Backend developer em evolução — Python, APIs, sistemas escaláveis.
 
 ---
 
 ## 📌 Status
 
 ✔️ Projeto funcional  
-✔️ APIs testadas via Swagger e scripts JS  
-✔️ Banco integrado com PostgreSQL  
-✔️ Segurança com JWT + hashing  
-```
+✔️ API testada via Swagger e JS  
+✔️ Banco PostgreSQL integrado  
+✔️ Docker funcionando  
+✔️ Autenticação completa

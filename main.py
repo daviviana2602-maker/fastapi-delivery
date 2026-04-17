@@ -13,7 +13,7 @@ async def lifespan(app: FastAPI):
     # DEPOIS do yield → SHUTDOWN (roda quando o sistema é finalizado)
     
 
-app = FastAPI(lifespan=lifespan) # python -m uvicorn main:app --reload para iniciar
+app = FastAPI(lifespan=lifespan) # python -m uvicorn main:app --reload para iniciar LOCALMENTE
 
 
 from auth_routes import auth_router     # importando rotas de autenticação
