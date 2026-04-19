@@ -403,4 +403,4 @@ async def listar_pedido_temporario(
         ],
         "total": total 
     }
-)
+    )

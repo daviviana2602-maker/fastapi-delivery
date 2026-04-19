@@ -6,13 +6,13 @@ fetch("http://127.0.0.1:8000/order/pedido/adicionar_item", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2Mzk1NTAwfQ.pwIeIz84kQ5cqREgrRN8Fw9s_qcVi_uo5lstfUwlksg"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2NjM4NjQxfQ.5TlJD6LhXb5qmUCBpgZNxdnJ_D4xyYVNN2wtUZKtTKA"
   },
 
   body: JSON.stringify({    // passando no body pois vem como resposta do AddItemSchema
-    quantidade: 2,
-    nome: "estrogonofe",
-    tamanho: "tradicional",
+    quantidade: 3,
+    nome: "Purê",
+    tamanho: "grande",
     pedido_id: 1
   })
 

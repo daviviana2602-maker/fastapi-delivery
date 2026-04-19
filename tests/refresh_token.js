@@ -9,7 +9,7 @@ fetch("http://127.0.0.1:8000/auth/refresh", {
   },
 
   body: JSON.stringify({    // passando no body pois vem como resposta do TokenSchema
-    refresh_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2NzI2NzYxfQ.qeLgJEZ1OYhL8jsuaMlAjdigXJ_F96JXXVYHh3Be-H4"   
+    refresh_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc3MjM4MDczfQ.wcry9567jHIA_YBFxcjkuRYNmszWT0Yh1WmE8tRGYw8"   
   })
 
 })
