@@ -162,7 +162,7 @@ async def concluir_pedido(
         ).first()
     
     if not pedido:
-        raise HTTPException(404, "Pedido não encontrado")
+        raise HTTPException(status_code=404, detail="Pedido não encontrado")
     
     # checa dono ou admin
     checar_dono_ou_admin(
@@ -172,7 +172,7 @@ async def concluir_pedido(
                         )
 
     if pedido.status != "PENDENTE":
-        raise HTTPException(400, "Pedido não pode ser concluído")
+        raise HTTPException(status_code=400, detail="Pedido não pode ser concluído")
     
 
     # # pega itens temporários do usuário em questão pelo pedido_id passado no schema
@@ -237,7 +237,7 @@ async def cancelar_pedido(
     
     
     if not pedido:
-        raise HTTPException(404, "Pedido não encontrado")
+        raise HTTPException(status_code=404, detail="Pedido não encontrado")
     
     
     # checa dono ou admin
@@ -249,7 +249,7 @@ async def cancelar_pedido(
 
 
     if pedido.status != "PENDENTE":
-        raise HTTPException(400, "Pedido não pode ser cancelado")
+        raise HTTPException(status_code=400, detail="Pedido não pode ser cancelado")
     
     pedido.status = "CANCELADO"
 

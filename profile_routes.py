@@ -34,7 +34,7 @@ async def editar_perfil(
 
 
     if not usuario:
-        raise HTTPException(404, "usuário não encontrado")
+        raise HTTPException(status_code = 404, detail = "usuário não encontrado")
 
 
     # pede senha para dados de segurança
