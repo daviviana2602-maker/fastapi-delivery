@@ -16,10 +16,11 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan) # python -m uvicorn main:app --reload para iniciar LOCALMENTE
 
 
-from auth_routes import auth_router     # importando rotas de autenticação
-from order_routes import order_router   # importando rotas de pedidos
-from management_routes import management_router   # importando rotas de administração
-from profile_routes import profile_router   # importando rotas de perfil
+# Importando as rotas da pasta routes
+from routes.auth_routes import auth_router     
+from routes.order_routes import order_router   
+from routes.management_routes import management_router   
+from routes.profile_routes import profile_router   
 
 
 # inserindo as rotas no app
