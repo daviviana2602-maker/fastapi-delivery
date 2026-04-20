@@ -1,8 +1,8 @@
-"""initial
+"""initial_migration
 
-Revision ID: d9cba3582855
+Revision ID: 8ecf1a7104b6
 Revises: 
-Create Date: 2026-04-15 22:13:42.645511
+Create Date: 2026-04-20 18:45:15.001395
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'd9cba3582855'
+revision: str = '8ecf1a7104b6'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -39,6 +39,14 @@ def upgrade() -> None:
     sa.Column('criado_em', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
+    )
+    op.create_table('usuarios_excluidos',
+    sa.Column('id_utilizado', sa.Integer(), autoincrement=False, nullable=False),
+    sa.Column('nome', sa.String(), nullable=False),
+    sa.Column('email', sa.String(), nullable=False),
+    sa.Column('senha_hash', sa.String(), nullable=False),
+    sa.Column('excluido_em', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.PrimaryKeyConstraint('id_utilizado')
     )
     op.create_table('pedidos',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -80,6 +88,7 @@ def downgrade() -> None:
     op.drop_table('temporarios')
     op.drop_table('itens_concluidos')
     op.drop_table('pedidos')
+    op.drop_table('usuarios_excluidos')
     op.drop_table('usuarios')
     op.drop_table('cardapio')
     # ### end Alembic commands ###

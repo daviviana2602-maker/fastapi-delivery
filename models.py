@@ -76,5 +76,5 @@ class ExcludedUserTable(Base):
     id_utilizado = Column(Integer, primary_key=True, autoincrement=False)   # sem autoincrement pois vamos utilizar o id vindo da tabela usuarios
     nome = Column(String, nullable=False)
     email = Column(String, nullable=False)
-    senha = Column(String, nullable=False)
+    senha_hash = Column(String, nullable=False)
     excluido_em = Column(DateTime(timezone=True), server_default=func.now())  # garante que o banco já coloque o horário correto quando deletar o usuário

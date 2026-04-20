@@ -107,7 +107,7 @@ async def excluir_usuario(
         id_utilizado = usuario.id,
         nome = usuario.nome,
         email = usuario.email,
-        senha = usuario.senha,
+        senha_hash = usuario.senha,
     )  
     
     
