@@ -4,13 +4,13 @@ from sqlalchemy.orm import Session
 
 from dependencies import get_db, usuario_logado
 
-from models import UserTable
+from models import UserTable, ExcludedUserTable
 
 from schemas import UpdateProfileSchema
 
 from response_schemas import CommonResponse
 
-from helpers import resposta_sucesso
+from helpers import resposta_sucesso, checar_dono_ou_admin
 
 from security import argon_context
 
@@ -84,3 +84,43 @@ async def editar_perfil(
             "email": usuario.email
         }
     )
+    
+    
+   
+@profile_router.delete("/excluir_conta", response_model=CommonResponse)
+async def excluir_usuario(
+                    db: Session = Depends(get_db),
+                    usuario_id: int = Depends(usuario_logado)
+                    ):
+    
+    
+    # pedido a ser cancelado
+    usuario = db.query(UserTable).filter_by(
+        id=usuario_id
+        ).first()
+    
+    
+    if not usuario:
+        raise HTTPException(status_code=404, detail="usuario não encontrado")
+    
+    usuario_excluido = ExcludedUserTable(
+        id_utilizado = usuario.id,
+        nome = usuario.nome,
+        email = usuario.email,
+        senha = usuario.senha,
+    )  
+    
+    
+    db.add(usuario_excluido)    # Inserindo o usuário na tabela de usuários excluídos para manter histórico
+    db.delete(usuario)    # deletando usuário da tabela de usuários
+    
+    db.commit()
+
+
+    return resposta_sucesso(  # success já vem como True pela função
+        "usuario excluído com sucesso", 
+        {
+            "id": usuario.id,
+            "nome": usuario.nome
+        }
+    ) 

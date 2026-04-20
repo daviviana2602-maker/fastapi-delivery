@@ -68,4 +68,13 @@ class TempItemsTable(Base):
     tamanho = Column(String, nullable=False)
     preco_unit = Column(Float, nullable=False)
     preco_total = Column(Float, nullable=False)
-    pedido_id = Column(Integer, ForeignKey("pedidos.id"), nullable=False)      
+    pedido_id = Column(Integer, ForeignKey("pedidos.id"), nullable=False)     
+    
+    
+class ExcludedUserTable(Base):   
+    __tablename__ = "usuarios_excluidos"   # criando tabela usuarios excluidos
+    id_utilizado = Column(Integer, primary_key=True, autoincrement=False)   # sem autoincrement pois vamos utilizar o id vindo da tabela usuarios
+    nome = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    senha = Column(String, nullable=False)
+    excluido_em = Column(DateTime(timezone=True), server_default=func.now())  # garante que o banco já coloque o horário correto quando deletar o usuário
