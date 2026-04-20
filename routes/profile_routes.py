@@ -89,11 +89,11 @@ async def editar_perfil(
    
 @profile_router.delete("/excluir_conta", response_model=CommonResponse)
 async def excluir_usuario(
+                    senha_atual: str,
                     db: Session = Depends(get_db),
                     usuario_id: int = Depends(usuario_logado)
                     ):
-    
-    
+
     # pedido a ser cancelado
     usuario = db.query(UserTable).filter_by(
         id=usuario_id
@@ -102,6 +102,14 @@ async def excluir_usuario(
     
     if not usuario:
         raise HTTPException(status_code=404, detail="usuario não encontrado")
+    
+    
+    if not senha_atual:
+        raise HTTPException(status_code = 400, detail = "senha atual é obrigatória para exclusão de conta")
+    
+    
+    if not argon_context.verify(senha_atual, usuario.senha):    # verifica se a senha está correta, mesmo estando criptografada por comparação de hash
+            raise HTTPException(status_code = 400, detail = "senha atual inválida")
     
     
     # verifica se o usuário que quer excluir a conta tem algum pedido pendente
