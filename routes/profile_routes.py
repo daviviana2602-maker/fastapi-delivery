@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from dependencies import get_db, usuario_logado
 
-from models import UserTable, ExcludedUserTable
+from models import UserTable, ExcludedUserTable, OrderTable
 
 from schemas import UpdateProfileSchema
 
@@ -103,6 +103,19 @@ async def excluir_usuario(
     if not usuario:
         raise HTTPException(status_code=404, detail="usuario não encontrado")
     
+    
+    # verifica se o usuário que quer excluir a conta tem algum pedido pendente
+    pedido_ativo = db.query(OrderTable).filter(     
+                OrderTable.usuario_id == usuario_id,
+                OrderTable.status == "PENDENTE"
+                ).first()
+
+
+    # Caso tenha
+    if pedido_ativo:
+        raise HTTPException(status_code=400, detail="Finalize ou cancele pedidos antes de excluir a conta.")
+        
+        
     usuario_excluido = ExcludedUserTable(
         id_utilizado = usuario.id,
         nome = usuario.nome,

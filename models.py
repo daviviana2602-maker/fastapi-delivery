@@ -32,7 +32,7 @@ class OrderTable(Base):
     __tablename__ = "pedidos"   # criando tabela pedidos
     id = Column(Integer, primary_key=True)
     status = Column(String, nullable=False, default="PENDENTE")     # PENDENTE, CANCELADO, CONCLUIDO
-    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    usuario_id = Column(Integer, nullable=False)
     preco = Column(Float, nullable=False, default=0)
     criado_em = Column(DateTime(timezone=True), server_default=func.now())   # garante que o banco já coloque o horário correto quando criar algum registro
     
