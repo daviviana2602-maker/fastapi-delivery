@@ -72,8 +72,12 @@ async def editar_perfil(
         usuario.senha = argon_context.hash(update_user.senha)   # criptografando a nova senha
 
 
-    db.commit()
-    db.refresh(usuario)    # atualizando usuario para as mudanças já serem realizadas no banco
+    try:
+        db.commit()
+        db.refresh(usuario)    # atualizando usuario para as mudanças já serem realizadas no banco
+    except Exception:
+        db.rollback()
+        raise
     
     
     return resposta_sucesso(    # success já vem como True pela função
@@ -132,10 +136,13 @@ async def excluir_usuario(
     )  
     
     
-    db.add(usuario_excluido)    # Inserindo o usuário na tabela de usuários excluídos para manter histórico
-    db.delete(usuario)    # deletando usuário da tabela de usuários
-    
-    db.commit()
+    try:
+        db.add(usuario_excluido)    # Inserindo o usuário na tabela de usuários excluídos para manter histórico
+        db.delete(usuario)    # deletando usuário da tabela de usuários
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
 
 
     return resposta_sucesso(  # success já vem como True pela função
