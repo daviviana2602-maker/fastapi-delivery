@@ -6,11 +6,11 @@ fetch("http://127.0.0.1:8000/management/desativar_usuario", {
   method: "PATCH",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2MTIyMTgxfQ.BROUQud4EkEvHFgUFS1vGIxwwhWkzoieF1WsMUWPIKQ"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc3MDc1MDQwfQ.aJjqdadRRzR-2YlqCkhd65oZQC3wPPCTkEMZQ5JuPoQ"
   },
 
   body: JSON.stringify({
-    usuario_a_sofrer_alteracao: 2    // passando no body pois vem como resposta do AlterationUserSchema
+    usuario_a_sofrer_alteracao: 4    // passando no body pois vem como resposta do AlterationUserSchema
   })
 
 })

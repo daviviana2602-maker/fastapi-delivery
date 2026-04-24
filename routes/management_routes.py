@@ -1,6 +1,6 @@
 # Rotas para administração do app
 
-from services.management_services import promover_usuarios_services, rebaixar_usuario_services, reativar_usuario_services, desativar_usuario_services
+from services.management_services import promover_usuario_services, rebaixar_usuario_services, reativar_usuario_services, desativar_usuario_services
 
 from sqlalchemy.orm import Session
 
@@ -26,7 +26,7 @@ def promover_usuario(
         admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
         ):
     
-    return promover_usuarios_services(promote_user, db, admin)
+    return promover_usuario_services(promote_user, db, admin)
         
         
         

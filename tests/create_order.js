@@ -6,7 +6,7 @@ fetch("http://127.0.0.1:8000/order/pedido", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzc2NzEyODg4fQ.FazqnHhJ6wGXHYsKWphuvO56qqEwi74EwV9eHGz450E"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0IiwiZXhwIjoxNzc3MDc0NjMxfQ.qNHCDNaiRFWbkebnWwbwr21EVj8U8mizmFiyg-aoAP8"
   }
   
 })

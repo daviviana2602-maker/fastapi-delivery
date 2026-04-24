@@ -7,7 +7,7 @@ const url = "http://127.0.0.1:8000/order/listar?status_type=concluido";  // pass
 fetch(url, {
   method: "GET",
   headers: {
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc2NjM2NTUyfQ.9n0-5lUxnTPrNJCnQJyZowb7eUCIGApRakXds3Io2iM"
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc3MDc1MDQwfQ.aJjqdadRRzR-2YlqCkhd65oZQC3wPPCTkEMZQ5JuPoQ"
   }
 })
 .then(response => {
