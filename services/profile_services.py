@@ -16,7 +16,7 @@ from fastapi import HTTPException
 
 
 
-def editar_perfil(
+def editar_perfil_services(
                     update_user: UpdateProfileSchema,
                     usuario_id: int,
                     db: Session
@@ -87,7 +87,7 @@ def editar_perfil(
     
     
    
-def excluir_usuario(
+def excluir_usuario_services(
                     senha_atual: str,
                     db: Session,
                     usuario_id: int

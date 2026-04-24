@@ -14,7 +14,7 @@ from schemas import AddItemSchema, FinishOrderSchema, AdjustItemSchema
 
 
 
-def criar_pedido(
+def criar_pedido_services(
     db: Session,
     usuario_id: int
 ):
@@ -45,7 +45,7 @@ def criar_pedido(
     
     
     
-def listar_todos_pedidos(
+def listar_todos_pedidos_services(
     status_type: str,
     db: Session,
     admin: UserTable    # verifica se o usuario é um adm (função somente para adms)
@@ -82,7 +82,7 @@ def listar_todos_pedidos(
 
 
 
-def adicionar_item_temp(
+def adicionar_item_temp_services(
     add_item_schema: AddItemSchema,
     db: Session = Depends(get_db),
     usuario_id: int = Depends(usuario_logado)
@@ -150,7 +150,7 @@ def adicionar_item_temp(
     
     
     
-def concluir_pedido(
+def concluir_pedido_services(
     conclude_order: FinishOrderSchema,
     db: Session,
     usuario_id: int
@@ -229,7 +229,7 @@ def concluir_pedido(
     
     
     
-def cancelar_pedido(
+def cancelar_pedido_services(
     cancel_order: FinishOrderSchema,
     db: Session,
     usuario_id: int
@@ -281,7 +281,7 @@ def cancelar_pedido(
 
 
 
-def ajustar_item_pedido(
+def ajustar_item_pedido_services(
     ajustar_item_schema: AdjustItemSchema,
     db: Session,
     usuario_id: int
@@ -352,7 +352,7 @@ def ajustar_item_pedido(
     
     
     
-def listar_pedido_temporario(
+def listar_pedido_temporario_services(
     pedido_id: int,
     db: Session,
     usuario_id: int

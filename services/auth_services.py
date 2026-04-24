@@ -18,10 +18,11 @@ from fastapi import HTTPException
 
 
 
-def criar_conta(
+def criar_conta_services(
         create_user: CreateUserSchema,
         db: Session
         ):
+    
     
     # checa se usuário já existe
     usuario = db.query(UserTable).filter_by(
@@ -73,7 +74,7 @@ def criar_conta(
 
 
 
-def login(
+def login_services(
         user_login: LoginSchema,
         db: Session
         ):
@@ -110,7 +111,7 @@ def login(
     
     
     
-def use_refresh_token(
+def use_refresh_token_services(
         receive_refresh_token: TokenSchema,   # cliente manda refresh_token (front end decide quando usar essa rota)
         db: Session
         ):     

@@ -12,7 +12,7 @@ from helpers import resposta_sucesso
 
 
 
-def promover_usuario(
+def promover_usuario_services(
         promote_user: AlterationUserSchema,
         db: Session,
         admin: UserTable    # checando se é admin e quem é pelo id
@@ -53,7 +53,7 @@ def promover_usuario(
         
         
         
-def rebaixar_usuario(
+def rebaixar_usuario_services(
         demote_user: AlterationUserSchema,
         db: Session,
         admin: UserTable    # checando se é admin e quem é pelo id
@@ -95,7 +95,7 @@ def rebaixar_usuario(
    
     
     
-def desativar_usuario(
+def desativar_usuario_services(
     delete_user_id: AlterationUserSchema,
     db: Session,
     admin: UserTable    # checando se é admin e quem é pelo id
@@ -136,7 +136,7 @@ def desativar_usuario(
    
     
     
-def reativar_usuario(
+def reativar_usuario_services(
     reactive_user_id: AlterationUserSchema,
     db: Session,
     admin: UserTable    # checando se é admin e quem é pelo id
