@@ -49,17 +49,22 @@ async def criar_conta(
         senha = senha_criptografada,
     )   # colunas ativo e admin já são definidos por padrão default na UserTable no models 
     
-    db.add(novo_usuario)
-    db.commit()
-    db.refresh(novo_usuario)    # garante que campos gerados pelo banco (como id) estejam disponíveis (atualiza)
     
-    
-    # o primeiro usuário sempre se torna admin
-    if novo_usuario.id == 1:
-        novo_usuario.admin = True   
+    try:
+        db.add(novo_usuario)
+        db.flush()   # enviando alterações pendentes para o banco dentro da transação aberta (um commit só durante a transação)
+
+        if novo_usuario.id == 1:
+            novo_usuario.admin = True
+
         db.commit()
         db.refresh(novo_usuario)
+    except Exception:
+        db.rollback()
+        raise
         
+    
+    if novo_usuario.admin:
         return resposta_sucesso(            # success já vem como True pela função
         f"usuário {create_user.nome} criado com sucesso como admin!",   
         {
