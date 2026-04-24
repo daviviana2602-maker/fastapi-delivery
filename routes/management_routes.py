@@ -32,20 +32,25 @@ async def promover_usuario(
     usuario_a_promover = db.query(UserTable).filter_by(
         id=promote_user.usuario_a_sofrer_alteracao
         ).first()
-    
-    
-    if not usuario_a_promover.ativo:
-        raise HTTPException(status_code=400, detail="usuário está desativado e não pode ser promovido")
+
     
     if not usuario_a_promover:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")   # usuário inexistente retorna erro
+    
+    if not usuario_a_promover.ativo:
+        raise HTTPException(status_code=400, detail="usuário está desativado e não pode ser promovido")
     
     if usuario_a_promover.admin == True:
         raise HTTPException(status_code=403, detail="O usuário escolhido já é um administrador")
     
     usuario_a_promover.admin = True
-    db.commit()
-    db.refresh(usuario_a_promover)
+    
+    try:
+        db.commit()
+        db.refresh(usuario_a_promover)
+    except Exception:
+        db.rollback()
+        raise
     
     
     return resposta_sucesso(            # success já vem como True pela função
@@ -82,8 +87,13 @@ async def rebaixar_usuario(
     
     
     usuario_a_rebaixar.admin = False
-    db.commit()
-    db.refresh(usuario_a_rebaixar)
+    
+    try:
+        db.commit()
+        db.refresh(usuario_a_rebaixar)
+    except Exception:
+        db.rollback()
+        raise
     
     
     return resposta_sucesso(            # success já vem como True pela função
@@ -120,8 +130,12 @@ async def desativar_usuario(
     
     usuario.ativo = False   # desativando usuário
     
-    db.commit()
-    db.refresh(usuario)
+    try:
+        db.commit()
+        db.refresh(usuario)
+    except Exception:
+        db.rollback()
+        raise
     
     
     return resposta_sucesso(            # success já vem como True pela função
@@ -153,8 +167,12 @@ async def reativar_usuario(
     
     usuario.ativo = True    # reativando o usuário
     
-    db.commit()
-    db.refresh(usuario)
+    try:
+        db.commit()
+        db.refresh(usuario)
+    except Exception:
+        db.rollback()
+        raise
     
     
     return resposta_sucesso(            # success já vem como True pela função
