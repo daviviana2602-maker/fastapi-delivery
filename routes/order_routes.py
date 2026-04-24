@@ -31,9 +31,15 @@ async def criar_pedido(
         usuario_id=usuario_id
     )   
     
-    db.add(novo_pedido)
-    db.commit()
-    db.refresh(novo_pedido)
+    
+    try:
+        db.add(novo_pedido)
+        db.commit()
+        db.refresh(novo_pedido)
+    except Exception:
+        db.rollback()
+        raise
+
 
     return resposta_sucesso(            # success já vem como True pela função
         "Pedido criado com sucesso",   
@@ -138,9 +144,13 @@ async def adicionar_item_temp(
         pedido_id=pedido.id
     )
     
-    db.add(novo_item_temp)
-    db.commit()
-    db.refresh(novo_item_temp)
+    try:
+        db.add(novo_item_temp)
+        db.commit()
+        db.refresh(novo_item_temp)
+    except Exception:
+        db.rollback()
+        raise
 
 
     return resposta_sucesso(            # success já vem como True pela função
@@ -183,33 +193,40 @@ async def concluir_pedido(
     if not temp_itens:
         raise HTTPException(status_code=400, detail="Pedido não possui itens")
     
-    
-    total = 0   # para total não ser None e quebrar quando for somar preço total
-    
-    # cria itens reais
-    for t in temp_itens:
-        item_real = CompletedOrderItem(
-            quantidade=t.quantidade,
-            tipo=t.nome,
-            tamanho=t.tamanho,
-            preco_unit=t.preco_unit,
-            preco_total=t.quantidade * t.preco_unit,
-            pedido_id=pedido.id
-        )
+    try:
         
-        db.add(item_real)
-        total = total + t.quantidade * t.preco_unit
+        total = 0   # para total não ser None e quebrar quando for somar preço total
+        
+        # cria itens reais
+        for t in temp_itens:
+            item_real = CompletedOrderItem(
+                quantidade=t.quantidade,
+                tipo=t.nome,
+                tamanho=t.tamanho,
+                preco_unit=t.preco_unit,
+                preco_total=t.quantidade * t.preco_unit,
+                pedido_id=pedido.id
+            )
+            
+            
+            db.add(item_real)
+            total = total + t.quantidade * t.preco_unit
 
-    # atualiza preço total e muda status
-    pedido.preco = total
-    pedido.status = "CONCLUIDO"
+        # atualiza preço total e muda status
+        pedido.preco = total
+        pedido.status = "CONCLUIDO"
 
-    # limpa temporários
-    db.query(TempItemsTable).filter_by(
-        pedido_id=pedido.id
-        ).delete()
+        # limpa temporários
+        db.query(TempItemsTable).filter_by(
+            pedido_id=pedido.id
+            ).delete()
+        
     
-    db.commit()
+        db.commit()
+        
+    except Exception:
+        db.rollback()
+        raise
 
 
     return resposta_sucesso(    # success já vem como True pela função
@@ -253,14 +270,18 @@ async def cancelar_pedido(
     
     pedido.status = "CANCELADO"
 
-
-    # limpa itens temporários do pedido
-    db.query(TempItemsTable).filter_by(
-        pedido_id=pedido.id
-        ).delete()
+    try:
+        # limpa itens temporários do pedido
+        db.query(TempItemsTable).filter_by(
+            pedido_id=pedido.id
+            ).delete()
+        
+        
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
     
-    
-    db.commit()
 
     return resposta_sucesso(  # success já vem como True pela função
         "Pedido cancelado", 
@@ -309,33 +330,37 @@ async def ajustar_item_pedido(
     )
 
 
-    # ajuste de quantidade
-    nova_quantidade = item.quantidade + ajustar_item_schema.ajuste
+    try:
+        
+        nova_quantidade = item.quantidade + ajustar_item_schema.ajuste
 
-    if nova_quantidade <= 0:    # se a nova quantidade for 0 já é automaticamente deletado
-        db.delete(item)
+        if nova_quantidade <= 0:
+            db.delete(item)
+            mensagem = "Item removido do pedido"
+        else:
+            item.quantidade = nova_quantidade
+            item.preco_total = item.preco_unit * nova_quantidade
+            mensagem = "Item atualizado"
+
         db.commit()
-        return resposta_sucesso(            # success já vem como True pela função
-        "Item removido do pedido" 
-        )
 
+        if nova_quantidade > 0:     # dando refresh somente se o item ainda existir no pedido
+            db.refresh(item)
 
-    item.quantidade = nova_quantidade
-    item.preco_total = item.preco_unit * nova_quantidade
-
-    db.commit()
-    db.refresh(item)
-
-
+    except Exception:
+        db.rollback()
+        raise
+    
+    
     return resposta_sucesso(            # success já vem como True pela função
-        "Item atualizado com sucesso", 
+        mensagem, 
         {
         "item_id": item.id,
         "nome": item.nome,
         "quantidade": item.quantidade,
         "preco_total": item.preco_total
         }
-    )
+        )
     
     
     
