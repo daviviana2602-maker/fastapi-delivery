@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi import HTTPException
 
-from models import UserTable
+from db.models import UserTable
 
 
 # Função para criação de tokens JWT

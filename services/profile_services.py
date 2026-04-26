@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from dependencies import get_db, usuario_logado
 
-from models import UserTable, ExcludedUserTable, OrderTable
+from db.models import UserTable, ExcludedUserTable, OrderTable
 
 from schemas import UpdateProfileSchema
 

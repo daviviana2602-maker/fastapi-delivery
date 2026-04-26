@@ -6,7 +6,7 @@ from dependencies import get_db, usuario_logado
 
 from helpers import checar_dono_ou_admin, resposta_sucesso
 
-from models import OrderTable, UserTable, STATUS_VALIDOS, CardapioTable, CompletedOrderItem, TAMANHOS_VALIDOS, TempItemsTable
+from db.models import OrderTable, UserTable, STATUS_VALIDOS, CardapioTable, CompletedOrderItem, TAMANHOS_VALIDOS, TempItemsTable
 
 from fastapi import Depends, HTTPException
 

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from fastapi import HTTPException
 
-from models import UserTable
+from db.models import UserTable
 
 from schemas import AlterationUserSchema
 

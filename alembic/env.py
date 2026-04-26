@@ -10,8 +10,8 @@ import os
 
 sys.path.append(os.getcwd())    # garante que o alembic encontre meu projeto
 
-from models import Base     
-import models   # força carregar TODAS as tabelas
+from db.models import Base     
+import db.models as models   # força carregar TODAS as tabelas
 
 
 # this is the Alembic Config object, which provides

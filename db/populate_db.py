@@ -1,6 +1,8 @@
 # Arquivo para gerar o cardápio
 
-from models import CardapioTable, SessionLocal  
+from db.models import CardapioTable 
+
+from db.database import SessionLocal
 
 
 # TUDO NO CARDÁPIO EM FORMATO .TITLE()

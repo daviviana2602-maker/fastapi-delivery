@@ -37,7 +37,7 @@ def login(
     
     
     
-@auth_router.post("/refresh")   # usa refresh token para gerar um novo access token sem exigir login novamente
+@auth_router.post("/refresh", response_model=CommonResponse)   # usa refresh token para gerar um novo access token sem exigir login novamente
 def use_refresh_token(
         receive_refresh_token: TokenSchema,   # cliente manda refresh_token (front end decide quando usar essa rota)
         db: Session = Depends(get_db)

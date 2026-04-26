@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from contextlib import asynccontextmanager
 
-from populate_db import popular_cardapio
+from db.populate_db import popular_cardapio
 
 
 # rodando a função de popular cardápio (quando o sistema inicia)

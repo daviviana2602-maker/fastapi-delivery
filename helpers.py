@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from dependencies import get_db, usuario_logado
 
-from models import UserTable
+from db.models import UserTable
 
 
 # Não é uma dependência, porque depende de recurso_usuario_id, que muda dependendo da utilização

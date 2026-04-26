@@ -8,7 +8,7 @@ from dependencies import get_db, checar_admin
 
 from fastapi import APIRouter, Depends
 
-from models import UserTable
+from db.models import UserTable
 
 from schemas import AlterationUserSchema
 

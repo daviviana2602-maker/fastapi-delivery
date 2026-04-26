@@ -2,7 +2,7 @@
 
 from sqlalchemy.orm import Session
 
-from models import UserTable
+from db.models import UserTable
 
 from schemas import CreateUserSchema, LoginSchema, TokenSchema
 

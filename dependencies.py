@@ -6,7 +6,9 @@ from fastapi import Header, Depends, HTTPException
 
 from token_utils import verificar_token
 
-from models import SessionLocal, UserTable
+from db.models import UserTable
+
+from db.database import SessionLocal
 
 
 

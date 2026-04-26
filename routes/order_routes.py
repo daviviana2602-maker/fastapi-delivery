@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from dependencies import get_db, usuario_logado, checar_admin
 
-from models import UserTable
+from db.models import UserTable
 
 from fastapi import APIRouter, Depends
 
