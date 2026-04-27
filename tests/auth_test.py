@@ -18,7 +18,6 @@ def test_criar_conta(api_client):
     
 
 def test_login(api_client):
-    # primeiro cria usuário
     api_client.post(
         "/auth/criar_conta",
         json={
@@ -28,7 +27,7 @@ def test_login(api_client):
         }
     )
 
-    # depois faz login
+
     response = api_client.post(
         "/auth/login",
         json={
@@ -71,7 +70,6 @@ def test_login_senha_errada(api_client):
     
     
 def test_refresh_token(api_client):
-    # cria e faz login
     api_client.post(
         "/auth/criar_conta",
         json={
