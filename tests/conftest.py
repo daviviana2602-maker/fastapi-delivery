@@ -10,6 +10,7 @@ from fastapi.testclient import TestClient
 from db.models import Base
 from main import app
 from dependencies import get_db
+from populate_test_db import popular_db_teste
 
 
 # carrega ambiente de teste
@@ -30,7 +31,8 @@ def setup_database():
 
     # recria tabelas
     Base.metadata.create_all(bind=engine)
-
+    popular_db_teste()
+    
 
 
 @pytest.fixture(scope="function")

@@ -144,9 +144,12 @@ def adicionar_item_temp_services(
         raise
 
 
-    return resposta_sucesso(            # success já vem como True pela função
-        f"{novo_item_temp.quantidade} {novo_item_temp.nome} adicionados temporariamente"   
-    )
+    return resposta_sucesso(    # success já vem como True pela função
+    f"{novo_item_temp.quantidade} {novo_item_temp.nome} adicionados temporariamente",
+    {
+        "id": novo_item_temp.id
+    }
+)
     
     
     
