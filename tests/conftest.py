@@ -12,6 +12,7 @@ from main import app
 from dependencies import get_db
 from populate_test_db import popular_db_teste
 from security import argon_context
+import uuid
 
 
 # carrega ambiente de teste
@@ -36,6 +37,7 @@ def setup_database():
     
 
 
+# entrega uma sessão do banco pronta para cada teste
 @pytest.fixture(scope="function")
 def db():
     connection = engine.connect()
@@ -67,15 +69,13 @@ def api_client(db):
     
     
     
-import uuid
-
 @pytest.fixture
 def user_alvo(api_client):
     res = api_client.post(
         "/auth/criar_conta",
         json={
             "nome": "User teste",
-            "email": f"user_{uuid.uuid4()}@test.com",
+            "email": f"user_{uuid.uuid4()}@test.com",   # gera email diferente toda vez com uuid
             "senha": "123456"
         }
     )
@@ -84,6 +84,7 @@ def user_alvo(api_client):
 
 
 
+# cria usuário admin para testes que precisem
 @pytest.fixture
 def admin_user(db):
     admin = db.query(UserTable).filter_by(email="admin@test.com").first()
@@ -105,6 +106,7 @@ def admin_user(db):
 
 
 
+# faz login como admin e pega o access token gerado
 @pytest.fixture
 def admin_token(api_client, admin_user):
     res = api_client.post(
@@ -119,20 +121,7 @@ def admin_token(api_client, admin_user):
 
 
 
+# passa o token admin como header para passar da dependencie checar_admin das rotas management
 @pytest.fixture
 def admin_headers(admin_token):
     return {"Authorization": f"Bearer {admin_token}"}
-
-
-
-@pytest.fixture
-def clean_user(db, user_alvo):
-    user = db.query(UserTable).filter_by(id=user_alvo).first()
-
-    user.admin = False
-    user.ativo = True
-
-    db.commit()
-    db.refresh(user)
-
-    return user.id
