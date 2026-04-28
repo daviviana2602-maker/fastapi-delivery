@@ -7,10 +7,11 @@ from sqlalchemy.orm import sessionmaker
 
 from fastapi.testclient import TestClient
 
-from db.models import Base
+from db.models import Base, UserTable
 from main import app
 from dependencies import get_db
 from populate_test_db import popular_db_teste
+from security import argon_context
 
 
 # carrega ambiente de teste
@@ -63,3 +64,75 @@ def api_client(db):
     yield client
 
     app.dependency_overrides.clear()   # Limpa configuração em memória e evita que um teste afete outro
+    
+    
+    
+import uuid
+
+@pytest.fixture
+def user_alvo(api_client):
+    res = api_client.post(
+        "/auth/criar_conta",
+        json={
+            "nome": "User teste",
+            "email": f"user_{uuid.uuid4()}@test.com",
+            "senha": "123456"
+        }
+    )
+
+    return res.json()["data"]["id"]
+
+
+
+@pytest.fixture
+def admin_user(db):
+    admin = db.query(UserTable).filter_by(email="admin@test.com").first()
+
+    if not admin:
+        admin = UserTable(
+            nome="admin",
+            email="admin@test.com",
+            senha=argon_context.hash("123456"),
+            admin=True,
+            ativo=True
+        )
+
+        db.add(admin)
+        db.commit()
+        db.refresh(admin)
+
+    return admin
+
+
+
+@pytest.fixture
+def admin_token(api_client, admin_user):
+    res = api_client.post(
+        "/auth/login",
+        json={
+            "email": admin_user.email,
+            "senha": "123456"
+        }
+    )
+
+    return res.json()["data"]["access_token"]
+
+
+
+@pytest.fixture
+def admin_headers(admin_token):
+    return {"Authorization": f"Bearer {admin_token}"}
+
+
+
+@pytest.fixture
+def clean_user(db, user_alvo):
+    user = db.query(UserTable).filter_by(id=user_alvo).first()
+
+    user.admin = False
+    user.ativo = True
+
+    db.commit()
+    db.refresh(user)
+
+    return user.id
