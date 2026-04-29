@@ -180,6 +180,39 @@ def test_ajustar_item(api_client):
     assert response.status_code == 200
     
     
+    
+def test_listar_todos_pedidos(api_client, admin_headers):
+    
+    api_client.post("/auth/criar_conta", json={
+        "nome": "User Order",
+        "email": "order@test.com",
+        "senha": "123456"
+    })
+
+    login = api_client.post("/auth/login", json={
+        "email": "order@test.com",
+        "senha": "123456"
+    })
+
+    token = login.json()["data"]["access_token"]
+
+    api_client.post(
+        "/order/pedido",
+        headers={"Authorization": f"Bearer {token}"}
+    )
+        
+    response = api_client.get(
+        "/order/listar",
+        params={"status_type": "PENDENTE"},
+        headers=admin_headers
+    )
+
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["success"] is True
+    
+    
 
 def test_listar_pedido_temp(api_client):
     api_client.post("/auth/criar_conta", json={
