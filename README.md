@@ -1,57 +1,58 @@
-# 🍔 Delivery API — Backend com FastAPI
+# 🍔 Delivery API — Fullstack Backend + Frontend (FastAPI)
 
-API REST completa de um sistema de delivery desenvolvida com **Python + FastAPI + PostgreSQL**, focada em **autenticação segura**, **gestão de pedidos**, **controle administrativo de usuários**, **garantia de qualidade** e **boas práticas de arquitetura backend**.
+API REST completa de um sistema de delivery desenvolvida com **Python + FastAPI + PostgreSQL**, incluindo **frontend básico (HTML/CSS/JS)** para consumo da API.
 
-Projeto backend completo simulando operação real de delivery com autenticação, pedidos, administração e testes automatizados.
+Projeto simula um sistema real de delivery com autenticação, pedidos, administração de usuários, regras de negócio e testes automatizados.
 
 ---
 
 # 📌 Visão Geral
 
-Este projeto demonstra conhecimento em:
+Este projeto demonstra experiência prática em:
 
-- Desenvolvimento de APIs REST profissionais  
-- Arquitetura modular e escalável  
-- Autenticação com JWT  
-- Regras de negócio e permissões  
-- Integração com banco relacional  
+- APIs REST profissionais com FastAPI  
+- Arquitetura backend escalável  
+- Autenticação JWT segura  
+- Controle de permissões (RBAC)  
+- Banco de dados relacional PostgreSQL  
+- ORM com SQLAlchemy  
+- Migrações com Alembic  
 - Testes automatizados com Pytest  
-- Containers com Docker  
-- Versionamento de banco com Alembic  
+- Containerização com Docker  
+- Integração backend + frontend simples  
 
 ---
 
 # 🚀 Stack Tecnológica
 
 ## Backend
-
 - Python 3.11+
 - FastAPI
-- SQLAlchemy ORM
+- SQLAlchemy
 - Pydantic
 
 ## Banco de Dados
-
 - PostgreSQL
 
 ## Segurança
-
-- JWT (`python-jose`)
-- Hash de senha com Argon2 (`passlib`)
+- JWT (python-jose)
+- Hash de senha com Argon2
 
 ## Testes
-
 - Pytest
 - FastAPI TestClient
 
 ## DevOps
-
 - Docker
 - Docker Compose
-- Dotenv
+- dotenv
+
+## Frontend (básico)
+- HTML5
+- CSS3
+- JavaScript (Fetch API)
 
 ## Migrações
-
 - Alembic
 
 ---
@@ -59,191 +60,201 @@ Este projeto demonstra conhecimento em:
 # ⚙️ Funcionalidades
 
 ## 🔐 Autenticação
-
 - Criar conta
 - Login com JWT
-- Refresh token
-- Proteção de rotas autenticadas
-- Hash seguro de senha com Argon2
+- Proteção de rotas
+- Hash seguro de senha
 
-## 👤 Perfil do Usuário
+## 👤 Perfil
+- Atualizar dados do usuário
+- Alterar senha
+- Excluir conta
 
-- Atualizar nome
-- Atualizar email
-- Alterar senha validando senha atual
-- Excluir conta também validando senha atual
-
-## 🛒 Sistema de Pedidos
-
-- Criar pedido
+## 🛒 Pedidos
+- Criar pedidos
 - Adicionar itens
-- Alterar quantidade
-- Checar itens no pedido até o momento
 - Concluir pedido
 - Cancelar pedido
-- Consultar pedidos por status (admin)
-
-## 🍽️ Cardápio
-
-- Banco populado automaticamente com itens iniciais
-- Estrutura pronta para expansão
+- Consultar status
 
 ## 🛡️ Administração
-
-- Promover usuário para admin
-- Rebaixar admin
+- Promover usuário
+- Rebaixar usuário
 - Desativar usuário
 - Reativar usuário
-- Controle por permissões
+
+## 🍽️ Cardápio
+- Itens iniciais automatizados
+- Estrutura pronta para expansão
 
 ---
 
-# 🧠 Arquitetura do Projeto
+# 🧠 Arquitetura
 
-Estrutura organizada em camadas para facilitar manutenção e crescimento:
 
-    .
-    ├── alembic/
-    ├── db/
-    ├── routes/
-    ├── services/
-    ├── tests/
-    ├── .env
-    ├── .env.tests
-    ├── Dockerfile
-    ├── docker-compose.yml
-    ├── alembic.ini
-    ├── config.py
-    ├── dependencies.py
-    ├── helpers.py
-    ├── main.py
-    ├── response_schemas.py
-    ├── schemas.py
-    ├── security.py
-    ├── token_utils.py
-    └── README.md
+.
+├── alembic/
+├── db/
+├── routes/
+├── services/
+├── tests/
+├── frontend/
+│ ├── html/
+│ ├── css/
+│ └── js/
+├── main.py
+├── schemas.py
+├── dependencies.py
+├── security.py
+├── docker-compose.yml
+└── Dockerfile
 
-## 📂 Responsabilidades
 
-**routes/**  
-Responsável pelas rotas HTTP da aplicação.
+---
 
-**services/**  
-Contém regras de negócio desacopladas das rotas.
+# 🌐 Frontend (Simples)
 
-**db/**  
-Models, conexão e estrutura do banco.
+Frontend estático desenvolvido apenas para consumo da API.
 
-**tests/**  
-Testes automatizados cobrindo fluxos principais.
+## 🚀 Como rodar o frontend
 
-**dependencies.py**  
-Injeção de dependências como autenticação e sessão do banco.
+No terminal:
+cd frontend
+python -m http.server 5500
+
+Acesse no navegador:
+
+http://localhost:5500/html/login.html
+
+## ⚙️ Funcionalidades do Frontend
+
+Login com JWT (armazenado no localStorage)
+Registro de usuário
+Painel administrativo (CRUD de usuários)
+Consumo da API via Fetch
+Proteção simples de rotas via auth guard
+
+---
+
+# 🔗 Integração com API
+
+O frontend consome o backend rodando em:
+
+http://localhost:8000
+
+Fluxo completo:
+
+Subir backend:
+docker compose up --build
+Subir frontend:
+python -m http.server 5500
+Acessar no navegador
 
 ---
 
 # 🗄️ Banco de Dados
 
-O projeto utiliza duas bases separadas.
+## Produção (Docker)
 
-## Ambiente principal
 
-Usado via Docker Compose:
+DATABASE_URL=postgresql+psycopg2://postgres:senha@db:5432/delivery_db
 
-    DATABASE_URL=postgresql+psycopg2://postgres:senhaaqui@db...
 
-## Ambiente de testes
+## Testes
 
-Banco isolado para execução de testes automatizados:
 
-    TEST_DATABASE_URL=postgresql+psycopg2://postgres:senhaaqui@localhost:...
+TEST_DATABASE_URL=postgresql+psycopg2://postgres:senha@localhost:5432/test_db
 
-Isso garante independência entre desenvolvimento e testes.
 
 ---
 
-# 🔄 Migrações com Alembic
+# 🔄 Alembic
 
-Controle de versionamento do schema:
 
-    alembic revision --autogenerate -m "mensagem"
-    alembic upgrade head
-    alembic downgrade -1
+alembic revision --autogenerate -m "message"
+alembic upgrade head
+alembic downgrade -1
 
----
-
-# 🧪 Testes Automatizados
-
-Projeto validado com Pytest cobrindo fluxos reais da aplicação.
-
-## Exemplos testados
-
-- Criação de conta  
-- Login  
-- Autenticação JWT  
-- Atualização de perfil  
-- Criação de pedidos  
-- Alterações administrativas  
-- Regras de permissão  
-- Fluxos inválidos  
-
-## Resultado atual
-
-    22 passed (tudo funcionando como o esperado)
 
 ---
 
-# 🐳 Como Rodar com Docker
+# 🧪 Testes
+
+- Fluxos completos de autenticação
+- CRUD de usuários
+- Regras de permissão
+- Pedidos e status
+- Validação de erros
+
+✔ 23 testes passando
+
+---
+
+# 🐳 Como Rodar
 
 ## 1. Clonar projeto
 
-    git clone https://github.com/daviviana2602-maker/fastapi-delivery.git
-    cd fastapi-delivery
 
-## 2. Criar arquivo `.env`
+git clone https://github.com/daviviana2602-maker/fastapi-delivery.git
 
-    DATABASE_URL=postgresql+psycopg2://postgres:senha@db:5432/delivery_db
-    SECRET_KEY=sua_chave_secreta
-    ALGORITHM=HS256
-    ACCESS_TOKEN_EXPIRE_MINUTES=30
+cd fastapi-delivery
 
-## 3. Subir containers
 
-    docker compose up --build
+## 2. Configurar .env
 
-## 4. Acessar API
 
-Swagger:
+DATABASE_URL=postgresql+psycopg2://postgres:senha@db:5432/delivery_db
+SECRET_KEY=sua_chave
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
 
-    http://127.0.0.1:8000/docs
 
-ReDoc:
+## 3. Subir projeto
 
-    http://127.0.0.1:8000/redoc
+
+docker compose up --build
+
 
 ---
 
-# 📈 Diferenciais Técnicos
+# 🌐 Rodar Frontend
 
-- Arquitetura organizada por responsabilidades  
-- Regras de negócio separadas das rotas  
-- Testes automatizados reais  
-- Banco isolado para testes  
-- JWT implementado corretamente  
-- Hash seguro com Argon2  
-- Docker para ambiente reproduzível  
-- Alembic para versionamento do banco  
+Abra o arquivo:
+
+
+frontend/html/login.html
+
+
+ou qualquer página HTML diretamente no navegador.
 
 ---
 
-# 🎯 Objetivo do Projeto
+# 📍 API
 
-Demonstrar capacidade prática para atuar em vagas de:
+- Swagger: http://localhost:8000/docs  
+- ReDoc: http://localhost:8000/redoc  
 
-- Estágio Backend  
-- Desenvolvedor Backend Júnior  
-- QA Automation com Python  
-- Suporte técnico com foco em APIs  
+---
+
+# 📈 Diferenciais
+
+- API real com regras de negócio
+- Arquitetura modular
+- Segurança com JWT + hash
+- Frontend funcional integrado
+- Testes automatizados reais
+- Docker pronto para produção
+
+---
+
+# 🎯 Objetivo
+
+Projeto criado para demonstrar habilidades em:
+
+- Backend Python profissional
+- APIs reais com FastAPI
+- Integração fullstack básica
+- Boas práticas de engenharia de software
 
 ---
 
@@ -251,20 +262,5 @@ Demonstrar capacidade prática para atuar em vagas de:
 
 **Davi Viana**
 
-Desenvolvedor focado em backend com Python, APIs REST e bancos relacionais.
-
-GitHub: https://github.com/daviviana2602-maker  
-LinkedIn: https://www.linkedin.com/in/davi-viana-34a19b300/
-
----
-
-# 📌 Status Atual
-
-- ✅ Projeto funcional  
-- ✅ API completa  
-- ✅ Testes automatizados  
-- ✅ Docker funcionando  
-- ✅ PostgreSQL integrado  
-- ✅ JWT implementado  
-- ✅ Estrutura escalável  
-- ✅ Em evolução constante
+- GitHub: https://github.com/daviviana2602-maker  
+- LinkedIn: https://www.linkedin.com/in/davi-viana-34a19b300/

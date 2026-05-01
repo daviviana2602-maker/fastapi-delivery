@@ -40,15 +40,3 @@ async function register() {
 
   alert(data.msg);
 }
-
-
-// EXEMPLO DE USO DO TOKEN
-function getProfile() {
-  fetch(`${API}/profile`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`
-    }
-  })
-  .then(r => r.json())
-  .then(console.log);
-}
