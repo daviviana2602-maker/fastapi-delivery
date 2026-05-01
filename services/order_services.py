@@ -10,6 +10,8 @@ from db.models import OrderTable, UserTable, STATUS_VALIDOS, CardapioTable, Comp
 
 from fastapi import Depends, HTTPException
 
+from db.populate_db import ITENS_INICIAIS
+
 from schemas import AddItemSchema, FinishOrderSchema, AdjustItemSchema
 
 
@@ -19,6 +21,24 @@ def criar_pedido_services(
     usuario_id: int
 ):
   
+    # checa se já existe pedido pendente do usuário em questão
+    pedido_existente = db.query(OrderTable).filter(
+        OrderTable.usuario_id == usuario_id,
+        OrderTable.status == "PENDENTE"
+    ).first()
+
+    # se já tiver, retorna ele (não cria outro)
+    if pedido_existente:
+        return resposta_sucesso(
+            "Você já possui um pedido em andamento",
+            {
+                "id": pedido_existente.id,
+                "status": pedido_existente.status,
+                "preco": pedido_existente.preco
+            }
+        )
+        
+        
     # cria o pedido com base no usuário logado
     novo_pedido = OrderTable(
         usuario_id=usuario_id
@@ -418,4 +438,13 @@ def listar_pedido_temporario_services(
         ],
         "total": total 
     }
+    )
+    
+    
+    
+def listar_cardapio_service():
+    return resposta_sucesso(    # success já vem como True pela função
+        "Cardápio listado com sucesso",
+        ITENS_INICIAIS
+        
     )

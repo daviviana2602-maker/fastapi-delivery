@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="../css/style.css">
+    
+  <script src="../js/auth-guard.js" defer></script>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>Dashboard</h1>
+
+    <p>Bem-vindo ao sistema</p>
+
+    <hr>
+
+    <!-- BLOCO PRINCIPAL -->
+    <section>
+
+      <h3>Acesso rápido</h3>
+
+      <div class="row">
+        <a href="./orders.html"><button>Pedidos</button></a>
+        <a href="./profile.html"><button>👤 Perfil</button></a>
+      </div>
+
+      <div class="row">
+        <a href="./management.html"><button>🛠 Admin</button></a>
+      </div>
+
+    </section>
+
+    <hr>
+
+    <!-- INFO DO USUÁRIO -->
+    <section>
+
+      <h3>Sessão</h3>
+
+      <button onclick="logout()" class="danger">
+        🚪 Sair da conta
+      </button>
+
+    </section>
+
+  </div>
+
+</div>
+
+<script>
+function logout() {
+  localStorage.removeItem("access_token");
+  window.location.href = "/pages/login.html";
+}
+</script>
+
+</body>
+</html>

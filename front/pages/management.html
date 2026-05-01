@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/auth-guard.js" defer></script>
+  <script src="../js/management.js" defer></script>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>🛠 Admin Panel</h1>
+
+    <input id="userId" type="number" placeholder="ID do usuário">
+
+    <hr>
+
+    <section>
+      <h3>Admin</h3>
+      <button onclick="promover()">Promover</button>
+      <button onclick="rebaixar()">Rebaixar</button>
+    </section>
+
+    <hr>
+
+    <section>
+      <h3>Status</h3>
+      <button onclick="desativar()">Desativar</button>
+      <button onclick="reativar()">Reativar</button>
+    </section>
+
+    <hr>
+
+    <pre id="out"></pre>
+
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Criar conta</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>Criar conta</h1>
+    <p>Bem-vindo</p>
+
+    <input id="nome" type="text" placeholder="Nome">
+    <input id="email" type="email" placeholder="Email">
+    <input id="senha" type="password" placeholder="Senha">
+
+    <button onclick="register()">Criar conta</button>
+
+    <p class="link">
+      Já tem conta? <a href="login.html">Fazer login</a>
+    </p>
+
+    <pre id="out"></pre>
+
+  </div>
+
+</div>
+
+<script>
+const API = "http://localhost:8000/auth";
+
+async function register() {
+  const res = await fetch(`${API}/criar_conta`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      nome: nome.value,
+      email: email.value,
+      senha: senha.value
+    })
+  });
+
+  const data = await res.json();
+  out.innerText = JSON.stringify(data, null, 2);
+}
+</script>
+
+</body>
+</html>

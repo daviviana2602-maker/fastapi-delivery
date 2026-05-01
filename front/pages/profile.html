@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Perfil</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/auth-guard.js" defer></script>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>👤 Meu Perfil</h1>
+
+    <hr>
+
+    <section>
+      <h3>Editar perfil</h3>
+
+      <input id="nome" placeholder="Novo nome">
+      <input id="email" placeholder="Novo email">
+      <input id="senhaAtual" type="password" placeholder="Senha atual">
+      <input id="novaSenha" type="password" placeholder="Nova senha">
+
+      <button onclick="editarPerfil()">Salvar</button>
+    </section>
+
+    <hr>
+
+    <section>
+      <h3>Excluir conta</h3>
+
+      <input id="senhaExcluir" type="password" placeholder="Senha atual">
+      <button onclick="excluirConta()" class="danger">Excluir conta</button>
+    </section>
+
+    <hr>
+
+    <pre id="out"></pre>
+
+  </div>
+
+</div>
+
+<script src="../js/profile.js"></script>
+
+</body>
+</html>

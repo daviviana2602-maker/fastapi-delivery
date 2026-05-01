@@ -1,7 +1,7 @@
 # Rotas para Pedidos
 
 from services.order_services import(criar_pedido_services, listar_todos_pedidos_services, adicionar_item_temp_services, ajustar_item_pedido_services,
-listar_pedido_temporario_services, cancelar_pedido_services, concluir_pedido_services)
+listar_pedido_temporario_services, cancelar_pedido_services, concluir_pedido_services, listar_cardapio_service)
 
 from sqlalchemy.orm import Session
 
@@ -93,3 +93,9 @@ async def listar_pedido_temporario(
 ):
 
     return listar_pedido_temporario_services(pedido_id, db, usuario_id)
+
+
+
+@order_router.get("/cardapio")
+def listar_cardapio():
+    return listar_cardapio_service()

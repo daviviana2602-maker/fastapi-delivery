@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>Fazer login</h1>
+    <p>Use sua conta</p>
+
+    <input id="email" type="email" placeholder="Email">
+    <input id="senha" type="password" placeholder="Senha">
+
+    <button onclick="login()">Entrar</button>
+
+    <p>
+      Não tem conta? <a href="register.html">Criar conta</a>
+    </p>
+
+    <pre id="out"></pre>
+
+  </div>
+
+</div>
+
+<script>
+const API = "http://localhost:8000/auth";
+
+async function login() {
+  const res = await fetch(`${API}/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: document.getElementById("email").value,
+      senha: document.getElementById("senha").value
+    })
+  });
+
+  const data = await res.json();
+
+  out.innerText = JSON.stringify(data, null, 2);
+
+  if (data.data?.access_token) {
+    localStorage.setItem("access_token", data.data.access_token);
+    localStorage.setItem("refresh_token", data.data.refresh_token);
+
+    window.location.replace("/pages/dashboard.html");
+  } else {
+    alert("Login inválido");
+  }
+}
+</script>
+
+</body>
+</html>

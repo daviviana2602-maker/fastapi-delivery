@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Orders</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/auth-guard.js" defer></script>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>Pedidos</h1>
+
+    <div id="statusPedido">
+      <p><strong>Pedido atual:</strong> nenhum</p>
+    </div>
+
+    <hr>
+
+    <section>
+      <h3>Criar pedido</h3>
+      <button onclick="criarPedido()">Criar novo pedido</button>
+    </section>
+
+    <hr>
+
+    <section>
+          <h3>Cardápio</h3>
+          <div id="cardapio"></div>
+    </section>
+
+    <section>
+      <h3>Adicionar item</h3>
+
+      <input id="quantidade" type="number" placeholder="Qtd">
+
+      <select id="tamanho">
+          <option value="">Selecione o tamanho</option>
+          <option value="PEQUENO">Pequeno</option>
+          <option value="TRADICIONAL">Tradicional</option>
+          <option value="GRANDE">Grande</option>
+      </select>
+
+      <button onclick="adicionarItem()">Adicionar</button>
+    </section>
+
+    <hr>
+
+    <section>
+      <h3>Carrinho</h3>
+      <button onclick="listarCarrinho()">Ver carrinho</button>
+    </section>
+
+    <hr>
+
+    <pre id="out"></pre>
+
+    <hr>
+
+  <section>
+      <h3>Ações do Pedido</h3>
+      <button onclick="concluirPedido()">Concluir Pedido</button>
+      <button onclick="cancelarPedido()">Cancelar Pedido</button>
+  </section>
+  </div>
+
+</div>
+
+<script src="../js/orders.js"></script>
+
+</body>
+</html>
