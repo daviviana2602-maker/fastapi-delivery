@@ -6,8 +6,8 @@
 }
 
 body {
-  background: #0b0f0c;
-  color: #e6e6e6;
+  background: #f5f6f8;
+  color: #1a1a1a;
 }
 
 /* CONTAINER */
@@ -23,42 +23,42 @@ body {
 .card {
   width: 100%;
   max-width: 720px;
-  background: #111814;
-  border: 1px solid #1f2a22;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
   border-radius: 14px;
   padding: 28px;
-  box-shadow: 0 0 25px rgba(0, 255, 120, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 /* TITULOS */
 h1 {
   font-size: 24px;
-  color: #00ff88;
+  color: #e53935; /* vermelho delivery */
   margin-bottom: 8px;
 }
 
 h3 {
   margin-top: 18px;
   font-size: 16px;
-  color: #cfead9;
+  color: #333;
 }
 
 /* INPUTS */
-input {
+input, select {
   width: 100%;
   padding: 12px;
   margin-top: 10px;
   border-radius: 10px;
-  border: 1px solid #2a3a31;
-  background: #0c120f;
-  color: white;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #111;
   outline: none;
   transition: 0.2s;
 }
 
-input:focus {
-  border-color: #00ff88;
-  box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+input:focus, select:focus {
+  border-color: #e53935;
+  box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15);
 }
 
 /* BOTÕES */
@@ -67,49 +67,57 @@ button {
   padding: 12px 14px;
   border-radius: 10px;
   border: none;
-  background: #00ff88;
-  color: #0b0f0c;
+  background: #e53935;
+  color: #fff;
   font-weight: bold;
   cursor: pointer;
   transition: 0.2s;
 }
 
 button:hover {
-  background: #00cc6a;
-  box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+  background: #c62828;
+}
+
+/* BOTÃO SECUNDÁRIO */
+button.secondary {
+  background: #f1f1f1;
+  color: #333;
+}
+
+button.secondary:hover {
+  background: #e0e0e0;
 }
 
 /* BOTÃO DANGER */
 .danger {
-  background: #ff3b3b;
+  background: #111;
   color: white;
 }
 
 .danger:hover {
-  background: #cc2e2e;
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+  background: #000;
 }
 
 /* LINHAS */
 hr {
   margin: 22px 0;
   border: none;
-  border-top: 1px solid #1f2a22;
+  border-top: 1px solid #eee;
 }
 
 /* PRE (OUTPUT JSON) */
 pre {
   margin-top: 15px;
-  background: #0a0f0c;
-  border: 1px solid #1f2a22;
-  color: #00ff88;
+  background: #fafafa;
+  border: 1px solid #eee;
+  color: #333;
   padding: 14px;
   border-radius: 10px;
   font-size: 12px;
   overflow-x: auto;
 }
 
-/* ROWS (inputs lado a lado) */
+/* ROWS */
 .row {
   display: flex;
   gap: 10px;
@@ -121,7 +129,7 @@ pre {
 
 /* LINKS */
 a {
-  color: #00ff88;
+  color: #e53935;
   text-decoration: none;
 }
 
@@ -131,7 +139,7 @@ a:hover {
 
 /* TEXTOS AUXILIARES */
 p {
-  color: #9aa8a0;
+  color: #666;
   font-size: 14px;
   margin-bottom: 10px;
 }
