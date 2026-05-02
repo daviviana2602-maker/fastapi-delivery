@@ -19,6 +19,15 @@
     <hr>
 
     <section>
+      <h3>Status do Pedido</h3>
+      <div id="statusPedido" class="status-box">
+        Nenhum pedido ativo
+      </div>
+    </section>
+
+    <hr>
+
+    <section>
       <h3>Criar pedido</h3>
       <button onclick="criarPedido()">Criar novo pedido</button>
     </section>
@@ -35,11 +44,8 @@
     <section>
       <h3>Carrinho</h3>
       <button onclick="listarCarrinho()">Ver carrinho</button>
+      <div id="carrinho" class="carrinho"></div>
     </section>
-
-    <hr>
-
-    <pre id="out"></pre>
 
     <hr>
 
@@ -48,6 +54,8 @@
       <button onclick="concluirPedido()">Concluir Pedido</button>
       <button onclick="cancelarPedido()">Cancelar Pedido</button>
     </section>
+
+    <hr>
 
   </div>
 

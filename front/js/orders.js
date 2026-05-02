@@ -3,6 +3,25 @@ const API = "http://localhost:8000/order";
 let pedidoAtual = null;
 
 // --------------------
+// UTIL: STATUS
+// --------------------
+function atualizarStatus() {
+  const el = document.getElementById("statusPedido");
+
+  el.innerHTML = pedidoAtual
+    ? `<strong>ID:</strong> ${pedidoAtual}`
+    : "Nenhum pedido ativo";
+}
+
+// --------------------
+// UTIL: DEBUG RAW
+// --------------------
+function showRaw(data) {
+  document.getElementById("out").innerText =
+    JSON.stringify(data, null, 2);
+}
+
+// --------------------
 // CRIAR PEDIDO
 // --------------------
 async function criarPedido() {
@@ -19,7 +38,7 @@ async function criarPedido() {
   pedidoAtual = data.data.id;
 
   atualizarStatus();
-  show(data);
+  showRaw(data);
 }
 
 // --------------------
@@ -39,8 +58,6 @@ async function adicionarItem(nome, qtyId, sizeId) {
     return;
   }
 
-  tamanho = tamanho.toUpperCase();
-
   const res = await fetch(`${API}/pedido/adicionar_item`, {
     method: "POST",
     headers: {
@@ -51,17 +68,17 @@ async function adicionarItem(nome, qtyId, sizeId) {
       pedido_id: pedidoAtual,
       nome,
       quantidade,
-      tamanho
+      tamanho: tamanho.toUpperCase()
     })
   });
 
   const data = await res.json();
 
-  show(data);
+  showRaw(data);
 }
 
 // --------------------
-// CARREGAR CARDÁPIO
+// CARDÁPIO
 // --------------------
 async function carregarCardapio() {
   const res = await fetch(`${API}/cardapio`);
@@ -105,43 +122,50 @@ async function carregarCardapio() {
 }
 
 // --------------------
-// LISTAR CARRINHO
+// CARRINHO (BONITO AGORA)
 // --------------------
 async function listarCarrinho() {
-  const res = await fetch(`${API}/pedido/item/listar_pedido_temp?pedido_id=${pedidoAtual}`, {
-    method: "GET",
-    headers: {
-      "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+  if (!pedidoAtual) {
+    document.getElementById("carrinho").innerHTML =
+      "<p>Crie um pedido primeiro</p>";
+    return;
+  }
+
+  const res = await fetch(
+    `${API}/pedido/item/listar_pedido_temp?pedido_id=${pedidoAtual}`,
+    {
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+      }
     }
-  });
+  );
 
   const data = await res.json();
 
-  show(data);
+  console.log("DEBUG CARRINHO:", data);
+
+  // AQUI tá o fix real
+  const itens = data.data?.itens ?? [];
+
+  const container = document.getElementById("carrinho");
+
+  if (itens.length === 0) {
+    container.innerHTML = "<p>Carrinho vazio</p>";
+    return;
+  }
+
+  container.innerHTML = itens.map(item => `
+    <div class="carrinho-item">
+      <strong>${item.nome}</strong>
+      <span>Qtd: ${item.quantidade}</span>
+      <span>Tamanho: ${item.tamanho}</span>
+    </div>
+  `).join("");
 }
 
-// --------------------
-// STATUS
-// --------------------
-function atualizarStatus() {
-  document.getElementById("statusPedido").innerHTML = `
-    <p><strong>Pedido atual:</strong> ${pedidoAtual ?? "nenhum"}</p>
-  `;
-}
 
 // --------------------
-// OUTPUT
-// --------------------
-function show(data) {
-  document.getElementById("out").innerText =
-    JSON.stringify(data, null, 2);
-}
-
-// INIT
-carregarCardapio();
-
-// --------------------
-// CONCLUIR
+// FINALIZAR
 // --------------------
 async function concluirPedido() {
   if (!pedidoAtual) return alert("Nenhum pedido ativo");
@@ -157,7 +181,7 @@ async function concluirPedido() {
 
   const data = await res.json();
 
-  show(data);
+  showRaw(data);
   pedidoAtual = null;
   atualizarStatus();
 }
@@ -179,7 +203,11 @@ async function cancelarPedido() {
 
   const data = await res.json();
 
-  show(data);
+  showRaw(data);
   pedidoAtual = null;
   atualizarStatus();
 }
+
+// INIT
+carregarCardapio();
+atualizarStatus();
