@@ -8,12 +8,12 @@ from db.database import SessionLocal
 # TUDO NO CARDÁPIO EM FORMATO .TITLE()
 ITENS_INICIAIS = [
     
-    {"nome": "Arroz", "categoria": "almoco", "preco": 10.0},
-    {"nome": "Feijão", "categoria": "almoco", "preco": 8.0},
-    {"nome": "Bife", "categoria": "almoco", "preco": 18.0},
-    {"nome": "Frango", "categoria": "almoco", "preco": 16.0},
-    {"nome": "Estrogonofe", "categoria": "almoco", "preco": 22.0},
-    {"nome": "Purê", "categoria": "almoco", "preco": 12.0},
+    {"nome": "Escondidinho De Carne", "categoria": "almoco", "preco": 25.0},
+    {"nome": "Feijoada", "categoria": "almoco", "preco": 27.0},
+    {"nome": "Moqueca De Peixe", "categoria": "almoco", "preco": 23.0},
+    {"nome": "Frango Grelhado Com Legumes", "categoria": "almoco", "preco": 26.0},
+    {"nome": "Strogonoff De Frango", "categoria": "almoco", "preco": 32.0},
+    {"nome": "Parmegiana De Frango", "categoria": "almoco", "preco": 29.0},
 
     {"nome": "Pizza Calabresa", "categoria": "Pizza", "preco": 35.0},
     {"nome": "Pizza Muçarela", "categoria": "Pizza", "preco": 30.0},
@@ -21,7 +21,7 @@ ITENS_INICIAIS = [
 
     {"nome": "Brownie", "categoria": "Sobremesas", "preco": 12.0},
     {"nome": "Pudim", "categoria": "Sobremesas", "preco": 10.0},
-    {"nome": "Bolo De Pote", "categoria": "Sobremesas", "preco": 15.0},
+    {"nome": "Bolo De Pote", "categoria": "Sobremesas", "preco": 13.0},
 
     {"nome": "Salada", "categoria": "legumes", "preco": 20.0},
     {"nome": "Vegana", "categoria": "legumes", "preco": 22.0},
