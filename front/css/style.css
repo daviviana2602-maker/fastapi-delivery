@@ -6,8 +6,8 @@
 }
 
 body {
-  background: #f5f6f8;
-  color: #1a1a1a;
+  background: #0f1115; /* fundo escuro elegante */
+  color: #eaeaea;
 }
 
 /* CONTAINER */
@@ -23,153 +23,128 @@ body {
 .card {
   width: 100%;
   max-width: 720px;
-  background: #ffffff;
-  border: 1px solid #e6e6e6;
-  border-radius: 14px;
+
+  background: #161a22;
+  border-radius: 16px;
+
   padding: 28px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+  border: 1px solid #232838;
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
 /* TITULOS */
 h1 {
   font-size: 24px;
-  color: #e53935;
+  color: #ff4d4d;
   margin-bottom: 8px;
 }
 
 h3 {
   margin-top: 18px;
   font-size: 16px;
-  color: #333;
+  color: #d1d5db;
 }
 
 /* INPUTS */
 input {
   width: 100%;
   padding: 10px;
+
   border-radius: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #2b3142;
+
+  background: #0f131c;
+  color: #fff;
+
   outline: none;
+}
+
+input:focus {
+  border-color: #ff4d4d;
 }
 
 /* SELECT */
 select {
   width: 120px;
   padding: 10px;
-  padding-right: 30px;
+
   border-radius: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #2b3142;
+
+  background: #0f131c;
+  color: #fff;
+
   outline: none;
-  background: #fff;
-  appearance: none;
-}
-
-/* SETA SELECT */
-.select-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.select-wrapper::after {
-  content: "▾";
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: #666;
 }
 
 /* BOTÕES */
 button {
   margin-top: 8px;
   padding: 10px 12px;
+
   border-radius: 10px;
   border: none;
-  background: #e53935;
+
+  background: #ff3b3b;
   color: #fff;
+
   font-weight: bold;
   cursor: pointer;
+
+  transition: 0.2s;
 }
 
 button:hover {
-  background: #c62828;
+  background: #ff1f1f;
+  transform: translateY(-1px);
 }
 
+/* HR */
 hr {
   margin: 22px 0;
   border: none;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #2a2f3d;
 }
 
+/* PRE */
 pre {
   margin-top: 15px;
-  background: #fafafa;
-  border: 1px solid #eee;
+  background: #0b0e14;
+  color: #9ca3af;
+
   padding: 12px;
   border-radius: 10px;
+
   font-size: 12px;
 }
 
 /* CARDÁPIO */
-.cardapio-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-
 .cardapio-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  background: #fff;
-}
 
-.cardapio-item .info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  padding: 12px;
+  border-radius: 12px;
+
+  background: #0f131c;
+  border: 1px solid #2a2f3d;
 }
 
 .cardapio-item .info span {
   font-size: 12px;
-  color: #666;
+  color: #9ca3af;
 }
 
-.cardapio-item .actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.cardapio-item input {
-  width: 60px;
-}
-
-
-.status-box {
-  padding: 10px;
-  background: #fff3cd;
-  border: 1px solid #ffeeba;
-  border-radius: 10px;
-  font-size: 14px;
-}
-
-/* carrinho bonito */
-.carrinho {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
+/* CARRINHO */
 .carrinho-item {
   padding: 10px;
-  border: 1px solid #eee;
   border-radius: 10px;
-  background: #fafafa;
+
+  background: #0f131c;
+  border: 1px solid #2a2f3d;
 
   display: flex;
   justify-content: space-between;
