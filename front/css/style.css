@@ -19,7 +19,7 @@ body {
   padding: 40px;
 }
 
-/* CARD PRINCIPAL */
+/* CARD */
 .card {
   width: 100%;
   max-width: 720px;
@@ -33,7 +33,7 @@ body {
 /* TITULOS */
 h1 {
   font-size: 24px;
-  color: #e53935; /* vermelho delivery */
+  color: #e53935;
   margin-bottom: 8px;
 }
 
@@ -44,102 +44,107 @@ h3 {
 }
 
 /* INPUTS */
-input, select {
+input {
   width: 100%;
-  padding: 12px;
-  margin-top: 10px;
+  padding: 10px;
   border-radius: 10px;
   border: 1px solid #ddd;
-  background: #fff;
-  color: #111;
   outline: none;
-  transition: 0.2s;
 }
 
-input:focus, select:focus {
-  border-color: #e53935;
-  box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15);
+/* SELECT */
+select {
+  width: 120px;
+  padding: 10px;
+  padding-right: 30px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  outline: none;
+  background: #fff;
+  appearance: none;
+}
+
+/* SETA SELECT */
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.select-wrapper::after {
+  content: "▾";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #666;
 }
 
 /* BOTÕES */
 button {
-  margin-top: 12px;
-  padding: 12px 14px;
+  margin-top: 8px;
+  padding: 10px 12px;
   border-radius: 10px;
   border: none;
   background: #e53935;
   color: #fff;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.2s;
 }
 
 button:hover {
   background: #c62828;
 }
 
-/* BOTÃO SECUNDÁRIO */
-button.secondary {
-  background: #f1f1f1;
-  color: #333;
-}
-
-button.secondary:hover {
-  background: #e0e0e0;
-}
-
-/* BOTÃO DANGER */
-.danger {
-  background: #111;
-  color: white;
-}
-
-.danger:hover {
-  background: #000;
-}
-
-/* LINHAS */
 hr {
   margin: 22px 0;
   border: none;
   border-top: 1px solid #eee;
 }
 
-/* PRE (OUTPUT JSON) */
 pre {
   margin-top: 15px;
   background: #fafafa;
   border: 1px solid #eee;
-  color: #333;
-  padding: 14px;
+  padding: 12px;
   border-radius: 10px;
   font-size: 12px;
-  overflow-x: auto;
 }
 
-/* ROWS */
-.row {
+/* CARDÁPIO */
+.cardapio-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.cardapio-item {
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #fff;
 }
 
-.row input {
-  flex: 1;
+.cardapio-item .info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-/* LINKS */
-a {
-  color: #e53935;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* TEXTOS AUXILIARES */
-p {
+.cardapio-item .info span {
+  font-size: 12px;
   color: #666;
-  font-size: 14px;
-  margin-bottom: 10px;
+}
+
+.cardapio-item .actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.cardapio-item input {
+  width: 60px;
 }

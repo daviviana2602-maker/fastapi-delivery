@@ -23,21 +23,23 @@ async function criarPedido() {
 }
 
 // --------------------
-// ADICIONAR ITEM (manual)
+// ADICIONAR ITEM
 // --------------------
-async function adicionarItem(nome) {
+async function adicionarItem(nome, qtyId, sizeId) {
   if (!pedidoAtual) {
     alert("Crie um pedido primeiro");
     return;
   }
 
-  const quantidade = Number(document.getElementById("quantidade").value);
-  const tamanho = document.getElementById("tamanho").value;
+  const quantidade = Number(document.getElementById(qtyId).value);
+  let tamanho = document.getElementById(sizeId).value;
 
   if (!quantidade || !tamanho) {
     alert("Preencha quantidade e tamanho");
     return;
   }
+
+  tamanho = tamanho.toUpperCase();
 
   const res = await fetch(`${API}/pedido/adicionar_item`, {
     method: "POST",
@@ -47,24 +49,59 @@ async function adicionarItem(nome) {
     },
     body: JSON.stringify({
       pedido_id: pedidoAtual,
-      nome: nome,
-      quantidade: quantidade,
-      tamanho: tamanho
+      nome,
+      quantidade,
+      tamanho
     })
   });
 
   const data = await res.json();
 
-  console.log(data); // IMPORTANTE PRA DEBUG
   show(data);
 }
 
+// --------------------
+// CARREGAR CARDÁPIO
+// --------------------
+async function carregarCardapio() {
+  const res = await fetch(`${API}/cardapio`);
+  const data = await res.json();
 
-// --------------------
-// ADICIONAR PELO CARDÁPIO
-// --------------------
-function addDoCardapio(nome) {
-  document.getElementById("nome").value = nome;
+  const container = document.getElementById("cardapio");
+
+  container.innerHTML = data.data.map((item, index) => {
+    const qtyId = `qty_${index}`;
+    const sizeId = `size_${index}`;
+
+    return `
+      <div class="cardapio-item">
+
+        <div class="info">
+          <strong>${item.nome}</strong>
+          <span>${item.categoria}</span>
+          <span>R$ ${item.preco}</span>
+        </div>
+
+        <div class="actions">
+          <input id="${qtyId}" type="number" placeholder="Qtd">
+
+          <div class="select-wrapper">
+            <select id="${sizeId}">
+              <option value="">Tamanho</option>
+              <option value="pequeno">Pequeno</option>
+              <option value="tradicional">Tradicional</option>
+              <option value="grande">Grande</option>
+            </select>
+          </div>
+
+          <button onclick="adicionarItem('${item.nome}', '${qtyId}', '${sizeId}')">
+            Adicionar
+          </button>
+        </div>
+
+      </div>
+    `;
+  }).join("");
 }
 
 // --------------------
@@ -84,57 +121,30 @@ async function listarCarrinho() {
 }
 
 // --------------------
-// CARREGAR CARDÁPIO
-// --------------------
-async function carregarCardapio() {
-  const res = await fetch(`${API}/cardapio`);
-  const data = await res.json();
-
-  const container = document.getElementById("cardapio");
-
-  container.innerHTML = data.data.map(item => `
-    <div style="margin-bottom: 8px;">
-      <strong>${item.nome}</strong> - ${item.categoria} - R$ ${item.preco}
-      <button onclick="adicionarItem('${item.nome}')">Adicionar</button>
-    </div>
-  `).join("");
-}
-
-
-// --------------------
-// STATUS NA TELA
+// STATUS
 // --------------------
 function atualizarStatus() {
-  const el = document.getElementById("statusPedido");
-
-  el.innerHTML = `
+  document.getElementById("statusPedido").innerHTML = `
     <p><strong>Pedido atual:</strong> ${pedidoAtual ?? "nenhum"}</p>
   `;
 }
 
 // --------------------
-// DEBUG OUTPUT
+// OUTPUT
 // --------------------
 function show(data) {
   document.getElementById("out").innerText =
     JSON.stringify(data, null, 2);
 }
 
-// --------------------
 // INIT
-// --------------------
 carregarCardapio();
 
-
-
 // --------------------
-// CONCLUIR PEDIDO
+// CONCLUIR
 // --------------------
 async function concluirPedido() {
-  if (!pedidoAtual) {
-    alert("Nenhum pedido ativo");
-    return;
-  }
+  if (!pedidoAtual) return alert("Nenhum pedido ativo");
 
   const res = await fetch(`${API}/pedido/concluir`, {
     method: "PATCH",
@@ -142,28 +152,21 @@ async function concluirPedido() {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${localStorage.getItem("access_token")}`
     },
-    body: JSON.stringify({
-      pedido_id: pedidoAtual
-    })
+    body: JSON.stringify({ pedido_id: pedidoAtual })
   });
 
   const data = await res.json();
 
   show(data);
-  pedidoAtual = null; // limpa pedido atual
+  pedidoAtual = null;
   atualizarStatus();
 }
 
-
-
 // --------------------
-// CANCELAR PEDIDO
+// CANCELAR
 // --------------------
 async function cancelarPedido() {
-  if (!pedidoAtual) {
-    alert("Nenhum pedido ativo");
-    return;
-  }
+  if (!pedidoAtual) return alert("Nenhum pedido ativo");
 
   const res = await fetch(`${API}/pedido/cancelar`, {
     method: "PATCH",
@@ -171,9 +174,7 @@ async function cancelarPedido() {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${localStorage.getItem("access_token")}`
     },
-    body: JSON.stringify({
-      pedido_id: pedidoAtual
-    })
+    body: JSON.stringify({ pedido_id: pedidoAtual })
   });
 
   const data = await res.json();

@@ -21,7 +21,7 @@ ITENS_INICIAIS = [
 
     {"nome": "Brownie", "categoria": "Sobremesas", "preco": 12.0},
     {"nome": "Pudim", "categoria": "Sobremesas", "preco": 10.0},
-    {"nome": "Bolo de pote", "categoria": "Sobremesas", "preco": 15.0},
+    {"nome": "Bolo De Pote", "categoria": "Sobremesas", "preco": 15.0},
 
     {"nome": "Salada", "categoria": "legumes", "preco": 20.0},
     {"nome": "Vegana", "categoria": "legumes", "preco": 22.0},

@@ -16,10 +16,6 @@
 
     <h1>Pedidos</h1>
 
-    <div id="statusPedido">
-      <p><strong>Pedido atual:</strong> nenhum</p>
-    </div>
-
     <hr>
 
     <section>
@@ -30,23 +26,8 @@
     <hr>
 
     <section>
-          <h3>Cardápio</h3>
-          <div id="cardapio"></div>
-    </section>
-
-    <section>
-      <h3>Adicionar item</h3>
-
-      <input id="quantidade" type="number" placeholder="Qtd">
-
-      <select id="tamanho">
-          <option value="">Selecione o tamanho</option>
-          <option value="PEQUENO">Pequeno</option>
-          <option value="TRADICIONAL">Tradicional</option>
-          <option value="GRANDE">Grande</option>
-      </select>
-
-      <button onclick="adicionarItem()">Adicionar</button>
+      <h3>Cardápio</h3>
+      <div id="cardapio" class="cardapio-grid"></div>
     </section>
 
     <hr>
@@ -62,11 +43,12 @@
 
     <hr>
 
-  <section>
+    <section>
       <h3>Ações do Pedido</h3>
       <button onclick="concluirPedido()">Concluir Pedido</button>
       <button onclick="cancelarPedido()">Cancelar Pedido</button>
-  </section>
+    </section>
+
   </div>
 
 </div>
