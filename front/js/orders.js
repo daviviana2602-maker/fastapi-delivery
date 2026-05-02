@@ -3,7 +3,7 @@ const API = "http://localhost:8000/order";
 let pedidoAtual = null;
 
 // --------------------
-// UTIL: STATUS
+// STATUS
 // --------------------
 function atualizarStatus() {
   const el = document.getElementById("statusPedido");
@@ -14,11 +14,13 @@ function atualizarStatus() {
 }
 
 // --------------------
-// UTIL: DEBUG RAW
+// DEBUG
 // --------------------
 function showRaw(data) {
-  document.getElementById("out").innerText =
-    JSON.stringify(data, null, 2);
+  const el = document.getElementById("out");
+  if (el) {
+    el.innerText = JSON.stringify(data, null, 2);
+  }
 }
 
 // --------------------
@@ -35,26 +37,29 @@ async function criarPedido() {
 
   const data = await res.json();
 
-  pedidoAtual = data.data.id;
+  pedidoAtual = data?.data?.id;
 
   atualizarStatus();
   showRaw(data);
 }
 
 // --------------------
-// ADICIONAR ITEM
+// ADICIONAR ITEM (COM TRAVA FORTE)
 // --------------------
 async function adicionarItem(nome, qtyId, sizeId) {
-  if (!pedidoAtual) {
-    alert("Crie um pedido primeiro");
+  if (!pedidoAtual) return alert("Crie um pedido primeiro");
+
+  const quantidade = Number(document.getElementById(qtyId).value);
+  const tamanho = document.getElementById(sizeId).value;
+
+  // 🔒 TRAVA FRONTEND
+  if (!Number.isInteger(quantidade) || quantidade < 1) {
+    alert("Quantidade mínima é 1");
     return;
   }
 
-  const quantidade = Number(document.getElementById(qtyId).value);
-  let tamanho = document.getElementById(sizeId).value;
-
-  if (!quantidade || !tamanho) {
-    alert("Preencha quantidade e tamanho");
+  if (!tamanho) {
+    alert("Selecione um tamanho");
     return;
   }
 
@@ -75,6 +80,7 @@ async function adicionarItem(nome, qtyId, sizeId) {
   const data = await res.json();
 
   showRaw(data);
+  listarCarrinho();
 }
 
 // --------------------
@@ -100,16 +106,14 @@ async function carregarCardapio() {
         </div>
 
         <div class="actions">
-          <input id="${qtyId}" type="number" placeholder="Qtd">
+          <input id="${qtyId}" type="number" min="1" step="1" placeholder="Qtd">
 
-          <div class="select-wrapper">
-            <select id="${sizeId}">
-              <option value="">Tamanho</option>
-              <option value="pequeno">Pequeno</option>
-              <option value="tradicional">Tradicional</option>
-              <option value="grande">Grande</option>
-            </select>
-          </div>
+          <select id="${sizeId}">
+            <option value="">Tamanho</option>
+            <option value="pequeno">Pequeno</option>
+            <option value="tradicional">Tradicional</option>
+            <option value="grande">Grande</option>
+          </select>
 
           <button onclick="adicionarItem('${item.nome}', '${qtyId}', '${sizeId}')">
             Adicionar
@@ -122,7 +126,29 @@ async function carregarCardapio() {
 }
 
 // --------------------
-// CARRINHO (BONITO AGORA)
+// AJUSTAR ITEM (-1 / +1)
+// --------------------
+async function ajustarItem(itemId, ajuste) {
+  const res = await fetch(`${API}/pedido/item`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+    },
+    body: JSON.stringify({
+      item_id: itemId,
+      ajuste: ajuste
+    })
+  });
+
+  const data = await res.json();
+
+  showRaw(data);
+  listarCarrinho();
+}
+
+// --------------------
+// CARRINHO
 // --------------------
 async function listarCarrinho() {
   if (!pedidoAtual) {
@@ -142,9 +168,6 @@ async function listarCarrinho() {
 
   const data = await res.json();
 
-  console.log("DEBUG CARRINHO:", data);
-
-  // AQUI tá o fix real
   const itens = data.data?.itens ?? [];
 
   const container = document.getElementById("carrinho");
@@ -159,10 +182,17 @@ async function listarCarrinho() {
       <strong>${item.nome}</strong>
       <span>Qtd: ${item.quantidade}</span>
       <span>Tamanho: ${item.tamanho}</span>
+
+      <button onclick="ajustarItem(${item.id}, -1)">
+        - remover
+      </button>
+
+      <button onclick="ajustarItem(${item.id}, +1)">
+        + adicionar
+      </button>
     </div>
   `).join("");
 }
-
 
 // --------------------
 // FINALIZAR
@@ -184,6 +214,7 @@ async function concluirPedido() {
   showRaw(data);
   pedidoAtual = null;
   atualizarStatus();
+  document.getElementById("carrinho").innerHTML = "";
 }
 
 // --------------------
@@ -206,8 +237,11 @@ async function cancelarPedido() {
   showRaw(data);
   pedidoAtual = null;
   atualizarStatus();
+  document.getElementById("carrinho").innerHTML = "";
 }
 
+// --------------------
 // INIT
+// --------------------
 carregarCardapio();
 atualizarStatus();
