@@ -26,16 +26,14 @@ body {
 
   background: #161a22;
   border-radius: 16px;
-
   padding: 28px;
 
   border: 1px solid #232838;
-
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 
   display: flex;
   flex-direction: column;
-  gap: 12px; /* 🔥 aqui resolve teu problema de espaçamento */
+  gap: 12px;
 }
 
 /* TITULOS */
@@ -63,7 +61,6 @@ input {
   color: #fff;
 
   outline: none;
-
   transition: 0.2s;
 }
 
@@ -84,7 +81,6 @@ select {
   color: #fff;
 
   outline: none;
-
   cursor: pointer;
 }
 
@@ -109,14 +105,14 @@ button:hover {
   transform: translateY(-1px);
 }
 
-/* separação automática entre seções */
+/* SEÇÕES */
 section {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* HR */
+/* DIVISOR */
 hr {
   margin: 10px 0;
   border: none;
@@ -124,7 +120,7 @@ hr {
   opacity: 0.7;
 }
 
-/* PRE (debug / retorno API se usar) */
+/* DEBUG */
 pre {
   margin-top: 10px;
   background: #0b0e14;
@@ -132,30 +128,32 @@ pre {
 
   padding: 12px;
   border-radius: 10px;
-
   font-size: 12px;
   overflow-x: auto;
 }
 
-/* CARDÁPIO */
-.cardapio-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* =========================
+   COMPONENTE BASE REUTILIZÁVEL
+   ========================= */
+.card-item {
+  background: #0f131c;
+  border: 1px solid #2a2f3d;
 
   padding: 12px;
   border-radius: 12px;
 
-  background: #0f131c;
-  border: 1px solid #2a2f3d;
-
   transition: 0.2s;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.cardapio-item:hover {
+.card-item:hover {
   border-color: #3a4158;
 }
 
+/* CARDÁPIO */
 .cardapio-item .info {
   display: flex;
   flex-direction: column;
@@ -167,7 +165,6 @@ pre {
   color: #9ca3af;
 }
 
-/* ações alinhadas */
 .cardapio-item .actions {
   display: flex;
   gap: 8px;
@@ -181,24 +178,6 @@ pre {
   gap: 8px;
 }
 
-.carrinho-item {
-  padding: 10px;
-  border-radius: 10px;
-
-  background: #0f131c;
-  border: 1px solid #2a2f3d;
-
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-
-  transition: 0.2s;
-}
-
-.carrinho-item:hover {
-  border-color: #3a4158;
-}
-
 /* STATUS */
 .status-box {
   padding: 10px;
@@ -210,6 +189,7 @@ pre {
   font-size: 14px;
 }
 
+/* ERRO UI */
 .error-box {
   display: flex;
   flex-direction: column;
@@ -221,6 +201,7 @@ pre {
   background: rgba(255, 59, 59, 0.15);
   border: 1px solid rgba(255, 59, 59, 0.4);
   color: #ff4d4d;
+
   padding: 12px;
   border-radius: 12px;
   font-size: 14px;
@@ -231,12 +212,34 @@ pre {
   border: none;
   padding: 10px;
   border-radius: 10px;
+
   color: white;
   font-weight: bold;
   cursor: pointer;
+
   transition: 0.2s;
 }
 
 .error-btn:hover {
   background: #ff1f1f;
+}
+
+/* ADMIN / ORDERS */
+.order-card {
+  background: #0f131c;
+  border: 1px solid #2a2f3d;
+
+  padding: 12px;
+  border-radius: 10px;
+
+  margin-top: 8px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-card span {
+  font-size: 13px;
+  color: #9ca3af;
 }

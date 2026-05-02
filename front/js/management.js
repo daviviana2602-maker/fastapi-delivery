@@ -2,13 +2,22 @@ const API = "http://localhost:8000/management";
 const ORDER_API = "http://localhost:8000/order";
 
 // --------------------
-// UTIL
+// MSG UI
 // --------------------
-function show(data) {
-  document.getElementById("out").innerText =
-    JSON.stringify(data, null, 2);
+function showMsg(text, type = "success") {
+  let el = document.getElementById("msg");
+
+  el.innerHTML = text;
+  el.style.marginBottom = "10px";
+  el.style.padding = "10px";
+  el.style.borderRadius = "10px";
+  el.style.color = "#fff";
+  el.style.background = type === "success" ? "#22c55e" : "#ef4444";
 }
 
+// --------------------
+// AUTH
+// --------------------
 function getToken() {
   return localStorage.getItem("access_token");
 }
@@ -24,10 +33,15 @@ async function request(url, options) {
   const res = await fetch(url, options);
 
   if (res.status === 401) {
-    alert("Sessão expirada");
+    showMsg("Sessão expirada", "error");
+
     localStorage.removeItem("access_token");
-    window.location.href = "/login.html";
-    return;
+
+    setTimeout(() => {
+      window.location.href = "/login.html";
+    }, 800);
+
+    return null;
   }
 
   return await res.json();
@@ -40,7 +54,7 @@ function getUserId() {
   const value = document.getElementById("userId").value;
 
   if (!value) {
-    alert("Informe o ID do usuário");
+    showMsg("Informe o ID do usuário", "error");
     return null;
   }
 
@@ -48,7 +62,7 @@ function getUserId() {
 }
 
 // --------------------
-// USERS ACTIONS
+// AÇÕES ADMIN
 // --------------------
 async function promover() {
   const id = getUserId();
@@ -60,7 +74,8 @@ async function promover() {
     body: JSON.stringify({ usuario_a_sofrer_alteracao: id })
   });
 
-  show(data);
+  if (data?.success) showMsg(data.msg || "Usuário promovido");
+  else showMsg(data?.msg || "Erro ao promover", "error");
 }
 
 async function rebaixar() {
@@ -73,7 +88,8 @@ async function rebaixar() {
     body: JSON.stringify({ usuario_a_sofrer_alteracao: id })
   });
 
-  show(data);
+  if (data?.success) showMsg(data.msg || "Usuário rebaixado");
+  else showMsg(data?.msg || "Erro ao rebaixar", "error");
 }
 
 async function desativar() {
@@ -86,7 +102,8 @@ async function desativar() {
     body: JSON.stringify({ usuario_a_sofrer_alteracao: id })
   });
 
-  show(data);
+  if (data?.success) showMsg(data.msg || "Usuário desativado");
+  else showMsg(data?.msg || "Erro ao desativar", "error");
 }
 
 async function reativar() {
@@ -99,13 +116,15 @@ async function reativar() {
     body: JSON.stringify({ usuario_a_sofrer_alteracao: id })
   });
 
-  show(data);
+  if (data?.success) showMsg(data.msg || "Usuário reativado");
+  else showMsg(data?.msg || "Erro ao reativar", "error");
 }
 
 // --------------------
-// ORDERS (NOVO)
+// ORDERS
 // --------------------
 async function listarPedidos(status) {
+
   const data = await request(
     `${ORDER_API}/listar?status_type=${status}`,
     {
@@ -114,5 +133,24 @@ async function listarPedidos(status) {
     }
   );
 
-  show(data);
+  const box = document.getElementById("ordersBox");
+
+  if (!data?.success || !data.data?.length) {
+    box.innerHTML = `<p style="color:#9ca3af">Nenhum pedido encontrado</p>`;
+    return;
+  }
+
+  box.innerHTML = data.data.map(order => `
+    <div class="order-card">
+      <div>
+        <strong>#${order.id}</strong><br>
+        <span>User: ${order.usuario_id}</span>
+      </div>
+
+      <div>
+        <span>Status: ${order.status}</span><br>
+        <span>R$ ${order.preco}</span>
+      </div>
+    </div>
+  `).join("");
 }
