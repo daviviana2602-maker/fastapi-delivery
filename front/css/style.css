@@ -6,7 +6,7 @@
 }
 
 body {
-  background: #0f1115; /* fundo escuro elegante */
+  background: #0f1115;
   color: #eaeaea;
 }
 
@@ -32,17 +32,21 @@ body {
   border: 1px solid #232838;
 
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* 🔥 aqui resolve teu problema de espaçamento */
 }
 
 /* TITULOS */
 h1 {
   font-size: 24px;
   color: #ff4d4d;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 h3 {
-  margin-top: 18px;
+  margin-top: 10px;
   font-size: 16px;
   color: #d1d5db;
 }
@@ -59,10 +63,13 @@ input {
   color: #fff;
 
   outline: none;
+
+  transition: 0.2s;
 }
 
 input:focus {
   border-color: #ff4d4d;
+  box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.15);
 }
 
 /* SELECT */
@@ -77,11 +84,12 @@ select {
   color: #fff;
 
   outline: none;
+
+  cursor: pointer;
 }
 
 /* BOTÕES */
 button {
-  margin-top: 8px;
   padding: 10px 12px;
 
   border-radius: 10px;
@@ -101,16 +109,24 @@ button:hover {
   transform: translateY(-1px);
 }
 
-/* HR */
-hr {
-  margin: 22px 0;
-  border: none;
-  border-top: 1px solid #2a2f3d;
+/* separação automática entre seções */
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-/* PRE */
+/* HR */
+hr {
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid #2a2f3d;
+  opacity: 0.7;
+}
+
+/* PRE (debug / retorno API se usar) */
 pre {
-  margin-top: 15px;
+  margin-top: 10px;
   background: #0b0e14;
   color: #9ca3af;
 
@@ -118,6 +134,7 @@ pre {
   border-radius: 10px;
 
   font-size: 12px;
+  overflow-x: auto;
 }
 
 /* CARDÁPIO */
@@ -131,6 +148,18 @@ pre {
 
   background: #0f131c;
   border: 1px solid #2a2f3d;
+
+  transition: 0.2s;
+}
+
+.cardapio-item:hover {
+  border-color: #3a4158;
+}
+
+.cardapio-item .info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .cardapio-item .info span {
@@ -138,7 +167,20 @@ pre {
   color: #9ca3af;
 }
 
+/* ações alinhadas */
+.cardapio-item .actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 /* CARRINHO */
+.carrinho {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .carrinho-item {
   padding: 10px;
   border-radius: 10px;
@@ -149,4 +191,52 @@ pre {
   display: flex;
   justify-content: space-between;
   font-size: 14px;
+
+  transition: 0.2s;
+}
+
+.carrinho-item:hover {
+  border-color: #3a4158;
+}
+
+/* STATUS */
+.status-box {
+  padding: 10px;
+  border-radius: 10px;
+
+  background: rgba(255, 77, 77, 0.08);
+  border: 1px solid rgba(255, 77, 77, 0.25);
+
+  font-size: 14px;
+}
+
+.error-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.error-msg {
+  background: rgba(255, 59, 59, 0.15);
+  border: 1px solid rgba(255, 59, 59, 0.4);
+  color: #ff4d4d;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.error-btn {
+  background: #ff3b3b;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.error-btn:hover {
+  background: #ff1f1f;
 }
