@@ -31,6 +31,9 @@ def promover_usuario_services(
     if usuario_a_promover.status == "DESATIVADO":
         raise HTTPException(status_code=400, detail="usuário está desativado e não pode ser promovido")
     
+    if usuario_a_promover.status == "EXCLUIDO":
+        raise HTTPException(status_code=400, detail="usuário foi excluído e não pode sofrer alterações")
+    
     if usuario_a_promover.admin == True:
         raise HTTPException(status_code=403, detail="O usuário escolhido já é um administrador")
     
@@ -71,6 +74,9 @@ def rebaixar_usuario_services(
     
     if usuario_a_rebaixar.admin == False:
         raise HTTPException(status_code=403, detail="O usuário escolhido não é administrador")
+    
+    if usuario_a_rebaixar.status == "EXCLUIDO":
+        raise HTTPException(status_code=400, detail="usuário foi excluído e não pode sofrer alterações")
     
     if usuario_a_rebaixar.id == admin.id:
         raise HTTPException(status_code=403, detail="Você não pode se rebaixar")    # checagem pra não deixar se rebaixar sozinho
@@ -116,6 +122,9 @@ def desativar_usuario_services(
     if usuario.status == "DESATIVADO":
         raise HTTPException(status_code=400, detail="Usuário já está desativado")   # contas "banidas"/desativadas
     
+    if usuario.status == "EXCLUIDO":
+        raise HTTPException(status_code=400, detail="usuário foi excluído e não pode sofrer alterações")
+    
     
     usuario.status = "DESATIVADO"   # desativando usuário
     
@@ -152,6 +161,9 @@ def reativar_usuario_services(
     
     if usuario.status == "ATIVO":
         raise HTTPException(status_code=400, detail="Usuário já está ativo")
+    
+    if usuario.status == "EXCLUIDO":
+        raise HTTPException(status_code=400, detail="usuário foi excluído e não pode sofrer alterações")
     
     usuario.status = "ATIVO"
     
