@@ -88,8 +88,11 @@ def login_services(
     if not usuario:
         raise HTTPException(status_code = 400, detail = "email ou senha inválidos")   
     
-    if not usuario.ativo:
+    if usuario.status == "DESATIVADO":
         raise HTTPException(status_code=403, detail="usuário desativado") 
+    
+    if usuario.status == "EXCLUIDO":
+        raise HTTPException(status_code=403, detail="usuário excluído") 
     
     if not argon_context.verify(user_login.senha, usuario.senha):     # verifica se a senha está correta, mesmo estando criptografada por comparação de hash
         raise HTTPException(status_code=400, detail="email ou senha inválidos")     

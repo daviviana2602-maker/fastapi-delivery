@@ -19,10 +19,12 @@ class UserTable(Base):
     nome = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     senha = Column(String, nullable=False)
-    ativo = Column(Boolean, nullable=False, default = True)
+    status = Column(String, nullable=False, default="ATIVO")
     admin = Column(Boolean, nullable=False, default=False)
     criado_em = Column(DateTime(timezone=True), server_default=func.now())  # garante que o banco já coloque o horário correto quando criar algum registro
     
+STATUS_USUARIO_VALIDOS = ("ATIVO", "DESATIVADO", "EXCLUIDO")
+
 
 class OrderTable(Base):   
     __tablename__ = "pedidos"   # criando tabela pedidos
@@ -65,12 +67,3 @@ class TempItemsTable(Base):
     preco_unit = Column(Float, nullable=False)
     preco_total = Column(Float, nullable=False)
     pedido_id = Column(Integer, ForeignKey("pedidos.id"), nullable=False)     
-    
-    
-class ExcludedUserTable(Base):   
-    __tablename__ = "usuarios_excluidos"   # criando tabela usuarios excluidos
-    id_utilizado = Column(Integer, primary_key=True, autoincrement=False)   # sem autoincrement pois vamos utilizar o id vindo da tabela usuarios
-    nome = Column(String, nullable=False)
-    email = Column(String, nullable=False)
-    senha_hash = Column(String, nullable=False)
-    excluido_em = Column(DateTime(timezone=True), server_default=func.now())  # garante que o banco já coloque o horário correto quando deletar o usuário

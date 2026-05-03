@@ -2,9 +2,7 @@
 
 from sqlalchemy.orm import Session
 
-from dependencies import get_db, usuario_logado
-
-from db.models import UserTable, ExcludedUserTable, OrderTable
+from db.models import UserTable, OrderTable, STATUS_USUARIO_VALIDOS
 
 from schemas import UpdateProfileSchema
 
@@ -123,19 +121,11 @@ def excluir_usuario_services(
     if pedido_ativo:
         raise HTTPException(status_code=400, detail="Finalize ou cancele pedidos antes de excluir a conta.")
         
-        
-    usuario_excluido = ExcludedUserTable(
-        id_utilizado = usuario.id,
-        nome = usuario.nome,
-        email = usuario.email,
-        senha_hash = usuario.senha,
-    )  
-    
+    usuario.status = "EXCLUIDO"
     
     try:
-        db.add(usuario_excluido)    # Inserindo o usuário na tabela de usuários excluídos para manter histórico
-        db.delete(usuario)    # deletando usuário da tabela de usuários
         db.commit()
+        db.refresh(usuario)
     except Exception:
         db.rollback()
         raise

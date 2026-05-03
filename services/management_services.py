@@ -28,7 +28,7 @@ def promover_usuario_services(
     if not usuario_a_promover:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")   # usuário inexistente retorna erro
     
-    if not usuario_a_promover.ativo:
+    if usuario_a_promover.status == "DESATIVADO":
         raise HTTPException(status_code=400, detail="usuário está desativado e não pode ser promovido")
     
     if usuario_a_promover.admin == True:
@@ -113,11 +113,11 @@ def desativar_usuario_services(
     if usuario.admin:
         raise HTTPException(status_code=403, detail="O usuário escolhido é administrador e não pode ser desativado")
     
-    if not usuario.ativo:
+    if usuario.status == "DESATIVADO":
         raise HTTPException(status_code=400, detail="Usuário já está desativado")   # contas "banidas"/desativadas
     
     
-    usuario.ativo = False   # desativando usuário
+    usuario.status = "DESATIVADO"   # desativando usuário
     
     try:
         db.commit()
@@ -150,10 +150,10 @@ def reativar_usuario_services(
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     
-    if usuario.ativo:
+    if usuario.status == "ATIVO":
         raise HTTPException(status_code=400, detail="Usuário já está ativo")
     
-    usuario.ativo = True    # reativando o usuário
+    usuario.status = "ATIVO"
     
     try:
         db.commit()
