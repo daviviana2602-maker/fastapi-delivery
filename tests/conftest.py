@@ -95,7 +95,7 @@ def admin_user(db):
             email="admin@test.com",
             senha=argon_context.hash("123456"),
             admin=True,
-            ativo=True
+            status="ATIVO"
         )
 
         db.add(admin)

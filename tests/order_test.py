@@ -47,7 +47,7 @@ def test_adicionar_item(api_client):
         "/order/pedido/adicionar_item",
         json={
             "pedido_id": pedido_id,
-            "nome": "Arroz",
+            "nome": "Bolo De Pote",
             "quantidade": 1,
             "tamanho": "tradicional"
         },
@@ -84,7 +84,7 @@ def test_concluir_pedido(api_client):
         "/order/pedido/adicionar_item",
         json={
             "pedido_id": pedido_id,
-            "nome": "Bife",
+            "nome": "Bolo De Pote",
             "quantidade": 3,
             "tamanho": "tradicional"
         },
@@ -159,7 +159,7 @@ def test_ajustar_item(api_client):
         "/order/pedido/adicionar_item",
         json={
             "pedido_id": pedido_id,
-            "nome": "Estrogonofe",
+            "nome": "Bolo De Pote",
             "quantidade": 1,
             "tamanho": "tradicional"
         },

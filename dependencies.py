@@ -37,7 +37,7 @@ def usuario_logado(
         id=usuario_id
     ).first()
     
-    if not usuario.ativo:
+    if usuario.status == "DESATIVADO":
         raise HTTPException(status_code=403, detail="usuário desativado")
     
     return usuario_id

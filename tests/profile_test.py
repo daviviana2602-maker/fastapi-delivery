@@ -173,7 +173,7 @@ def test_excluir_usuario_senha_errada(api_client):
         "/auth/criar_conta",
         json={
             "nome": "Davi",
-            "email": "davi@test.com",
+            "email": "davi@excluirerrado.com",
             "senha": "123456"
         }
     )
@@ -181,7 +181,7 @@ def test_excluir_usuario_senha_errada(api_client):
     login = api_client.post(
         "/auth/login",
         json={
-            "email": "davi@test.com",
+            "email": "davi@excluirerrado.com",
             "senha": "123456"
         }
     )
