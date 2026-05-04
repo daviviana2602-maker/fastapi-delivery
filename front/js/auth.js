@@ -21,6 +21,26 @@ function showMsg(text, type = "success") {
 }
 
 // --------------------
+// BUSCAR USUÁRIO LOGADO (/me)
+// --------------------
+async function fetchUser() {
+  const token = localStorage.getItem("access_token");
+
+  if (!token) return;
+
+  const res = await fetch(`${API}/me`, {
+    method: "GET",
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  });
+
+  const user = await res.json();
+
+  localStorage.setItem("user", JSON.stringify(user));
+}
+
+// --------------------
 // LOGIN
 // --------------------
 async function login() {
@@ -42,6 +62,9 @@ async function login() {
 
     localStorage.setItem("access_token", data.data.access_token);
     localStorage.setItem("refresh_token", data.data.refresh_token);
+
+    // pega usuário logado (admin, etc)
+    await fetchUser();
 
     alert("Login realizado com sucesso");
 
@@ -79,6 +102,10 @@ async function register() {
   if (data.success) {
 
     showMsg(data.msg || "Conta criada com sucesso");
+
+    // opcional: já logar user após registro (se backend retornar token depois)
+    // se não quiser, pode remover isso
+    // await fetchUser();
 
     document.getElementById("nome").value = "";
     document.getElementById("email").value = "";

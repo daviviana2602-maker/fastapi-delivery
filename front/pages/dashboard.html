@@ -30,7 +30,9 @@
       </div>
 
       <div class="row">
-        <a href="./management.html"><button>🛠 Admin</button></a>
+        <a id="adminBtn" href="./management.html">
+          <button>🛠 Admin</button>
+        </a>
       </div>
 
     </section>
@@ -53,10 +55,38 @@
 </div>
 
 <script>
+
+// --------------------
+// LOGOUT
+// --------------------
 function logout() {
   localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("user");
   window.location.href = "/pages/login.html";
 }
+
+// --------------------
+// CONTROLE DE ADMIN (UI)
+// --------------------
+(function initDashboard() {
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!user) {
+    window.location.href = "/pages/login.html";
+    return;
+  }
+
+  // se não for admin, esconde botão
+  if (!user.admin) {
+    const adminBtn = document.getElementById("adminBtn");
+    if (adminBtn) {
+      adminBtn.style.display = "none";
+    }
+  }
+
+})();
 </script>
 
 </body>

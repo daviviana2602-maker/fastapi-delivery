@@ -128,3 +128,17 @@ def use_refresh_token_services(
             "token_type": "Bearer"
         }
     )
+    
+    
+
+def me_service(usuario_id: int, db: Session):
+
+    usuario = db.query(UserTable).filter(
+        UserTable.id == usuario_id
+        ).first()
+
+    return {
+        "id": usuario.id,
+        "email": usuario.email,
+        "admin": usuario.admin
+    }

@@ -5,11 +5,36 @@
   <title>Admin Panel</title>
 
   <link rel="stylesheet" href="../css/style.css">
-  <script src="../js/auth-guard.js" defer></script>
+
+  <!-- BLOQUEIO ANTES DE RENDERIZAR A PÁGINA -->
+  <script>
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+      window.location.replace("/pages/login.html");
+    } else {
+      fetch("http://localhost:8000/auth/me", {
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      })
+      .then(r => r.json())
+      .then(user => {
+        if (!user.admin) {
+          window.location.replace("/pages/dashboard.html");
+        }
+      })
+      .catch(() => {
+        window.location.replace("/pages/login.html");
+      });
+    }
+  </script>
+
   <script src="../js/management.js" defer></script>
 </head>
 
 <body>
+
 
 <div class="container">
 

@@ -1,4 +1,4 @@
-from services.auth_services import criar_conta_services, login_services, use_refresh_token_services
+from services.auth_services import criar_conta_services, login_services, use_refresh_token_services, me_service
 
 from sqlalchemy.orm import Session
 
@@ -46,7 +46,8 @@ def use_refresh_token(
 
 
 @auth_router.get("/me")
-def me(usuario: int = Depends(usuario_logado)):
-    return {
-        "id": usuario
-    }
+def me(
+    usuario_id: int = Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
+    return me_service(usuario_id, db)
