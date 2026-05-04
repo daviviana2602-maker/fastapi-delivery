@@ -40,6 +40,10 @@ def usuario_logado(
     if usuario.status == "DESATIVADO":
         raise HTTPException(status_code=403, detail="usuário desativado")
     
+    if usuario.status == "EXCLUIDO":
+        raise HTTPException(status_code=403, detail="usuário excluído")
+    
+    
     return usuario_id
 
 
