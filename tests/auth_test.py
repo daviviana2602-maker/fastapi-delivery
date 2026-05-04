@@ -89,7 +89,7 @@ def test_refresh_token(api_client):
 
     refresh_token = login_res.json()["data"]["refresh_token"]
 
-    # usa refresh
+    
     response = api_client.post(
         "/auth/refresh",
         json={

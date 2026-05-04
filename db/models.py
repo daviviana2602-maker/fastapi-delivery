@@ -1,5 +1,3 @@
-# Relacionamento com DB
-
 from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, DateTime 
 
 from sqlalchemy.orm import declarative_base
@@ -9,8 +7,6 @@ from sqlalchemy.sql import func
 
 Base = declarative_base()
 
-
-#------------------- CLASSES -------------------
 
 
 class UserTable(Base):   

@@ -5,7 +5,6 @@ from contextlib import asynccontextmanager
 from db.populate_db import popular_cardapio
 
 
-# rodando a função de popular cardápio (quando o sistema inicia)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     popular_cardapio()      # ANTES do yield → STARTUP (roda quando sistema inicia)
@@ -20,21 +19,19 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # depois pode restringir
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-# Importando as rotas da pasta routes
 from routes.auth_routes import auth_router     
 from routes.order_routes import order_router   
 from routes.management_routes import management_router   
 from routes.profile_routes import profile_router   
 
 
-# inserindo as rotas no app
 app.include_router(auth_router)
 app.include_router(order_router)  
 app.include_router(management_router)  

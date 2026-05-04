@@ -29,9 +29,8 @@ ITENS_INICIAIS = [
 ]
 
 
-# função que insere os ITENS_INICIAIS na tabela cardápio
 def popular_cardapio():    
-    db = SessionLocal()  # cria a sessão
+    db = SessionLocal()  
     try:
         for item in ITENS_INICIAIS:
             
@@ -47,7 +46,7 @@ def popular_cardapio():
                     preco=item["preco"]
                 )
                 
-                db.add(novo_item)   # adiciona o respectivo item na tabela cardápio
+                db.add(novo_item)   
                 
         db.commit()
         print("Cardápio populado com sucesso!")
@@ -57,4 +56,4 @@ def popular_cardapio():
         print("Erro ao popular cardápio:", e)
         
     finally:
-        db.close()  # fecha o banco
+        db.close()  

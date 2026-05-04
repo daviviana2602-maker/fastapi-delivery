@@ -1,5 +1,3 @@
-# Rotas para administração do app
-
 from services.management_services import promover_usuario_services, rebaixar_usuario_services, reativar_usuario_services, desativar_usuario_services
 
 from sqlalchemy.orm import Session
@@ -15,7 +13,7 @@ from schemas import AlterationUserSchema
 from response_schemas import CommonResponse
 
 
-management_router = APIRouter(prefix = "/management", tags=["management"])   # define o caminho = domínio/management/(rota esolhinha)
+management_router = APIRouter(prefix = "/management", tags=["management"])   
 
 
 
@@ -23,7 +21,7 @@ management_router = APIRouter(prefix = "/management", tags=["management"])   # d
 def promover_usuario(
         promote_user: AlterationUserSchema,
         db: Session = Depends(get_db),
-        admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
+        admin: UserTable = Depends(checar_admin)    
         ):
     
     return promover_usuario_services(promote_user, db, admin)
@@ -34,7 +32,7 @@ def promover_usuario(
 def rebaixar_usuario(
                     demote_user: AlterationUserSchema,
                     db: Session = Depends(get_db),
-                    admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
+                    admin: UserTable = Depends(checar_admin)   
                     ):
     
     return rebaixar_usuario_services(demote_user, db, admin)
@@ -45,7 +43,7 @@ def rebaixar_usuario(
 def desativar_usuario(
         delete_user_id: AlterationUserSchema,
         db: Session = Depends(get_db),
-        admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
+        admin: UserTable = Depends(checar_admin)    
         ):
     
     return desativar_usuario_services(delete_user_id, db, admin)
@@ -56,7 +54,7 @@ def desativar_usuario(
 def reativar_usuario(
     reactive_user_id: AlterationUserSchema,
     db: Session = Depends(get_db),
-    admin: UserTable = Depends(checar_admin)    # checando se é admin e quem é pelo id
+    admin: UserTable = Depends(checar_admin)   
     ):
     
     return reativar_usuario_services(reactive_user_id, db, admin)

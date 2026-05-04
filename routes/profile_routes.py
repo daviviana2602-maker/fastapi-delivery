@@ -1,5 +1,3 @@
-# Rotas para Perfil
-
 from services.profile_services import editar_perfil_services, excluir_usuario_services
 
 from sqlalchemy.orm import Session
@@ -13,7 +11,7 @@ from response_schemas import CommonResponse
 from fastapi import APIRouter, Depends
 
 
-profile_router = APIRouter(prefix = "/profile", tags=["profile"])   # define o caminho = domínio/profile/(rota escolhida)
+profile_router = APIRouter(prefix = "/profile", tags=["profile"]) 
 
 
 

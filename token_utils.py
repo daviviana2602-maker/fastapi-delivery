@@ -11,27 +11,24 @@ from fastapi import HTTPException
 from db.models import UserTable
 
 
-# Função para criação de tokens JWT
 def criar_token(usuario_id, duracao_token=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)):   
-    prazo_token = datetime.now(timezone.utc) + duracao_token    # especificando tempo de duração do token de acesso
+    prazo_token = datetime.now(timezone.utc) + duracao_token    
     dic_infos = {
         "sub": str(usuario_id),  # identificador do dono do token (transformar em string sempre e nome "sub" é padrão JWT)
-        "exp": prazo_token  # definindo prazo do token
+        "exp": prazo_token  
     }
     
     jwt_codificado = jwt.encode(dic_infos, SECRET_KEY, ALGORITHM)    # Gerando token JWT a partir dos dados do usuário, assinado com a SECRET_KEY
 
     return jwt_codificado
     
-    
 
-# Função para verificação de tokens
+
 def verificar_token(token: str, db):
     try:
-        jwt_decodificado = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])    # decodificando JWT, assinado com a SECRET_KEY  
+        jwt_decodificado = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])    
         usuario_id = jwt_decodificado.get("sub")
 
-        # Verificando se o usuário existe de fato no DB (segurança adicional)
         usuario = db.query(UserTable).filter(
             UserTable.id == usuario_id
             ).first()
@@ -42,4 +39,4 @@ def verificar_token(token: str, db):
         return jwt_decodificado
 
     except JWTError:
-        raise HTTPException(status_code=401, detail="token inválido ou expirado")   # Retornando erro caso ocorra qualquer problema com o JWT
+        raise HTTPException(status_code=401, detail="token inválido ou expirado")  

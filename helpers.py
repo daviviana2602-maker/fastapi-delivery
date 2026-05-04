@@ -1,5 +1,3 @@
-# Funções de apoio
-
 from fastapi import HTTPException, Depends
 
 from sqlalchemy.orm import Session
@@ -29,7 +27,7 @@ def checar_dono_ou_admin(
     return True
 
 
-# deixa modelos de resposta mais práticos
+# modelo de respostas padronizadas
 def resposta_sucesso(msg: str, data=None):
     response = {
         "success": True,

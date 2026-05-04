@@ -44,7 +44,7 @@ async function criarPedido() {
 }
 
 // --------------------
-// ADICIONAR ITEM (COM TRAVA FORTE)
+// ADICIONAR ITEM
 // --------------------
 async function adicionarItem(nome, qtyId, sizeId) {
   if (!pedidoAtual) return alert("Crie um pedido primeiro");

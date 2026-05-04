@@ -1,5 +1,3 @@
-# Services para as rotas de Pedidos
-
 from sqlalchemy.orm import Session
 
 from dependencies import get_db, usuario_logado
@@ -39,7 +37,6 @@ def criar_pedido_services(
         )
         
         
-    # cria o pedido com base no usuário logado
     novo_pedido = OrderTable(
         usuario_id=usuario_id
     )   
@@ -54,7 +51,7 @@ def criar_pedido_services(
         raise
 
 
-    return resposta_sucesso(            # success já vem como True pela função
+    return resposta_sucesso(         
         "Pedido criado com sucesso",   
         {
             "id": novo_pedido.id,
@@ -68,14 +65,14 @@ def criar_pedido_services(
 def listar_todos_pedidos_services(
     status_type: str,
     db: Session,
-    admin: UserTable    # verifica se o usuario é um adm (função somente para adms)
+    admin: UserTable    
 ):
     
     status_type = status_type.upper()   # transformando em maiúsculas pra bater com os nomes de status da tabela pedidos
     
     
     if status_type not in STATUS_VALIDOS:
-        raise HTTPException(status_code=400, detail="status inválido")   # verifica se o status existe no sistema
+        raise HTTPException(status_code=400, detail="status inválido")  
     
     
     pedidos = db.query(OrderTable).filter_by(
@@ -84,7 +81,7 @@ def listar_todos_pedidos_services(
     
     
     if not pedidos:
-        raise HTTPException(status_code=404, detail="nenhum pedido encontrado")   # verifica se existem pedidos de determinado status no sistema
+        raise HTTPException(status_code=404, detail="nenhum pedido encontrado")   
 
 
     return resposta_sucesso(
@@ -96,7 +93,7 @@ def listar_todos_pedidos_services(
             "status": pedido.status,
             "preco": pedido.preco
         }
-        for pedido in pedidos   # pedidos é uma lista, devido ao .all() então é retornado um formato desse de data pra cada pedido
+        for pedido in pedidos   # pedidos é uma lista, devido ao .all() então é retornado em formato data pra cada pedido
     ]
 )
 
@@ -108,7 +105,7 @@ def adicionar_item_temp_services(
     usuario_id: int = Depends(usuario_logado)
     ):
     
-    # pega o pedido
+    
     pedido = db.query(OrderTable).filter_by(
         id=add_item_schema.pedido_id
         ).first()
@@ -117,10 +114,9 @@ def adicionar_item_temp_services(
         raise HTTPException(status_code=404, detail="Pedido não encontrado")
     
     if pedido.status != "PENDENTE":
-        raise HTTPException(status_code=400, detail="Pedido não pode ser editado")  # pedido já cancelado ou concluído
+        raise HTTPException(status_code=400, detail="Pedido não pode ser editado") 
 
 
-    # checa dono ou admin para conceder permissão
     checar_dono_ou_admin(
                     recurso_usuario_id=pedido.usuario_id,
                     usuario_id=usuario_id,
@@ -128,24 +124,21 @@ def adicionar_item_temp_services(
                     )
 
 
-    # valida tamanho e item
     if add_item_schema.tamanho.upper() not in TAMANHOS_VALIDOS:
         raise HTTPException(status_code=400, detail="Tamanho inválido")
     
     
-    # busca item no cardápio
     item_cardapio = db.query(CardapioTable).filter_by(
         nome=add_item_schema.nome.title()
         ).first()
     
     
-    # caso item não exista no cardápio
     if not item_cardapio:
         raise HTTPException(status_code=404, detail="Item não encontrado no cardápio")
 
     preco_total=item_cardapio.preco * add_item_schema.quantidade
 
-    # cria item temporário
+
     novo_item_temp = TempItemsTable(
         quantidade=add_item_schema.quantidade,
         nome=item_cardapio.nome,
@@ -164,7 +157,7 @@ def adicionar_item_temp_services(
         raise
 
 
-    return resposta_sucesso(    # success já vem como True pela função
+    return resposta_sucesso(    
     f"{novo_item_temp.quantidade} {novo_item_temp.nome} adicionados temporariamente",
     {
         "id": novo_item_temp.id
@@ -187,7 +180,7 @@ def concluir_pedido_services(
     if not pedido:
         raise HTTPException(status_code=404, detail="Pedido não encontrado")
     
-    # checa dono ou admin
+    
     checar_dono_ou_admin(
                         recurso_usuario_id=pedido.usuario_id,
                         usuario_id=usuario_id,
@@ -198,10 +191,10 @@ def concluir_pedido_services(
         raise HTTPException(status_code=400, detail="Pedido não pode ser concluído")
     
 
-    # # pega itens temporários do usuário em questão pelo pedido_id passado no schema
     temp_itens = db.query(TempItemsTable).filter_by(
         pedido_id=pedido.id
         ).all()
+    
     
     if not temp_itens:
         raise HTTPException(status_code=400, detail="Pedido não possui itens")
@@ -225,7 +218,7 @@ def concluir_pedido_services(
             db.add(item_real)
             total = total + t.quantidade * t.preco_unit
 
-        # atualiza preço total e muda status
+    
         pedido.preco = total
         pedido.status = "CONCLUIDO"
 
@@ -242,7 +235,7 @@ def concluir_pedido_services(
         raise
 
 
-    return resposta_sucesso(    # success já vem como True pela função
+    return resposta_sucesso(    
         "Pedido concluído",   
         {
             "id": pedido.id,
@@ -259,7 +252,6 @@ def cancelar_pedido_services(
     ):
     
     
-    # pedido a ser cancelado
     pedido = db.query(OrderTable).filter_by(
         id=cancel_order.pedido_id
         ).first()
@@ -269,7 +261,6 @@ def cancelar_pedido_services(
         raise HTTPException(status_code=404, detail="Pedido não encontrado")
     
     
-    # checa dono ou admin
     checar_dono_ou_admin(
                         recurso_usuario_id=pedido.usuario_id,
                         usuario_id=usuario_id,
@@ -283,7 +274,7 @@ def cancelar_pedido_services(
     pedido.status = "CANCELADO"
 
     try:
-        # limpa itens temporários do pedido
+        
         db.query(TempItemsTable).filter_by(
             pedido_id=pedido.id
             ).delete()
@@ -295,7 +286,7 @@ def cancelar_pedido_services(
         raise
     
 
-    return resposta_sucesso(  # success já vem como True pela função
+    return resposta_sucesso( 
         "Pedido cancelado", 
         {
             "id": pedido.id
@@ -310,7 +301,7 @@ def ajustar_item_pedido_services(
     usuario_id: int
     ):
     
-    # procura o id na temporarios com base no id passado 
+    
     item = db.query(TempItemsTable).filter_by(
         id=ajustar_item_schema.item_id  
         ).first()
@@ -320,20 +311,18 @@ def ajustar_item_pedido_services(
         raise HTTPException(status_code=404, detail="Item não encontrado")  
 
 
-    # associa o pedido temporario com o pedido já existente na OrderTable
     pedido = db.query(OrderTable).filter_by(
         id=item.pedido_id
         ).first()
 
 
     if not pedido:
-        raise HTTPException(status_code=404, detail="Pedido não encontrado")    # se não houver o pedido na OrderTable
+        raise HTTPException(status_code=404, detail="Pedido não encontrado")   
 
     if pedido.status != "PENDENTE":
-        raise HTTPException(status_code=400, detail="Pedido não pode ser editado")  # se o pedido já tiver sido finalizado
+        raise HTTPException(status_code=400, detail="Pedido não pode ser editado") 
 
 
-    # permissão (dono ou admin)
     checar_dono_ou_admin(
         recurso_usuario_id=pedido.usuario_id,
         usuario_id=usuario_id,
@@ -363,7 +352,7 @@ def ajustar_item_pedido_services(
         raise
     
     
-    return resposta_sucesso(            # success já vem como True pela função
+    return resposta_sucesso(            
         mensagem, 
         {
         "item_id": item.id,
@@ -391,12 +380,11 @@ def listar_pedido_temporario_services(
         raise HTTPException(status_code=404, detail="Pedido não encontrado")    
 
 
-    # checa dono ou admin
     checar_dono_ou_admin(
-                        recurso_usuario_id=pedido.usuario_id,
-                        usuario_id=usuario_id,
-                        db=db
-                        )
+        recurso_usuario_id=pedido.usuario_id,
+        usuario_id=usuario_id,
+        db=db
+        )
     
     
     # lista dos itens de determinado id presentes na tabela temporários que basicamente forma um pedido completo
@@ -406,7 +394,7 @@ def listar_pedido_temporario_services(
 
 
     if not pedido_temp:
-        return resposta_sucesso(       # success já vem como True pela função
+        return resposta_sucesso(       
             "Carrinho vazio até o momento", 
             {
             "pedido_id": pedido_id,
@@ -417,10 +405,10 @@ def listar_pedido_temporario_services(
         )
         
 
-    total = sum(p.preco_total for p in pedido_temp)     # para cada item no pedido temporário some o item.preco_total na váriavel total para a resposta
+    total = sum(p.preco_total for p in pedido_temp)     
 
 
-    return resposta_sucesso(    # success já vem como True pela função
+    return resposta_sucesso(   
     "Itens temporários listados com sucesso", 
     {
         "pedido_id": pedido_id,
@@ -443,7 +431,7 @@ def listar_pedido_temporario_services(
     
     
 def listar_cardapio_service():
-    return resposta_sucesso(    # success já vem como True pela função
+    return resposta_sucesso(    
         "Cardápio listado com sucesso",
         ITENS_INICIAIS
         

@@ -1,5 +1,3 @@
-# Rotas para Pedidos
-
 from services.order_services import(criar_pedido_services, listar_todos_pedidos_services, adicionar_item_temp_services, ajustar_item_pedido_services,
 listar_pedido_temporario_services, cancelar_pedido_services, concluir_pedido_services, listar_cardapio_service)
 
@@ -16,7 +14,7 @@ from schemas import AddItemSchema, FinishOrderSchema, AdjustItemSchema
 from response_schemas import CommonResponse
 
 
-order_router = APIRouter(prefix = "/order", tags=["order"])   # define o caminho = domínio/order/(rota esolhinha)
+order_router = APIRouter(prefix = "/order", tags=["order"])   
 
 
 
@@ -34,7 +32,7 @@ def criar_pedido(
 def listar_todos_pedidos(
     status_type: str,
     db: Session = Depends(get_db),
-    admin: UserTable = Depends(checar_admin)    # verifica se o usuario é um adm (função somente para adms)
+    admin: UserTable = Depends(checar_admin)    
     ):
     
     return listar_todos_pedidos_services(status_type, db, admin)

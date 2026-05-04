@@ -1,8 +1,5 @@
-# Esquemas para respostas mais organizadas e padronizadas
-
 from pydantic import BaseModel
 from typing import Optional, Any
-
 
 
 class CommonResponse(BaseModel):

@@ -1,5 +1,3 @@
-# Criação de Esquemas
-
 from typing import Annotated
 
 from pydantic import BaseModel, EmailStr, Field
@@ -39,7 +37,7 @@ class AddItemSchema(BaseModel):
     quantidade: Annotated[int, Field(gt=0)]   # garante que seja > 0 
     nome: str
     tamanho: str
-    pedido_id: int    # diz qual pedido você pretende adicionar
+    pedido_id: int    
         
         
 

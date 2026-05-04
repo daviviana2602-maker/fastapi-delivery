@@ -8,7 +8,6 @@ def test_editar_nome(api_client):
         }
     )
 
-    # login para pegar token
     login = api_client.post(
         "/auth/login",
         json={
@@ -19,7 +18,6 @@ def test_editar_nome(api_client):
 
     token = login.json()["data"]["access_token"]
 
-    # atualiza nome
     response = api_client.patch(
         "/profile/editar_perfil",
         json={
@@ -218,13 +216,13 @@ def test_excluir_usuario_com_pedido_pendente(api_client):
 
     token = login.json()["data"]["access_token"]
 
-    # simular pedido pendente
+
     api_client.post(
         "/order/pedido",
         headers={"Authorization": f"Bearer {token}"}
     )
 
-    # tentar excluir
+
     response = api_client.request(
     "DELETE",
     "/profile/excluir_conta?senha_atual=123456",

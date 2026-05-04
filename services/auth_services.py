@@ -1,5 +1,3 @@
-# Services para as rotas para Autenticação
-
 from sqlalchemy.orm import Session
 
 from db.models import UserTable
@@ -23,8 +21,6 @@ def criar_conta_services(
         db: Session
         ):
     
-    
-    # checa se usuário já existe
     usuario = db.query(UserTable).filter_by(
     email=create_user.email
     ).first()
@@ -39,7 +35,7 @@ def criar_conta_services(
         nome = create_user.nome,
         email = create_user.email,
         senha = senha_criptografada,
-    )   # colunas ativo e admin já são definidos por padrão default na UserTable no models 
+    )  
     
     
     try:
@@ -57,7 +53,7 @@ def criar_conta_services(
         
     
     if novo_usuario.admin:
-        return resposta_sucesso(            # success já vem como True pela função
+        return resposta_sucesso(           
         f"usuário {create_user.nome} criado com sucesso como admin!",   
         {
             "id": novo_usuario.id,
@@ -65,7 +61,7 @@ def criar_conta_services(
         )
     
 
-    return resposta_sucesso(            # success já vem como True pela função
+    return resposta_sucesso(            
         f"usuário {create_user.nome} criado com sucesso!",   
         {
             "id": novo_usuario.id,
@@ -80,7 +76,6 @@ def login_services(
         ):
 
 
-    # checa se usuário existe
     usuario = db.query(UserTable).filter_by(
     email=user_login.email
     ).first()
@@ -98,11 +93,11 @@ def login_services(
         raise HTTPException(status_code=400, detail="email ou senha inválidos")     
 
 
-    access_token = criar_token(usuario.id)      # criando token (com tempo pré determinado de duração na função) para o usuário que acabou de logar (ID)
-    refresh_token = criar_token(usuario.id, duracao_token=timedelta(days=7))     # criando outro token com maior duração
+    access_token = criar_token(usuario.id)      
+    refresh_token = criar_token(usuario.id, duracao_token=timedelta(days=7))     
     
     
-    return resposta_sucesso(            # success já vem como True pela função
+    return resposta_sucesso(            
         f"usuário logado com sucesso!",   
         {
             "id": usuario.id,
@@ -115,18 +110,18 @@ def login_services(
     
     
 def use_refresh_token_services(
-        receive_refresh_token: TokenSchema,   # cliente manda refresh_token (front end decide quando usar essa rota)
+        receive_refresh_token: TokenSchema,   
         db: Session
         ):     
     
-    jwt_decodificado = verificar_token(receive_refresh_token.refresh_token, db)    # analisando JWT
+    jwt_decodificado = verificar_token(receive_refresh_token.refresh_token, db)    
 
     usuario_id = jwt_decodificado.get("sub")    # descobrindo a quem pertence o token (decodificando o JWT e pegando usuario_id no "sub")
 
-    access_token = criar_token(usuario_id)  # criando novo access_token com base no JWT decodificado colocado no usuario_id
+    access_token = criar_token(usuario_id)  
 
 
-    return resposta_sucesso(            # success já vem como True pela função
+    return resposta_sucesso(            
         f"novo access token gerado com sucesso!",   
         {
             "access_token": access_token,

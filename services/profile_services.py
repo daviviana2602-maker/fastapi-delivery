@@ -1,5 +1,3 @@
-# services para as rotas de Perfil
-
 from sqlalchemy.orm import Session
 
 from db.models import UserTable, OrderTable, STATUS_USUARIO_VALIDOS
@@ -21,7 +19,6 @@ def editar_perfil_services(
                     ):
     
     
-    # pegando id do usuário
     usuario = db.query(UserTable).filter_by(
         id=usuario_id
         ).first()
@@ -31,7 +28,6 @@ def editar_perfil_services(
         raise HTTPException(status_code = 404, detail = "usuário não encontrado")
 
 
-    # pede senha para dados de segurança
     if update_user.email or update_user.senha:
         if not update_user.senha_atual:
             raise HTTPException(status_code = 400, detail = "senha atual é obrigatória para mudanças de email e senha")
@@ -41,12 +37,10 @@ def editar_perfil_services(
             raise HTTPException(status_code = 400, detail = "senha atual inválida")
 
 
-    # mudança de nome
     if update_user.nome:
         usuario.nome = update_user.nome
 
 
-    # mudança email
     if update_user.email:
         existing = db.query(UserTable).filter_by(
             email=update_user.email
@@ -84,7 +78,6 @@ def editar_perfil_services(
     )
     
     
-   
 def excluir_usuario_services(
                     senha_atual: str,
                     db: Session,
@@ -92,7 +85,6 @@ def excluir_usuario_services(
                     ):
 
 
-    # pedido a ser cancelado
     usuario = db.query(UserTable).filter_by(
         id=usuario_id
         ).first()
@@ -106,7 +98,7 @@ def excluir_usuario_services(
         raise HTTPException(status_code = 400, detail = "senha atual é obrigatória para exclusão de conta")
     
     
-    if not argon_context.verify(senha_atual, usuario.senha):    # verifica se a senha está correta, mesmo estando criptografada por comparação de hash
+    if not argon_context.verify(senha_atual, usuario.senha):  
             raise HTTPException(status_code = 400, detail = "senha atual inválida")
     
     
@@ -131,7 +123,7 @@ def excluir_usuario_services(
         raise
 
 
-    return resposta_sucesso(  # success já vem como True pela função
+    return resposta_sucesso( 
         "usuario excluído com sucesso", 
         {
             "id": usuario.id,

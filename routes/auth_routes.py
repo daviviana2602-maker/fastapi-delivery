@@ -1,5 +1,3 @@
-# Rotas para Autenticação
-
 from services.auth_services import criar_conta_services, login_services, use_refresh_token_services
 
 from sqlalchemy.orm import Session
@@ -13,7 +11,7 @@ from response_schemas import CommonResponse
 from fastapi import APIRouter, Depends
 
 
-auth_router = APIRouter(prefix = "/auth", tags=["auth"])   # define o caminho = domínio/auth/(rota escolhida)
+auth_router = APIRouter(prefix = "/auth", tags=["auth"])   
     
 
 
@@ -39,7 +37,7 @@ def login(
     
 @auth_router.post("/refresh", response_model=CommonResponse)   # usa refresh token para gerar um novo access token sem exigir login novamente
 def use_refresh_token(
-        receive_refresh_token: TokenSchema,   # cliente manda refresh_token (front end decide quando usar essa rota)
+        receive_refresh_token: TokenSchema,
         db: Session = Depends(get_db)
         ):     
     

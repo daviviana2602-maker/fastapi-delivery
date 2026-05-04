@@ -1,5 +1,3 @@
-# importando tudo do .env para melhor organização
-
 from dotenv import load_dotenv
 import os
 

@@ -1,5 +1,3 @@
-# Services para as rotas de administração do app
-
 from sqlalchemy.orm import Session
 
 from fastapi import HTTPException
@@ -15,18 +13,17 @@ from helpers import resposta_sucesso
 def promover_usuario_services(
         promote_user: AlterationUserSchema,
         db: Session,
-        admin: UserTable    # checando se é admin e quem é pelo id
+        admin: UserTable    
         ):
     
     
-    # Procura o usuário a ser promovido
     usuario_a_promover = db.query(UserTable).filter_by(
         id=promote_user.usuario_a_sofrer_alteracao
         ).first()
 
     
     if not usuario_a_promover:
-        raise HTTPException(status_code=404, detail="Usuário não encontrado")   # usuário inexistente retorna erro
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")   
     
     if usuario_a_promover.status == "DESATIVADO":
         raise HTTPException(status_code=400, detail="usuário está desativado e não pode ser promovido")
@@ -47,7 +44,7 @@ def promover_usuario_services(
         raise
     
     
-    return resposta_sucesso(            # success já vem como True pela função
+    return resposta_sucesso(            
         f"Usuário {usuario_a_promover.nome} agora é admin",    
         {
             "id": usuario_a_promover.id,
@@ -59,11 +56,10 @@ def promover_usuario_services(
 def rebaixar_usuario_services(
         demote_user: AlterationUserSchema,
         db: Session,
-        admin: UserTable    # checando se é admin e quem é pelo id
+        admin: UserTable    
         ):
     
     
-    # Procura o usuário a ser rebaixado
     usuario_a_rebaixar = db.query(UserTable).filter_by(
         id=demote_user.usuario_a_sofrer_alteracao
         ).first()
@@ -79,7 +75,7 @@ def rebaixar_usuario_services(
         raise HTTPException(status_code=400, detail="usuário foi excluído e não pode sofrer alterações")
     
     if usuario_a_rebaixar.id == admin.id:
-        raise HTTPException(status_code=403, detail="Você não pode se rebaixar")    # checagem pra não deixar se rebaixar sozinho
+        raise HTTPException(status_code=403, detail="Você não pode se rebaixar")    
     
     
     usuario_a_rebaixar.admin = False
@@ -92,7 +88,7 @@ def rebaixar_usuario_services(
         raise
     
     
-    return resposta_sucesso(            # success já vem como True pela função
+    return resposta_sucesso(           
         f"Usuário {usuario_a_rebaixar.nome} agora não é mais admin",    
         {
             "id": usuario_a_rebaixar.id,
@@ -104,10 +100,10 @@ def rebaixar_usuario_services(
 def desativar_usuario_services(
     delete_user_id: AlterationUserSchema,
     db: Session,
-    admin: UserTable    # checando se é admin e quem é pelo id
+    admin: UserTable    
 ):
     
-    # Procura o usuário a ser desativado
+
     usuario = db.query(UserTable).filter_by(
         id=delete_user_id.usuario_a_sofrer_alteracao
     ).first()
@@ -120,13 +116,13 @@ def desativar_usuario_services(
         raise HTTPException(status_code=403, detail="O usuário escolhido é administrador e não pode ser desativado")
     
     if usuario.status == "DESATIVADO":
-        raise HTTPException(status_code=400, detail="Usuário já está desativado")   # contas "banidas"/desativadas
+        raise HTTPException(status_code=400, detail="Usuário já está desativado")  
     
     if usuario.status == "EXCLUIDO":
         raise HTTPException(status_code=400, detail="usuário foi excluído e não pode sofrer alterações")
     
     
-    usuario.status = "DESATIVADO"   # desativando usuário
+    usuario.status = "DESATIVADO"   
     
     try:
         db.commit()
@@ -136,7 +132,7 @@ def desativar_usuario_services(
         raise
     
     
-    return resposta_sucesso(            # success já vem como True pela função
+    return resposta_sucesso(            
         f"Usuário {usuario.nome} foi desativado",    
         {
             "id": usuario.id,
@@ -148,10 +144,10 @@ def desativar_usuario_services(
 def reativar_usuario_services(
     reactive_user_id: AlterationUserSchema,
     db: Session,
-    admin: UserTable    # checando se é admin e quem é pelo id
+    admin: UserTable    
 ):
     
-    # Procura o usuário a ser reativado
+  
     usuario = db.query(UserTable).filter_by(
         id=reactive_user_id.usuario_a_sofrer_alteracao
         ).first()
@@ -175,7 +171,7 @@ def reativar_usuario_services(
         raise
     
     
-    return resposta_sucesso(            # success já vem como True pela função
+    return resposta_sucesso(            
         f"Usuário {usuario.nome} foi reativado",    
         {
             "id": usuario.id,
