@@ -68,6 +68,9 @@ def rebaixar_usuario_services(
     if not usuario_a_rebaixar:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")   
     
+    if usuario_a_rebaixar.id == 1:
+        raise HTTPException(status_code=404, detail="Usuário não pode ser rebaixado")   # proteção para o "super admin"
+    
     if usuario_a_rebaixar.admin == False:
         raise HTTPException(status_code=403, detail="O usuário escolhido não é administrador")
     

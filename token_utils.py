@@ -1,5 +1,3 @@
-# Funções que mxem com tokens
-
 from jose import jwt, JWTError
 
 from config import ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY

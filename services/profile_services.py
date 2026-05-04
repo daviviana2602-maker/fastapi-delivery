@@ -94,12 +94,16 @@ def excluir_usuario_services(
         raise HTTPException(status_code=404, detail="usuario não encontrado")
     
     
+    if usuario.admin:
+        raise HTTPException(status_code=404, detail="Admin não pode excluir a própria conta")
+    
+    
     if not senha_atual:
         raise HTTPException(status_code = 400, detail = "senha atual é obrigatória para exclusão de conta")
     
     
     if not argon_context.verify(senha_atual, usuario.senha):  
-            raise HTTPException(status_code = 400, detail = "senha atual inválida")
+        raise HTTPException(status_code = 400, detail = "senha atual inválida")
     
     
     # verifica se o usuário que quer excluir a conta tem algum pedido pendente

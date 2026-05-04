@@ -1,8 +1,13 @@
 from fastapi import FastAPI
-
 from contextlib import asynccontextmanager
 
 from db.populate_db import popular_cardapio
+from fastapi.middleware.cors import CORSMiddleware
+
+from routes.auth_routes import auth_router
+from routes.order_routes import order_router
+from routes.management_routes import management_router
+from routes.profile_routes import profile_router
 
 
 @asynccontextmanager
@@ -14,8 +19,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan) # python -m uvicorn main:app --reload para iniciar LOCALMENTE
 
-from fastapi.middleware.cors import CORSMiddleware
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,12 +27,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-from routes.auth_routes import auth_router     
-from routes.order_routes import order_router   
-from routes.management_routes import management_router   
-from routes.profile_routes import profile_router   
 
 
 app.include_router(auth_router)
