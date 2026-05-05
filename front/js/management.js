@@ -1,5 +1,10 @@
-const API = "http://localhost:8000/management";
-const ORDER_API = "http://localhost:8000/order";
+const API_BASE =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8000"
+    : "https://fastapi-delivery.up.railway.app";
+
+const API = `${API_BASE}/management`;
+const ORDER_API = `${API_BASE}/order`;
 
 // --------------------
 // MSG UI

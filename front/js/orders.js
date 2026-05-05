@@ -1,4 +1,9 @@
-const API = "http://localhost:8000/order";
+const API_BASE =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8000"
+    : "https://fastapi-delivery.up.railway.app";
+
+const API = `${API_BASE}/order`;
 
 let pedidoAtual = null;
 
@@ -52,7 +57,6 @@ async function adicionarItem(nome, qtyId, sizeId) {
   const quantidade = Number(document.getElementById(qtyId).value);
   const tamanho = document.getElementById(sizeId).value;
 
-  // 🔒 TRAVA FRONTEND
   if (!Number.isInteger(quantidade) || quantidade < 1) {
     alert("Quantidade mínima é 1");
     return;
@@ -183,13 +187,8 @@ async function listarCarrinho() {
       <span>Qtd: ${item.quantidade}</span>
       <span>Tamanho: ${item.tamanho}</span>
 
-      <button onclick="ajustarItem(${item.id}, -1)">
-        - remover
-      </button>
-
-      <button onclick="ajustarItem(${item.id}, +1)">
-        + adicionar
-      </button>
+      <button onclick="ajustarItem(${item.id}, -1)">- remover</button>
+      <button onclick="ajustarItem(${item.id}, +1)">+ adicionar</button>
     </div>
   `).join("");
 }

@@ -21,7 +21,12 @@ if (!token && !isPublic) {
 // --------------------
 if (isAdminPage) {
 
-  fetch("http://localhost:8000/auth/me", {
+  const API_URL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:8000"
+      : "https://fastapi-delivery.up.railway.app";
+
+  fetch(`${API_URL}/auth/me`, {
     headers: {
       "Authorization": "Bearer " + token
     }

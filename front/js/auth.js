@@ -1,4 +1,9 @@
-const API = "http://localhost:8000/auth";
+const API_BASE =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8000"
+    : "https://fastapi-delivery.up.railway.app";
+
+const API = `${API_BASE}/auth`;
 
 // --------------------
 // MSG GLOBAL
@@ -63,7 +68,6 @@ async function login() {
     localStorage.setItem("access_token", data.data.access_token);
     localStorage.setItem("refresh_token", data.data.refresh_token);
 
-    // pega usuário logado (admin, etc)
     await fetchUser();
 
     alert("Login realizado com sucesso");
@@ -75,7 +79,6 @@ async function login() {
     alert(data.msg || data.detail || "Login inválido");
   }
 }
-
 
 // --------------------
 // REGISTER

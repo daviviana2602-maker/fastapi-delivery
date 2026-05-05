@@ -1,5 +1,9 @@
-const API = "http://localhost:8000/profile";
+const API_BASE =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8000"
+    : "https://fastapi-delivery.up.railway.app";
 
+const API = `${API_BASE}/profile`;
 
 function showMsg(text, type = "success") {
   const el = document.getElementById("msg");
@@ -41,11 +45,9 @@ async function editarPerfil() {
 
   const data = await res.json();
 
-
   if (data.success) {
     showMsg("Perfil atualizado com sucesso");
 
-    // limpa senha por segurança
     document.getElementById("senhaAtual").value = "";
     document.getElementById("novaSenha").value = "";
   } else {
