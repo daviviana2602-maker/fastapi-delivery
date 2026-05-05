@@ -5,12 +5,13 @@
   font-family: Arial, sans-serif;
 }
 
+
 body {
   background: #0f1115;
   color: #eaeaea;
 }
 
-/* CONTAINER */
+
 .container {
   min-height: 100vh;
   display: flex;
@@ -19,7 +20,7 @@ body {
   padding: 40px;
 }
 
-/* CARD */
+
 .card {
   width: 100%;
   max-width: 720px;
@@ -36,7 +37,7 @@ body {
   gap: 12px;
 }
 
-/* TITULOS */
+
 h1 {
   font-size: 24px;
   color: #ff4d4d;
@@ -49,7 +50,7 @@ h3 {
   color: #d1d5db;
 }
 
-/* INPUTS */
+
 input {
   width: 100%;
   padding: 10px;
@@ -64,12 +65,13 @@ input {
   transition: 0.2s;
 }
 
+
 input:focus {
   border-color: #ff4d4d;
   box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.15);
 }
 
-/* SELECT */
+
 select {
   width: 120px;
   padding: 10px;
@@ -84,7 +86,7 @@ select {
   cursor: pointer;
 }
 
-/* BOTÕES */
+
 button {
   padding: 10px 12px;
 
@@ -105,14 +107,14 @@ button:hover {
   transform: translateY(-1px);
 }
 
-/* SEÇÕES */
+
 section {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* DIVISOR */
+
 hr {
   margin: 10px 0;
   border: none;
@@ -120,7 +122,7 @@ hr {
   opacity: 0.7;
 }
 
-/* DEBUG */
+
 pre {
   margin-top: 10px;
   background: #0b0e14;
@@ -147,11 +149,12 @@ pre {
   align-items: center;
 }
 
+
 .card-item:hover {
   border-color: #3a4158;
 }
 
-/* CARDÁPIO */
+
 .cardapio-item .info {
   display: flex;
   flex-direction: column;
@@ -169,14 +172,14 @@ pre {
   align-items: center;
 }
 
-/* CARRINHO */
+
 .carrinho {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-/* STATUS */
+
 .status-box {
   padding: 10px;
   border-radius: 10px;
@@ -187,13 +190,14 @@ pre {
   font-size: 14px;
 }
 
-/* ERRO UI */
+
 .error-box {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 10px;
 }
+
 
 .error-msg {
   background: rgba(255, 59, 59, 0.15);
@@ -204,6 +208,7 @@ pre {
   border-radius: 12px;
   font-size: 14px;
 }
+
 
 .error-btn {
   background: #ff3b3b;
@@ -218,11 +223,12 @@ pre {
   transition: 0.2s;
 }
 
+
 .error-btn:hover {
   background: #ff1f1f;
 }
 
-/* ADMIN / ORDERS */
+
 .order-card {
   background: #0f131c;
   border: 1px solid #2a2f3d;
@@ -236,6 +242,7 @@ pre {
   justify-content: space-between;
   align-items: center;
 }
+
 
 .order-card span {
   font-size: 13px;

@@ -17,7 +17,7 @@ if (!token && !isPublic) {
 }
 
 // --------------------
-// bloqueio admin page (AQUI)
+// bloqueio admin page
 // --------------------
 if (isAdminPage) {
 

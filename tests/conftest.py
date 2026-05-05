@@ -15,7 +15,6 @@ from security import argon_context
 import uuid
 
 
-# carrega ambiente de teste
 load_dotenv(".env.tests", override=True)    # se já existir variável carregada antes, substitui
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 
@@ -59,7 +58,7 @@ def api_client(db):
         finally:
             pass
 
-    app.dependency_overrides[get_db] = override_get_db  # Sempre que alguma rota pedir get_db, use override_get_db
+    app.dependency_overrides[get_db] = override_get_db  # Sempre que alguma rota pedir get_db, usa override_get_db
 
     client = TestClient(app)
 

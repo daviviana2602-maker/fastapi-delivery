@@ -103,10 +103,6 @@ async function register() {
 
     showMsg(data.msg || "Conta criada com sucesso");
 
-    // opcional: já logar user após registro (se backend retornar token depois)
-    // se não quiser, pode remover isso
-    // await fetchUser();
-
     document.getElementById("nome").value = "";
     document.getElementById("email").value = "";
     document.getElementById("senha").value = "";
