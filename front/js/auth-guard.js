@@ -24,7 +24,7 @@ if (isAdminPage) {
   const API_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:8000"
-      : "https://fastapi-delivery.up.railway.app";
+      : "https://fastapi-delivery-production.up.railway.app";
 
   fetch(`${API_URL}/auth/me`, {
     headers: {

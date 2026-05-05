@@ -1,7 +1,7 @@
 const API_BASE =
   window.location.hostname === "localhost"
     ? "http://localhost:8000"
-    : "https://fastapi-delivery.up.railway.app";
+    : "https://fastapi-delivery-production.up.railway.app";
 
 const API = `${API_BASE}/order`;
 
