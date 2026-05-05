@@ -6,28 +6,41 @@
 
   <link rel="stylesheet" href="../css/style.css">
 
-  <!-- BLOQUEIO ANTES DE RENDERIZAR A PÁGINA -->
   <script>
+
+    const API_BASE =
+      window.location.hostname === "localhost"
+        ? "http://localhost:8000"
+        : "https://fastapi-delivery.up.railway.app";
+
+    const API = `${API_BASE}/auth`;
+
     const token = localStorage.getItem("access_token");
 
     if (!token) {
       window.location.replace("/pages/login.html");
     } else {
-      fetch("http://localhost:8000/auth/me", {
+
+      fetch(`${API}/me`, {
         headers: {
           "Authorization": "Bearer " + token
         }
       })
       .then(r => r.json())
-      .then(user => {
+      .then(res => {
+
+        const user = res.data || res;
+
         if (!user.admin) {
           window.location.replace("/pages/dashboard.html");
         }
+
       })
       .catch(() => {
         window.location.replace("/pages/login.html");
       });
     }
+
   </script>
 
   <script src="../js/management.js" defer></script>
@@ -35,14 +48,12 @@
 
 <body>
 
-
 <div class="container">
 
   <div class="card">
 
     <h1>🛠 Admin Panel</h1>
 
-    <!-- FEEDBACK BONITO -->
     <div id="msg"></div>
 
     <input id="userId" type="number" placeholder="ID do usuário">
@@ -74,9 +85,9 @@
 
     <section>
       <h3>Pedidos</h3>
-
       <div id="ordersBox"></div>
     </section>
+
   </div>
 
 </div>

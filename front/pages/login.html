@@ -15,10 +15,7 @@
     <h1>Fazer login</h1>
     <p>Use sua conta</p>
 
-    <!-- MENSAGEM -->
     <div id="msg"></div>
-
-    <!-- ERRO -->
     <div id="errorBox"></div>
 
     <input id="email" type="email" placeholder="Email">
@@ -35,7 +32,16 @@
 </div>
 
 <script>
-const API = "http://localhost:8000/auth";
+
+// --------------------
+// API BASE UNIFICADA
+// --------------------
+const API_BASE =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8000"
+    : "https://fastapi-delivery.up.railway.app";
+
+const API = `${API_BASE}/auth`;
 
 // --------------------
 // MSG
@@ -52,10 +58,18 @@ function showMsg(text, type = "success") {
 }
 
 // --------------------
+// NORMALIZAR USUÁRIO (/me)
+// --------------------
+function normalizeUser(raw) {
+  return raw?.data ? raw.data : raw;
+}
+
+// --------------------
 // BUSCAR USUÁRIO (/me)
 // --------------------
 async function fetchUser() {
   const token = localStorage.getItem("access_token");
+  if (!token) return;
 
   const res = await fetch(`${API}/me`, {
     method: "GET",
@@ -64,7 +78,8 @@ async function fetchUser() {
     }
   });
 
-  const user = await res.json();
+  const data = await res.json();
+  const user = normalizeUser(data);
 
   localStorage.setItem("user", JSON.stringify(user));
 }
@@ -95,7 +110,6 @@ async function login() {
     localStorage.setItem("access_token", data.data.access_token);
     localStorage.setItem("refresh_token", data.data.refresh_token);
 
-    // 🔥 pega usuário logado (inclui admin)
     await fetchUser();
 
     showMsg("Login realizado com sucesso");
@@ -115,6 +129,7 @@ async function login() {
     `;
   }
 }
+
 </script>
 
 </body>

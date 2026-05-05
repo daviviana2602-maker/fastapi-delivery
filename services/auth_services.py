@@ -137,8 +137,11 @@ def me_service(usuario_id: int, db: Session):
         UserTable.id == usuario_id
         ).first()
 
-    return {
+    return resposta_sucesso(            
+        f"usuário carregado com sucesso!",
+        {
         "id": usuario.id,
         "email": usuario.email,
         "admin": usuario.admin
-    }
+        }
+    )
