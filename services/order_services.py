@@ -81,7 +81,10 @@ def listar_todos_pedidos_services(
     
     
     if not pedidos:
-        raise HTTPException(status_code=404, detail="nenhum pedido encontrado")   
+        return resposta_sucesso(
+            "Nenhum pedido encontrado",
+            []
+        )
 
 
     return resposta_sucesso(

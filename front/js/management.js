@@ -7,21 +7,23 @@ const API = `${API_BASE}/management`;
 const ORDER_API = `${API_BASE}/order`;
 
 // --------------------
-// MSG UI
+// UI MSG
 // --------------------
 function showMsg(text, type = "success") {
-  let el = document.getElementById("msg");
+  const el = document.getElementById("msg");
 
   el.innerHTML = text;
-  el.style.marginBottom = "10px";
-  el.style.padding = "10px";
-  el.style.borderRadius = "10px";
-  el.style.color = "#fff";
-  el.style.background = type === "success" ? "#22c55e" : "#ef4444";
+  el.style = `
+    margin-bottom:10px;
+    padding:10px;
+    border-radius:10px;
+    color:#fff;
+    background:${type === "success" ? "#22c55e" : "#ef4444"};
+  `;
 }
 
 // --------------------
-// AUTH
+// AUTH HEADER
 // --------------------
 function getToken() {
   return localStorage.getItem("access_token");
@@ -34,22 +36,37 @@ function headers() {
   };
 }
 
+// --------------------
+// REQUEST SAFE
+// --------------------
 async function request(url, options) {
-  const res = await fetch(url, options);
+  try {
+    const res = await fetch(url, options);
 
-  if (res.status === 401) {
-    showMsg("Sessão expirada", "error");
+    const text = await res.text();
 
-    localStorage.removeItem("access_token");
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      console.error("INVALID JSON:", text);
+      showMsg("Erro inesperado do servidor", "error");
+      return null;
+    }
 
-    setTimeout(() => {
-      window.location.href = "/login.html";
-    }, 800);
+    if (!res.ok) {
+      console.error("API ERROR:", res.status, data);
+      showMsg(data?.detail || "Erro na requisição", "error");
+      return null;
+    }
 
+    return data;
+
+  } catch (err) {
+    console.error("NETWORK ERROR:", err);
+    showMsg("Erro de rede", "error");
     return null;
   }
-
-  return await res.json();
 }
 
 // --------------------
@@ -57,12 +74,7 @@ async function request(url, options) {
 // --------------------
 function getUserId() {
   const value = document.getElementById("userId").value;
-
-  if (!value) {
-    showMsg("Informe o ID do usuário", "error");
-    return null;
-  }
-
+  if (!value) return showMsg("Informe o ID", "error"), null;
   return Number(value);
 }
 
@@ -79,8 +91,7 @@ async function promover() {
     body: JSON.stringify({ usuario_a_sofrer_alteracao: id })
   });
 
-  if (data?.success) showMsg(data.msg || "Usuário promovido");
-  else showMsg(data?.msg || "Erro ao promover", "error");
+  if (data?.success) showMsg(data.msg);
 }
 
 async function rebaixar() {
@@ -93,8 +104,7 @@ async function rebaixar() {
     body: JSON.stringify({ usuario_a_sofrer_alteracao: id })
   });
 
-  if (data?.success) showMsg(data.msg || "Usuário rebaixado");
-  else showMsg(data?.msg || "Erro ao rebaixar", "error");
+  if (data?.success) showMsg(data.msg);
 }
 
 async function desativar() {
@@ -107,8 +117,7 @@ async function desativar() {
     body: JSON.stringify({ usuario_a_sofrer_alteracao: id })
   });
 
-  if (data?.success) showMsg(data.msg || "Usuário desativado");
-  else showMsg(data?.msg || "Erro ao desativar", "error");
+  if (data?.success) showMsg(data.msg);
 }
 
 async function reativar() {
@@ -121,15 +130,13 @@ async function reativar() {
     body: JSON.stringify({ usuario_a_sofrer_alteracao: id })
   });
 
-  if (data?.success) showMsg(data.msg || "Usuário reativado");
-  else showMsg(data?.msg || "Erro ao reativar", "error");
+  if (data?.success) showMsg(data.msg);
 }
 
 // --------------------
 // ORDERS
 // --------------------
 async function listarPedidos(status) {
-
   const data = await request(
     `${ORDER_API}/listar?status_type=${status}`,
     {
@@ -140,22 +147,22 @@ async function listarPedidos(status) {
 
   const box = document.getElementById("ordersBox");
 
-  if (!data?.success || !data.data?.length) {
-    box.innerHTML = `<p style="color:#9ca3af">Nenhum pedido encontrado</p>`;
+  if (!data?.data || !data.data.length) {
+    box.innerHTML = `<p style="color:#9ca3af">Nenhum pedido</p>`;
     return;
   }
 
-  box.innerHTML = data.data.map(order => `
+  box.innerHTML = data.data.map(o => `
     <div class="order-card">
-      <div>
-        <strong>#${order.id}</strong><br>
-        <span>User: ${order.usuario_id}</span>
-      </div>
-
-      <div>
-        <span>Status: ${order.status}</span><br>
-        <span>R$ ${order.preco}</span>
-      </div>
+      <strong>#${o.id}</strong> - User ${o.usuario_id} - ${o.status} - R$${o.preco}
     </div>
   `).join("");
 }
+
+// --------------------
+// GLOBAL EXPORT (onclick)
+window.promover = promover;
+window.rebaixar = rebaixar;
+window.desativar = desativar;
+window.reativar = reativar;
+window.listarPedidos = listarPedidos;

@@ -7,40 +7,15 @@
   <link rel="stylesheet" href="../css/style.css">
 
   <script>
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
 
-    const API_BASE =
-      window.location.hostname === "localhost"
-        ? "http://localhost:8000"
-        : "https://fastapi-delivery-production.up.railway.app";
-
-    const API = `${API_BASE}/auth`;
-
-    const token = localStorage.getItem("access_token");
-
-    if (!token) {
+      if (!user?.admin) {
+        window.location.replace("/pages/dashboard.html");
+      }
+    } catch (e) {
       window.location.replace("/pages/login.html");
-    } else {
-
-      fetch(`${API}/me`, {
-        headers: {
-          "Authorization": "Bearer " + token
-        }
-      })
-      .then(r => r.json())
-      .then(res => {
-
-        const user = res.data || res;
-
-        if (!user.admin) {
-          window.location.replace("/pages/dashboard.html");
-        }
-
-      })
-      .catch(() => {
-        window.location.replace("/pages/login.html");
-      });
     }
-
   </script>
 
   <script src="../js/management.js" defer></script>
