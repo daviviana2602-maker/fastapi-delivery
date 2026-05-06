@@ -4,40 +4,39 @@
   <meta charset="UTF-8">
   <title>Login</title>
   <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .error-msg {
+      background: #ef4444;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
-
 <body>
 
   <div class="container">
-
     <div class="card">
 
       <h1>Fazer login</h1>
       <p>Use sua conta</p>
 
-      <!-- MSG GLOBAL -->
       <div id="msg"></div>
-
-      <!-- ERRO LOGIN -->
       <div id="errorBox"></div>
 
-      <!-- FORM -->
       <input id="email" type="email" placeholder="Email" autocomplete="username">
-
       <input id="senha" type="password" placeholder="Senha" autocomplete="current-password">
 
       <button onclick="login()">Entrar</button>
 
-      <p>
-        Não tem conta?
-        <a href="register.html">Criar conta</a>
-      </p>
+      <p>Não tem conta? <a href="register.html">Criar conta</a></p>
 
     </div>
-
   </div>
 
-  <!-- SCRIPT -->
+  <script src="../js/config.js"></script>
   <script src="../js/auth.js"></script>
 
 </body>

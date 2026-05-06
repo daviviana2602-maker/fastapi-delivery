@@ -3,42 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <title>Orders</title>
-
   <link rel="stylesheet" href="../css/style.css">
-  <script src="../js/auth-guard.js" defer></script>
+  <!-- config.js PRIMEIRO -->
+  <script src="../js/config.js"></script>
+  <script src="../js/auth-guard.js"></script>
 </head>
-
 <body>
 
 <div class="container">
-
   <div class="card">
 
     <h1>Pedidos</h1>
-
     <hr>
 
     <section>
       <h3>Status do Pedido</h3>
-      <div id="statusPedido" class="status-box">
-        Nenhum pedido ativo
-      </div>
+      <div id="statusPedido" class="status-box">Nenhum pedido ativo</div>
     </section>
-
     <hr>
 
     <section>
       <h3>Criar pedido</h3>
       <button onclick="criarPedido()">Criar novo pedido</button>
     </section>
-
     <hr>
 
     <section>
       <h3>Cardápio</h3>
       <div id="cardapio" class="cardapio-grid"></div>
     </section>
-
     <hr>
 
     <section>
@@ -46,7 +39,6 @@
       <button onclick="listarCarrinho()">Atualizar carrinho</button>
       <div id="carrinho" class="carrinho"></div>
     </section>
-
     <hr>
 
     <section>
@@ -54,11 +46,9 @@
       <button onclick="concluirPedido()">Concluir Pedido</button>
       <button onclick="cancelarPedido()">Cancelar Pedido</button>
     </section>
-
     <hr>
 
   </div>
-
 </div>
 
 <script src="../js/orders.js"></script>

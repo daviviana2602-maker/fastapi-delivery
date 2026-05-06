@@ -3,47 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <title>Perfil</title>
-
   <link rel="stylesheet" href="../css/style.css">
-  <script src="../js/auth-guard.js" defer></script>
+  <!-- config.js PRIMEIRO -->
+  <script src="../js/config.js"></script>
+  <script src="../js/auth-guard.js"></script>
 </head>
-
 <body>
 
 <div class="container">
-
   <div class="card">
 
     <h1>👤 Meu Perfil</h1>
-
     <hr>
 
     <section>
       <h3>Editar perfil</h3>
-
       <input id="nome" placeholder="Novo nome">
-      <input id="email" placeholder="Novo email">
-      <input id="senhaAtual" type="password" placeholder="Senha atual">
-      <input id="novaSenha" type="password" placeholder="Nova senha">
-
+      <input id="email" placeholder="Novo email" autocomplete="username">
+      <input id="senhaAtual" type="password" placeholder="Senha atual" autocomplete="current-password">
+      <input id="novaSenha" type="password" placeholder="Nova senha" autocomplete="new-password">
       <button onclick="editarPerfil()">Salvar</button>
-
       <div id="msg"></div>
     </section>
-
     <hr>
 
     <section>
       <h3>Excluir conta</h3>
-
-      <input id="senhaExcluir" type="password" placeholder="Senha atual">
+      <input id="senhaExcluir" type="password" placeholder="Senha atual" autocomplete="current-password">
       <button onclick="excluirConta()" class="danger">Excluir conta</button>
     </section>
-
     <hr>
 
   </div>
-
 </div>
 
 <script src="../js/profile.js"></script>

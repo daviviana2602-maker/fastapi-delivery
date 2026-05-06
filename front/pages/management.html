@@ -3,36 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <title>Admin Panel</title>
-
   <link rel="stylesheet" href="../css/style.css">
-
+  <!-- config.js PRIMEIRO: define API_BASE para auth-guard e management -->
+  <script src="../js/config.js"></script>
   <script>
     try {
       const user = JSON.parse(localStorage.getItem("user"));
-
-      if (!user?.admin) {
-        window.location.replace("/pages/dashboard.html");
-      }
+      if (!user?.admin) window.location.replace("/pages/dashboard.html");
     } catch (e) {
       window.location.replace("/pages/login.html");
     }
   </script>
-
-  <script src="../js/management.js" defer></script>
+  <script src="../js/management.js"></script>
 </head>
-
 <body>
 
 <div class="container">
-
   <div class="card">
 
     <h1>🛠 Admin Panel</h1>
-
     <div id="msg"></div>
 
     <input id="userId" type="number" placeholder="ID do usuário">
-
     <hr>
 
     <section>
@@ -40,7 +32,6 @@
       <button onclick="promover()">Promover</button>
       <button onclick="rebaixar()">Rebaixar</button>
     </section>
-
     <hr>
 
     <section>
@@ -48,7 +39,6 @@
       <button onclick="desativar()">Desativar</button>
       <button onclick="reativar()">Reativar</button>
     </section>
-
     <hr>
 
     <section>
@@ -64,7 +54,6 @@
     </section>
 
   </div>
-
 </div>
 
 </body>

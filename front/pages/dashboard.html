@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <title>Dashboard</title>
   <link rel="stylesheet" href="../css/style.css">
-  <script src="../js/auth-guard.js" defer></script>
+  <!-- config.js PRIMEIRO: define API_BASE antes de qualquer outro script -->
+  <script src="../js/config.js"></script>
+  <script src="../js/auth-guard.js"></script>
 </head>
 
 <body>
@@ -21,144 +23,101 @@
     flex-direction:column;
     gap:10px;
   ">
-
     <h3>Menu</h3>
-
     <button onclick="show('pedidos')">Pedidos</button>
     <button onclick="show('perfil')">Perfil</button>
     <button onclick="show('admin')" id="adminBtn">Admin</button>
-
     <hr>
-
     <button onclick="logout()">Sair</button>
-
   </div>
 
   <!-- CONTEÚDO -->
   <div style="flex:1; padding:20px;">
-
     <div class="card" style="max-width:100%;">
 
       <h1>Dashboard</h1>
 
       <!-- PEDIDOS -->
       <div id="pedidos" class="view">
-
         <h3>Pedidos</h3>
-
-        <div id="statusPedido" class="status-box">
-          Nenhum pedido ativo
-        </div>
-
+        <div id="statusPedido" class="status-box">Nenhum pedido ativo</div>
         <hr>
-
         <section>
           <h3>Criar pedido</h3>
           <button onclick="criarPedido()">Criar novo pedido</button>
         </section>
-
         <hr>
-
         <section>
           <h3>Cardápio</h3>
           <div id="cardapio" class="cardapio-grid"></div>
         </section>
-
         <hr>
-
         <section>
           <h3>Carrinho</h3>
           <button onclick="listarCarrinho()">Atualizar carrinho</button>
           <div id="carrinho" class="carrinho"></div>
         </section>
-
         <hr>
-
         <section>
           <h3>Ações do Pedido</h3>
           <button onclick="concluirPedido()">Concluir Pedido</button>
           <button onclick="cancelarPedido()">Cancelar Pedido</button>
         </section>
-
       </div>
 
       <!-- PERFIL -->
       <div id="perfil" class="view" style="display:none;">
-
         <h3>Perfil</h3>
-
         <section>
           <h3>Editar perfil</h3>
-
           <input id="nome" placeholder="Novo nome">
-          <input id="email" placeholder="Novo email">
-          <input id="senhaAtual" type="password" placeholder="Senha atual">
-          <input id="novaSenha" type="password" placeholder="Nova senha">
-
+          <input id="email" placeholder="Novo email" autocomplete="username">
+          <input id="senhaAtual" type="password" placeholder="Senha atual" autocomplete="current-password">
+          <input id="novaSenha" type="password" placeholder="Nova senha" autocomplete="new-password">
           <button onclick="editarPerfil()">Salvar</button>
-
           <div id="msg"></div>
         </section>
-
         <hr>
-
         <section>
           <h3>Excluir conta</h3>
-
-          <input id="senhaExcluir" type="password" placeholder="Senha atual">
+          <input id="senhaExcluir" type="password" placeholder="Senha atual" autocomplete="current-password">
           <button onclick="excluirConta()">Excluir conta</button>
-
         </section>
-
       </div>
 
       <!-- ADMIN -->
       <div id="admin" class="view" style="display:none;">
-
         <h3>Admin Panel</h3>
-
+        <div id="msgAdmin"></div>
         <input id="userId" type="number" placeholder="ID do usuário">
-
         <hr>
-
         <section>
           <h3>Permissões</h3>
-
           <button onclick="promover()">Promover</button>
           <button onclick="rebaixar()">Rebaixar</button>
         </section>
-
         <hr>
-
         <section>
           <h3>Status usuário</h3>
-
           <button onclick="desativar()">Desativar</button>
           <button onclick="reativar()">Reativar</button>
         </section>
-
         <hr>
-
         <section>
           <h3>Pedidos (admin)</h3>
-
           <button onclick="listarPedidos('pendente')">Pendentes</button>
           <button onclick="listarPedidos('concluido')">Concluídos</button>
           <button onclick="listarPedidos('cancelado')">Cancelados</button>
-
           <div id="ordersBox"></div>
         </section>
-
       </div>
 
     </div>
-
   </div>
 
 </div>
 
 <script>
-
 function show(id) {
   document.querySelectorAll(".view").forEach(v => v.style.display = "none");
   document.getElementById(id).style.display = "block";
@@ -171,22 +130,19 @@ function logout() {
 
 (function init() {
   const user = JSON.parse(localStorage.getItem("user"));
-
   if (!user) {
     window.location.href = "/pages/login.html";
     return;
   }
-
   if (!user.admin) {
     const adminBtn = document.getElementById("adminBtn");
     if (adminBtn) adminBtn.style.display = "none";
   }
-
   show("pedidos");
 })();
-
 </script>
 
+<!-- Dependem de config.js, que já foi carregado no <head> -->
 <script src="../js/orders.js"></script>
 <script src="../js/profile.js"></script>
 <script src="../js/management.js"></script>

@@ -1,71 +1,42 @@
+// ============================================================
+// auth.js — login e registro
+// Depende de: config.js (API_BASE, showMsg, parseError)
+// ============================================================
 
-const API_BASE =
-  window.location.hostname === "localhost"
-    ? "http://localhost:8000"
-    : "https://fastapi-delivery-production.up.railway.app";
-
-const API = `${API_BASE}/auth`;
-
-// --------------------
-// MSG GLOBAL
-// --------------------
-function showMsg(text, type = "success") {
-  let el = document.getElementById("msg");
-
-  if (!el) {
-    el = document.createElement("div");
-    el.id = "msg";
-    document.querySelector(".card")?.prepend(el);
-  }
-
-  el.innerHTML = text;
-  el.style.padding = "10px";
-  el.style.borderRadius = "10px";
-  el.style.marginBottom = "10px";
-  el.style.color = "#fff";
-  el.style.background = type === "success" ? "#22c55e" : "#ef4444";
-}
+var AUTH_API = API_BASE + "/auth";
 
 // --------------------
-// PARSE ERRO FASTAPI
+// TRADUÇÃO DE ERROS
 // --------------------
-function parseError(data) {
-  if (!data) return "Erro desconhecido";
-
-  if (typeof data === "string") return data;
-
-  if (Array.isArray(data.detail)) {
-    return data.detail.map(e => e.msg).join(", ");
-  }
-
-  if (data.detail) return data.detail;
-
-  if (data.msg) return data.msg;
-
-  return JSON.stringify(data);
+function traduzirErro(msg) {
+  if (!msg) return "Erro desconhecido";
+  const lower = msg.toLowerCase();
+  if (
+    lower.includes("email") ||
+    lower.includes("@-sign") ||
+    lower.includes("valid email") ||
+    lower.includes("e-mail")
+  ) return "Informe um endereço de email válido.";
+  return msg;
 }
 
 // --------------------
 // FETCH USER (/me)
 // --------------------
 async function fetchUser() {
-  const token = localStorage.getItem("access_token");
+  const token = getToken();
   if (!token) return;
 
   try {
-    const res = await fetch(`${API}/me`, {
+    const res = await fetch(`${AUTH_API}/me`, {
       method: "GET",
-      headers: {
-        "Authorization": "Bearer " + token
-      }
+      headers: { "Authorization": "Bearer " + token }
     });
 
     const data = await res.json().catch(() => null);
-
     if (!res.ok || !data) return;
 
     const user = data?.data ?? data;
-
     localStorage.setItem("user", JSON.stringify(user));
 
   } catch (err) {
@@ -77,10 +48,8 @@ async function fetchUser() {
 // LOGIN
 // --------------------
 async function login() {
-
   const email = document.getElementById("email").value.trim();
   const senha = document.getElementById("senha").value;
-
   const errorBox = document.getElementById("errorBox");
   errorBox.innerHTML = "";
 
@@ -89,33 +58,26 @@ async function login() {
     return;
   }
 
-  let res;
-  let data;
+  let res, data;
 
   try {
-    res = await fetch(`${API}/login`, {
+    res = await fetch(`${AUTH_API}/login`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, senha })
     });
-
     data = await res.json().catch(() => null);
-
   } catch (err) {
     errorBox.innerHTML = `<div class="error-msg">Erro de conexão</div>`;
     return;
   }
 
   if (!res.ok) {
-    const msg = parseError(data);
-    errorBox.innerHTML = `<div class="error-msg">${msg}</div>`;
+    errorBox.innerHTML = `<div class="error-msg">${traduzirErro(parseError(data))}</div>`;
     return;
   }
 
   const token = data?.data?.access_token;
-
   if (!token) {
     errorBox.innerHTML = `<div class="error-msg">Token não recebido</div>`;
     console.log("RESPOSTA BRUTA:", data);
@@ -128,7 +90,6 @@ async function login() {
   await fetchUser();
 
   showMsg("Login realizado com sucesso");
-
   window.location.href = "/pages/dashboard.html";
 }
 
@@ -136,8 +97,7 @@ async function login() {
 // REGISTER
 // --------------------
 async function register() {
-
-  const nome = document.getElementById("nome").value.trim();
+  const nome  = document.getElementById("nome").value.trim();
   const email = document.getElementById("email").value.trim();
   const senha = document.getElementById("senha").value;
 
@@ -147,51 +107,27 @@ async function register() {
   }
 
   try {
-    const res = await fetch(`${API}/criar_conta`, {
+    const res = await fetch(`${AUTH_API}/criar_conta`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nome, email, senha })
     });
 
     const data = await res.json().catch(() => null);
 
     if (!res.ok) {
-      showMsg(parseError(data), "error");
+      showMsg(traduzirErro(parseError(data)), "error");
       return;
     }
 
     showMsg("Conta criada com sucesso");
-
-    document.getElementById("nome").value = "";
+    document.getElementById("nome").value  = "";
     document.getElementById("email").value = "";
     document.getElementById("senha").value = "";
 
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 1200);
+    setTimeout(() => { window.location.href = "login.html"; }, 1200);
 
   } catch (err) {
     showMsg("Erro de conexão", "error");
   }
-}
-
-// --------------------
-// GET USER HELPER 
-// --------------------
-function getUser() {
-  try {
-    return JSON.parse(localStorage.getItem("user"));
-  } catch {
-    return null;
-  }
-}
-
-// --------------------
-// ADMIN CHECK PADRÃO
-// --------------------
-function isAdmin() {
-  const user = getUser();
-  return user?.admin === true;
 }

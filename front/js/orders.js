@@ -1,18 +1,18 @@
-const API_BASE =
-  window.location.hostname === "localhost"
-    ? "http://localhost:8000"
-    : "https://fastapi-delivery-production.up.railway.app";
+// ============================================================
+// orders.js — pedidos, cardápio, carrinho
+// Depende de: config.js (API_BASE, authHeaders, request, showMsg)
+// ============================================================
 
-const API = `${API_BASE}/order`;
+var ORDERS_API = API_BASE + "/order";
 
-let pedidoAtual = null;
+var pedidoAtual = null;
 
 // --------------------
 // STATUS
 // --------------------
 function atualizarStatus() {
-  const el = document.getElementById("statusPedido");
-
+  var el = document.getElementById("statusPedido");
+  if (!el) return;
   el.innerHTML = pedidoAtual
     ? `<strong>ID:</strong> ${pedidoAtual}`
     : "Nenhum pedido ativo";
@@ -22,30 +22,24 @@ function atualizarStatus() {
 // DEBUG
 // --------------------
 function showRaw(data) {
-  const el = document.getElementById("out");
-  if (el) {
-    el.innerText = JSON.stringify(data, null, 2);
-  }
+  var el = document.getElementById("out");
+  if (el) el.innerText = JSON.stringify(data, null, 2);
 }
 
 // --------------------
 // CRIAR PEDIDO
 // --------------------
 async function criarPedido() {
-  const res = await fetch(`${API}/pedido`, {
+  const data = await request(`${ORDERS_API}/pedido`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${localStorage.getItem("access_token")}`
-    }
+    headers: authHeaders()
   });
 
-  const data = await res.json();
-
-  pedidoAtual = data?.data?.id;
-
-  atualizarStatus();
-  showRaw(data);
+  if (data) {
+    pedidoAtual = data?.data?.id;
+    atualizarStatus();
+    showRaw(data);
+  }
 }
 
 // --------------------
@@ -55,24 +49,18 @@ async function adicionarItem(nome, qtyId, sizeId) {
   if (!pedidoAtual) return alert("Crie um pedido primeiro");
 
   const quantidade = Number(document.getElementById(qtyId).value);
-  const tamanho = document.getElementById(sizeId).value;
+  const tamanho    = document.getElementById(sizeId).value;
 
   if (!Number.isInteger(quantidade) || quantidade < 1) {
-    alert("Quantidade mínima é 1");
-    return;
+    return alert("Quantidade mínima é 1");
   }
-
   if (!tamanho) {
-    alert("Selecione um tamanho");
-    return;
+    return alert("Selecione um tamanho");
   }
 
-  const res = await fetch(`${API}/pedido/adicionar_item`, {
+  const data = await request(`${ORDERS_API}/pedido/adicionar_item`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${localStorage.getItem("access_token")}`
-    },
+    headers: authHeaders(),
     body: JSON.stringify({
       pedido_id: pedidoAtual,
       nome,
@@ -81,100 +69,87 @@ async function adicionarItem(nome, qtyId, sizeId) {
     })
   });
 
-  const data = await res.json();
-
-  showRaw(data);
-  listarCarrinho();
+  if (data) {
+    showRaw(data);
+    listarCarrinho();
+  }
 }
 
 // --------------------
 // CARDÁPIO
 // --------------------
 async function carregarCardapio() {
-  const res = await fetch(`${API}/cardapio`);
-  const data = await res.json();
+  const data = await request(`${ORDERS_API}/cardapio`, {
+    method: "GET",
+    headers: authHeaders()
+  });
+  if (!data) return;
 
   const container = document.getElementById("cardapio");
+  if (!container) return;
 
   container.innerHTML = data.data.map((item, index) => {
-    const qtyId = `qty_${index}`;
+    const qtyId  = `qty_${index}`;
     const sizeId = `size_${index}`;
-
     return `
       <div class="cardapio-item">
-
         <div class="info">
           <strong>${item.nome}</strong>
           <span>${item.categoria}</span>
           <span>R$ ${item.preco}</span>
         </div>
-
         <div class="actions">
           <input id="${qtyId}" type="number" min="1" step="1" placeholder="Qtd">
-
           <select id="${sizeId}">
             <option value="">Tamanho</option>
             <option value="pequeno">Pequeno</option>
             <option value="tradicional">Tradicional</option>
             <option value="grande">Grande</option>
           </select>
-
           <button onclick="adicionarItem('${item.nome}', '${qtyId}', '${sizeId}')">
             Adicionar
           </button>
         </div>
-
       </div>
     `;
   }).join("");
 }
 
 // --------------------
-// AJUSTAR ITEM (-1 / +1)
+// AJUSTAR ITEM
 // --------------------
 async function ajustarItem(itemId, ajuste) {
-  const res = await fetch(`${API}/pedido/item`, {
+  const data = await request(`${ORDERS_API}/pedido/item`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${localStorage.getItem("access_token")}`
-    },
-    body: JSON.stringify({
-      item_id: itemId,
-      ajuste: ajuste
-    })
+    headers: authHeaders(),
+    body: JSON.stringify({ item_id: itemId, ajuste })
   });
 
-  const data = await res.json();
-
-  showRaw(data);
-  listarCarrinho();
+  if (data) {
+    showRaw(data);
+    listarCarrinho();
+  }
 }
 
 // --------------------
 // CARRINHO
 // --------------------
 async function listarCarrinho() {
+  const container = document.getElementById("carrinho");
+  if (!container) return;
+
   if (!pedidoAtual) {
-    document.getElementById("carrinho").innerHTML =
-      "<p>Crie um pedido primeiro</p>";
+    container.innerHTML = "<p>Crie um pedido primeiro</p>";
     return;
   }
 
-  const res = await fetch(
-    `${API}/pedido/item/listar_pedido_temp?pedido_id=${pedidoAtual}`,
-    {
-      headers: {
-        "Authorization": `Bearer ${localStorage.getItem("access_token")}`
-      }
-    }
+  const data = await request(
+    `${ORDERS_API}/pedido/item/listar_pedido_temp?pedido_id=${pedidoAtual}`,
+    { method: "GET", headers: authHeaders() }
   );
-
-  const data = await res.json();
+  if (!data) return;
 
   const itens = data.data?.itens ?? [];
-
-  const container = document.getElementById("carrinho");
 
   if (itens.length === 0) {
     container.innerHTML = "<p>Carrinho vazio</p>";
@@ -186,7 +161,6 @@ async function listarCarrinho() {
       <strong>${item.nome}</strong>
       <span>Qtd: ${item.quantidade}</span>
       <span>Tamanho: ${item.tamanho}</span>
-
       <button onclick="ajustarItem(${item.id}, -1)">- remover</button>
       <button onclick="ajustarItem(${item.id}, +1)">+ adicionar</button>
     </div>
@@ -194,26 +168,24 @@ async function listarCarrinho() {
 }
 
 // --------------------
-// FINALIZAR
+// CONCLUIR
 // --------------------
 async function concluirPedido() {
   if (!pedidoAtual) return alert("Nenhum pedido ativo");
 
-  const res = await fetch(`${API}/pedido/concluir`, {
+  const data = await request(`${ORDERS_API}/pedido/concluir`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${localStorage.getItem("access_token")}`
-    },
+    headers: authHeaders(),
     body: JSON.stringify({ pedido_id: pedidoAtual })
   });
 
-  const data = await res.json();
-
-  showRaw(data);
-  pedidoAtual = null;
-  atualizarStatus();
-  document.getElementById("carrinho").innerHTML = "";
+  if (data) {
+    showRaw(data);
+    pedidoAtual = null;
+    atualizarStatus();
+    var carrinho = document.getElementById("carrinho");
+    if (carrinho) carrinho.innerHTML = "";
+  }
 }
 
 // --------------------
@@ -222,21 +194,19 @@ async function concluirPedido() {
 async function cancelarPedido() {
   if (!pedidoAtual) return alert("Nenhum pedido ativo");
 
-  const res = await fetch(`${API}/pedido/cancelar`, {
+  const data = await request(`${ORDERS_API}/pedido/cancelar`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${localStorage.getItem("access_token")}`
-    },
+    headers: authHeaders(),
     body: JSON.stringify({ pedido_id: pedidoAtual })
   });
 
-  const data = await res.json();
-
-  showRaw(data);
-  pedidoAtual = null;
-  atualizarStatus();
-  document.getElementById("carrinho").innerHTML = "";
+  if (data) {
+    showRaw(data);
+    pedidoAtual = null;
+    atualizarStatus();
+    var carrinho = document.getElementById("carrinho");
+    if (carrinho) carrinho.innerHTML = "";
+  }
 }
 
 // --------------------
