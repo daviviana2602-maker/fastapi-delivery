@@ -1,8 +1,3 @@
-// ============================================================
-// orders.js — pedidos, cardápio, carrinho
-// Depende de: config.js (API_BASE, authHeaders, request, showMsg)
-// ============================================================
-
 var ORDERS_API = API_BASE + "/order";
 
 var pedidoAtual = null;

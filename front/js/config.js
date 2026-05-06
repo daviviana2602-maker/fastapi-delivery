@@ -1,8 +1,3 @@
-// ============================================================
-// config.js — CARREGUE ESTE ARQUIVO PRIMEIRO EM TODAS AS PÁGINAS
-// Fonte única de verdade para API_BASE e funções compartilhadas
-// ============================================================
-
 var API_BASE =
   window.location.hostname === "localhost"
     ? "http://localhost:8000"

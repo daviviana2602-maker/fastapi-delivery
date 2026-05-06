@@ -1,8 +1,3 @@
-// ============================================================
-// auth-guard.js — proteção de rotas
-// Depende de: config.js (API_BASE, getToken)
-// ============================================================
-
 var _token = localStorage.getItem("access_token");
 var _path  = window.location.pathname.toLowerCase();
 

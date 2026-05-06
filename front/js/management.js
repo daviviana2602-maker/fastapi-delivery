@@ -1,8 +1,3 @@
-// ============================================================
-// management.js — ações admin
-// Depende de: config.js (API_BASE, authHeaders, request, showMsg)
-// ============================================================
-
 var MGMT_API       = API_BASE + "/management";
 var MGMT_ORDER_API = API_BASE + "/order";
 

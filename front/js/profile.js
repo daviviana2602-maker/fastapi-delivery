@@ -1,8 +1,3 @@
-// ============================================================
-// profile.js — editar perfil e excluir conta
-// Depende de: config.js (API_BASE, authHeaders, request, showMsg)
-// ============================================================
-
 var PROFILE_API = API_BASE + "/profile";
 
 // --------------------

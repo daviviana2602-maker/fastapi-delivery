@@ -1,8 +1,3 @@
-// ============================================================
-// auth.js — login e registro
-// Depende de: config.js (API_BASE, showMsg, parseError)
-// ============================================================
-
 var AUTH_API = API_BASE + "/auth";
 
 // --------------------
