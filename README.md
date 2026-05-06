@@ -1,266 +1,199 @@
-# 🍔 Delivery API — Fullstack Backend + Frontend (FastAPI)
+# 🍔 Delivery API — FastAPI Fullstack Project
 
-API REST completa de um sistema de delivery desenvolvida com **Python + FastAPI + PostgreSQL**, incluindo **frontend básico (HTML/CSS/JS)** para consumo da API.
-
-Projeto simula um sistema real de delivery com autenticação, pedidos, administração de usuários, regras de negócio e testes automatizados.
+Sistema de delivery fullstack desenvolvido com FastAPI, PostgreSQL e frontend funcional em HTML/CSS/JS. Simula um ambiente real de produção com autenticação JWT, regras de negócio, controle de acesso e deploy em cloud.
 
 ---
 
 # 📌 Visão Geral
 
-Este projeto demonstra experiência prática em:
-
-- APIs REST profissionais com FastAPI  
-- Arquitetura backend escalável  
-- Autenticação JWT segura  
-- Controle de permissões (RBAC)  
-- Banco de dados relacional PostgreSQL  
-- ORM com SQLAlchemy  
-- Migrações com Alembic  
-- Testes automatizados com Pytest  
-- Containerização com Docker  
-- Integração backend + frontend simples  
+API REST profissional com autenticação, RBAC, CRUD completo de usuários e pedidos, integração com frontend estático e deploy em produção.
 
 ---
 
-# 🚀 Stack Tecnológica
+# ⚙️ Stack
 
-## Backend
-- Python 3.11+
-- FastAPI
-- SQLAlchemy
-- Pydantic
-
-## Banco de Dados
-- PostgreSQL
-
-## Segurança
-- JWT (python-jose)
-- Hash de senha com Argon2
-
-## Testes
-- Pytest
-- FastAPI TestClient
-
-## DevOps
-- Docker
-- Docker Compose
-- dotenv
-
-## Frontend (básico)
-- HTML5
-- CSS3
-- JavaScript (Fetch API)
-
-## Migrações
-- Alembic
+Backend: Python 3.11+, FastAPI, SQLAlchemy, Pydantic  
+Banco: PostgreSQL  
+Auth: JWT (python-jose) + Argon2  
+Testes: Pytest  
+DevOps: Docker, Docker Compose  
+Frontend: HTML, CSS, JS (Fetch API)
+Deploy: Railway, Vercel, Supabase
 
 ---
 
-# ⚙️ Funcionalidades
+# 🚀 Funcionalidades
 
-## 🔐 Autenticação
-- Criar conta
-- Login com JWT
+- Login e cadastro com JWT
+- Controle de acesso (admin / user)
+- CRUD de usuários
+- Sistema de pedidos completo
+- Alteração de status de pedidos
+- Painel administrativo
 - Proteção de rotas
-- Hash seguro de senha
-
-## 👤 Perfil
-- Atualizar dados do usuário
-- Alterar senha
-- Excluir conta
-
-## 🛒 Pedidos
-- Criar pedidos
-- Adicionar itens
-- Concluir pedido
-- Cancelar pedido
-- Consultar status
-
-## 🛡️ Administração
-- Promover usuário
-- Rebaixar usuário
-- Desativar usuário
-- Reativar usuário
-
-## 🍽️ Cardápio
-- Itens iniciais automatizados
-- Estrutura pronta para expansão
+- Integração backend + frontend
 
 ---
 
-# 🧠 Arquitetura
-
+# 🧠 Estrutura
 
 .
-├── alembic/
-├── db/
-├── routes/
-├── services/
-├── tests/
-├── frontend/
-│ ├── html/
-│ ├── css/
-│ └── js/
-├── main.py
-├── schemas.py
+├── alembic
+├── db
+├── routes
+├── services
+├── tests
+├── front
+│   ├── pages
+│   ├── css
+│   └── js
+├── alembic.ini
+├── config.py
 ├── dependencies.py
-├── security.py
 ├── docker-compose.yml
-└── Dockerfile
-
-
----
-
-# 🌐 Frontend (Simples)
-
-Frontend estático desenvolvido apenas para consumo da API.
-
-## 🚀 Como rodar o frontend
-
-No terminal:
-cd frontend
-python -m http.server 5500
-
-Acesse no navegador:
-
-http://localhost:5500/html/login.html
-
-## ⚙️ Funcionalidades do Frontend
-
-Login com JWT (armazenado no localStorage)
-Registro de usuário
-Painel administrativo (CRUD de usuários)
-Consumo da API via Fetch
-Proteção simples de rotas via auth guard
+├── Dockerfile
+└── helpers.py
+├── main.py
+├── requirements.txt
+├── response_schemas.py
+├── schemas.py
+├── security.py
+└── token_utils
 
 ---
 
-# 🔗 Integração com API
+# 🌐 Frontend
 
-O frontend consome o backend rodando em:
+Frontend estático que consome a API.
 
-http://localhost:8000
+Rodar local:
 
-Fluxo completo:
+cd frontend  
+python -m http.server 5500  
 
-Subir backend:
-docker compose up --build
-Subir frontend:
-python -m http.server 5500
-Acessar no navegador
+Acesso:
+
+http://localhost:5500/pages/login.html
+
+---
+
+# 🔗 API
+
+Local:
+
+http://localhost:8000  
+
+Docs:
+
+- Swagger: /docs  
+- ReDoc: /redoc  
 
 ---
 
 # 🗄️ Banco de Dados
 
-## Produção (Docker)
+Produção (Docker):
 
+DATABASE_URL=postgresql+psycopg2://postgres:senha@db:5432/delivery_db  
 
-DATABASE_URL=postgresql+psycopg2://postgres:senha@db:5432/delivery_db
+Testes:
 
-
-## Testes
-
-
-TEST_DATABASE_URL=postgresql+psycopg2://postgres:senha@localhost:5432/test_db
-
+TEST_DATABASE_URL=postgresql+psycopg2://postgres:senha@localhost:5432/test_db  
 
 ---
 
-# 🔄 Alembic
+# 🔄 Migrações
 
-
-alembic revision --autogenerate -m "message"
-alembic upgrade head
-alembic downgrade -1
-
+alembic revision --autogenerate -m "message"  
+alembic upgrade head  
+alembic downgrade -1  
 
 ---
 
 # 🧪 Testes
 
-- Fluxos completos de autenticação
+- Autenticação JWT
 - CRUD de usuários
 - Regras de permissão
-- Pedidos e status
-- Validação de erros
+- Fluxo de pedidos
 
 ✔ 23 testes passando
 
----
-
-# 🐳 Como Rodar
-
-## 1. Clonar projeto
-
-
-git clone https://github.com/daviviana2602-maker/fastapi-delivery.git
-
-cd fastapi-delivery
-
-
-## 2. Configurar .env
-
-
-DATABASE_URL=postgresql+psycopg2://postgres:senha@db:5432/delivery_db
-SECRET_KEY=sua_chave
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-
-## 3. Subir projeto
-
-
-docker compose up --build
-
+pytest  
 
 ---
 
-# 🌐 Rodar Frontend
+# 🐳 Docker
 
-Abra o arquivo:
-
-
-frontend/html/login.html
-
-
-ou qualquer página HTML diretamente no navegador.
+docker compose up --build   # inicia o projeto
+docker compose down         # encerra os containers
 
 ---
 
-# 📍 API
+# 🚀 Deploy
 
-- Swagger: http://localhost:8000/docs  
-- ReDoc: http://localhost:8000/redoc  
+## Backend (Railway)
+
+API hospedada em produção via Railway.
+
+URL:
+
+https://fastapi-delivery-production.up.railway.app  
+
+Variáveis de ambiente configuradas no deploy:
+
+- DATABASE_URL
+- SECRET_KEY
+- ALGORITHM
+- ACCESS_TOKEN_EXPIRE_MINUTES
 
 ---
 
-# 📈 Diferenciais
+## Frontend (Vercel / Static Hosting)
+
+Frontend pode ser deployado separadamente como site estático.
+
+Configuração:
+
+- Build: não necessário
+- Root: /frontend/html
+- API_BASE apontando para backend em produção
+
+Exemplo:
+
+const API_BASE = "https://fastapi-delivery-production.up.railway.app"
+
+---
+
+## Fluxo de deploy
+
+1. Backend sobe no Railway (Docker + env vars)
+2. Frontend sobe na Vercel
+3. Frontend consome API remota
+4. JWT autentica usuário em produção
+
+---
+
+# 📈 Destaques
 
 - API real com regras de negócio
 - Arquitetura modular
-- Segurança com JWT + hash
+- JWT + segurança de senha
 - Frontend funcional integrado
-- Testes automatizados reais
-- Docker pronto para produção
+- Testes automatizados
+- Deploy separado frontend/backend
+- Pronto para produção
 
 ---
 
 # 🎯 Objetivo
 
-Projeto criado para demonstrar habilidades em:
-
-- Backend Python profissional
-- APIs reais com FastAPI
-- Integração fullstack básica
-- Boas práticas de engenharia de software
+Demonstrar domínio em backend profissional com Python, criação de APIs reais com FastAPI, integração fullstack e deploy em cloud.
 
 ---
 
 # 👨‍💻 Autor
 
-**Davi Viana**
-
-- GitHub: https://github.com/daviviana2602-maker  
-- LinkedIn: https://www.linkedin.com/in/davi-viana-34a19b300/
+Davi Viana  
+GitHub: https://github.com/daviviana2602-maker  
+LinkedIn: https://www.linkedin.com/in/davi-viana-34a19b300/
