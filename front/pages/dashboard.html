@@ -4,51 +4,59 @@
   <meta charset="UTF-8">
   <title>Dashboard</title>
   <link rel="stylesheet" href="../css/style.css">
-    
   <script src="../js/auth-guard.js" defer></script>
 </head>
+
 <body>
 
-<div class="container">
+<div style="display:flex; min-height:100vh; width:100%;">
 
-  <div class="card">
+  <!-- MENU LATERAL -->
+  <div style="
+    width: 240px;
+    background:#161a22;
+    border-right:1px solid #232838;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  ">
 
-    <h1>Dashboard</h1>
+    <h3>Menu</h3>
 
-    <p>Bem-vindo ao sistema</p>
+    <button onclick="window.location='./orders.html'">
+      Pedidos
+    </button>
+
+    <button onclick="window.location='./profile.html'">
+      Perfil
+    </button>
+
+    <button onclick="window.location='./management.html'" id="adminBtn">
+      Admin
+    </button>
 
     <hr>
 
-    <!-- BLOCO PRINCIPAL -->
-    <section>
+    <button onclick="logout()">Sair</button>
 
-      <h3>Acesso rápido</h3>
+  </div>
 
-      <div class="row">
-        <a href="./orders.html"><button>Pedidos</button></a>
-        <a href="./profile.html"><button>👤 Perfil</button></a>
+  <!-- CONTEÚDO -->
+  <div style="flex:1; padding:20px;">
+
+    <div class="card" style="max-width:100%;">
+
+      <h1>Dashboard</h1>
+      <p>Bem-vindo ao sistema</p>
+
+      <hr>
+
+      <div>
+        <p>Selecione uma opção no menu lateral</p>
       </div>
 
-      <div class="row">
-        <a id="adminBtn" href="./management.html">
-          <button>🛠 Admin</button>
-        </a>
-      </div>
-
-    </section>
-
-    <hr>
-
-    <!-- INFO DO USUÁRIO -->
-    <section>
-
-      <h3>Sessão</h3>
-
-      <button onclick="logout()" class="danger">
-        🚪 Sair da conta
-      </button>
-
-    </section>
+    </div>
 
   </div>
 
@@ -56,9 +64,6 @@
 
 <script>
 
-// --------------------
-// LOGOUT
-// --------------------
 function logout() {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
@@ -66,11 +71,7 @@ function logout() {
   window.location.href = "/pages/login.html";
 }
 
-// --------------------
-// CONTROLE DE ADMIN (UI)
-// --------------------
-(function initDashboard() {
-
+(function init() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   if (!user) {
@@ -78,15 +79,12 @@ function logout() {
     return;
   }
 
-  // se não for admin, esconde botão
   if (!user.admin) {
     const adminBtn = document.getElementById("adminBtn");
-    if (adminBtn) {
-      adminBtn.style.display = "none";
-    }
+    if (adminBtn) adminBtn.style.display = "none";
   }
-
 })();
+
 </script>
 
 </body>
