@@ -7,25 +7,126 @@ from db.database import SessionLocal
 
 # TUDO NO CARDÁPIO EM FORMATO .TITLE()
 ITENS_INICIAIS = [
-    
-    {"nome": "Escondidinho De Carne", "categoria": "almoco", "preco": 25.0},
-    {"nome": "Feijoada", "categoria": "almoco", "preco": 27.0},
-    {"nome": "Moqueca De Peixe", "categoria": "almoco", "preco": 23.0},
-    {"nome": "Frango Grelhado Com Legumes", "categoria": "almoco", "preco": 26.0},
-    {"nome": "Strogonoff De Frango", "categoria": "almoco", "preco": 32.0},
-    {"nome": "Parmegiana De Frango", "categoria": "almoco", "preco": 29.0},
 
-    {"nome": "Pizza Calabresa", "categoria": "Pizza", "preco": 35.0},
-    {"nome": "Pizza Muçarela", "categoria": "Pizza", "preco": 30.0},
-    {"nome": "Pizza Marguerita", "categoria": "Pizza", "preco": 32.0},
+    {
+        "nome": "Escondidinho De Carne",
+        "categoria": "almoco",
+        "preco_tradicional": 25.0,
+        "preco_pequeno": 20.0,
+        "preco_grande": 35.0
+    },
 
-    {"nome": "Brownie", "categoria": "Sobremesas", "preco": 12.0},
-    {"nome": "Pudim", "categoria": "Sobremesas", "preco": 10.0},
-    {"nome": "Bolo De Pote", "categoria": "Sobremesas", "preco": 13.0},
+    {
+        "nome": "Feijoada",
+        "categoria": "almoco",
+        "preco_tradicional": 27.0,
+        "preco_pequeno": 22.0,
+        "preco_grande": 38.0
+    },
 
-    {"nome": "Salada", "categoria": "legumes", "preco": 20.0},
-    {"nome": "Vegana", "categoria": "legumes", "preco": 22.0},
-    {"nome": "Vegetariana", "categoria": "legumes", "preco": 20.0},
+    {
+        "nome": "Moqueca De Peixe",
+        "categoria": "almoco",
+        "preco_tradicional": 23.0,
+        "preco_pequeno": 18.0,
+        "preco_grande": 34.0
+    },
+
+    {
+        "nome": "Frango Grelhado Com Legumes",
+        "categoria": "almoco",
+        "preco_tradicional": 26.0,
+        "preco_pequeno": 21.0,
+        "preco_grande": 37.0
+    },
+
+    {
+        "nome": "Strogonoff De Frango",
+        "categoria": "almoco",
+        "preco_tradicional": 32.0,
+        "preco_pequeno": 27.0,
+        "preco_grande": 44.0
+    },
+
+    {
+        "nome": "Parmegiana De Frango",
+        "categoria": "almoco",
+        "preco_tradicional": 29.0,
+        "preco_pequeno": 24.0,
+        "preco_grande": 41.0
+    },
+
+    {
+        "nome": "Pizza Calabresa",
+        "categoria": "Pizza",
+        "preco_tradicional": 35.0,
+        "preco_pequeno": 28.0,
+        "preco_grande": 52.0
+    },
+
+    {
+        "nome": "Pizza Muçarela",
+        "categoria": "Pizza",
+        "preco_tradicional": 30.0,
+        "preco_pequeno": 24.0,
+        "preco_grande": 47.0
+    },
+
+    {
+        "nome": "Pizza Marguerita",
+        "categoria": "Pizza",
+        "preco_tradicional": 32.0,
+        "preco_pequeno": 26.0,
+        "preco_grande": 49.0
+    },
+
+    {
+        "nome": "Brownie",
+        "categoria": "Sobremesas",
+        "preco_tradicional": 12.0,
+        "preco_pequeno": 10.0,
+        "preco_grande": 18.0
+    },
+
+    {
+        "nome": "Pudim",
+        "categoria": "Sobremesas",
+        "preco_tradicional": 10.0,
+        "preco_pequeno": 8.0,
+        "preco_grande": 16.0
+    },
+
+    {
+        "nome": "Bolo De Pote",
+        "categoria": "Sobremesas",
+        "preco_tradicional": 13.0,
+        "preco_pequeno": 11.0,
+        "preco_grande": 20.0
+    },
+
+    {
+        "nome": "Salada",
+        "categoria": "legumes",
+        "preco_tradicional": 20.0,
+        "preco_pequeno": 16.0,
+        "preco_grande": 29.0
+    },
+
+    {
+        "nome": "Vegana",
+        "categoria": "legumes",
+        "preco_tradicional": 22.0,
+        "preco_pequeno": 18.0,
+        "preco_grande": 31.0
+    },
+
+    {
+        "nome": "Vegetariana",
+        "categoria": "legumes",
+        "preco_tradicional": 20.0,
+        "preco_pequeno": 16.0,
+        "preco_grande": 30.0
+    },
 ]
 
 
