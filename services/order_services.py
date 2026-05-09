@@ -138,15 +138,28 @@ def adicionar_item_temp_services(
     
     if not item_cardapio:
         raise HTTPException(status_code=404, detail="Item não encontrado no cardápio")
+    
+    
+    if add_item_schema.tamanho.upper() == "PEQUENO":
+        preco_unitario = item_cardapio.preco_pequeno
 
-    preco_total=item_cardapio.preco * add_item_schema.quantidade
+
+    elif add_item_schema.tamanho.upper() == "TRADICIONAL":
+        preco_unitario = item_cardapio.preco_tradicional
+
+
+    elif add_item_schema.tamanho.upper() == "GRANDE":
+        preco_unitario = item_cardapio.preco_grande
+
+
+    preco_total=preco_unitario * add_item_schema.quantidade
 
 
     novo_item_temp = TempItemsTable(
         quantidade=add_item_schema.quantidade,
         nome=item_cardapio.nome,
         tamanho=add_item_schema.tamanho,
-        preco_unit=item_cardapio.preco,
+        preco_unit=preco_unitario,
         preco_total=preco_total,
         pedido_id=pedido.id
     )
