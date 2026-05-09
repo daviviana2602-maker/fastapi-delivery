@@ -84,30 +84,44 @@ async function carregarCardapio() {
   if (!container) return;
 
   container.innerHTML = data.data.map((item, index) => {
-    const qtyId  = `qty_${index}`;
-    const sizeId = `size_${index}`;
-    return `
-      <div class="cardapio-item">
-        <div class="info">
-          <strong>${item.nome}</strong>
-          <span>${item.categoria}</span>
-          <span>R$ ${item.preco}</span>
-        </div>
-        <div class="actions">
-          <input id="${qtyId}" type="number" min="1" step="1" placeholder="Qtd">
-          <select id="${sizeId}">
-            <option value="">Tamanho</option>
-            <option value="pequeno">Pequeno</option>
-            <option value="tradicional">Tradicional</option>
-            <option value="grande">Grande</option>
-          </select>
-          <button onclick="adicionarItem('${item.nome}', '${qtyId}', '${sizeId}')">
-            Adicionar
-          </button>
-        </div>
+  const qtyId  = `qty_${index}`;
+  const sizeId = `size_${index}`;
+
+  return `
+    <div class="cardapio-item">
+      <div class="info">
+        <strong>${item.nome}</strong>
+
+        <span>${item.categoria}</span>
+
+        <span>P: R$ ${item.preco_pequeno.toFixed(2)}</span>
+        <span>T: R$ ${item.preco_tradicional.toFixed(2)}</span>
+        <span>G: R$ ${item.preco_grande.toFixed(2)}</span>
       </div>
-    `;
-  }).join("");
+
+      <div class="actions">
+        <input 
+          id="${qtyId}" 
+          type="number" 
+          min="1" 
+          step="1" 
+          placeholder="Qtd"
+        >
+
+        <select id="${sizeId}">
+          <option value="">Tamanho</option>
+          <option value="pequeno">Pequeno</option>
+          <option value="tradicional">Tradicional</option>
+          <option value="grande">Grande</option>
+        </select>
+
+        <button onclick="adicionarItem('${item.nome}', '${qtyId}', '${sizeId}')">
+          Adicionar
+        </button>
+      </div>
+    </div>
+  `;
+}).join("");
 }
 
 // --------------------

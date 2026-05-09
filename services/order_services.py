@@ -449,6 +449,5 @@ def listar_pedido_temporario_services(
 def listar_cardapio_service():
     return resposta_sucesso(    
         "Cardápio listado com sucesso",
-        ITENS_INICIAIS
-        
+        ITENS_INICIAIS  
     )
