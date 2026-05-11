@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from db.models import UserTable
 
-from schemas import CreateUserSchema, LoginSchema, TokenSchema
+from schemas import CreateUserSchema, LoginSchema, TokenSchema, EsqueciSenhaSchema, RedefinirSenhaSchema
 
 from helpers import resposta_sucesso, reset_email
 
@@ -10,15 +10,11 @@ from security import argon_context
 
 from token_utils import criar_token, verificar_token
 
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from fastapi import HTTPException
 
 import secrets
-
-import resend
-
-from config import RESEND_API_KEY
 
 
 
@@ -153,18 +149,76 @@ def me_service(usuario_id: int, db: Session):
     )
 
 
-def esqueci_senha_service():
+def esqueci_senha_service(
+    receive_email: EsqueciSenhaSchema,
+    db: Session
+    ):
+    
+    usuario = db.query(UserTable).filter_by(
+        email=receive_email.email
+    ).first()
+
+    if not usuario:
+        raise HTTPException(status_code=404, detail="usuário não encontrado")
+
 
     token = secrets.token_urlsafe(32)
 
+    usuario.reset_token = token
+
+    usuario.reset_token_expira_em = datetime.utcnow() + timedelta(minutes=10)
+
+    db.commit()
+
+
     reset_email(
-        to_email="daviviana2602@gmail.com",
+        to_email=receive_email.email,
         token=token
     )
 
-    return resposta_sucesso(            
-        f"email enviado com sucesso!",
+
+    return resposta_sucesso(
+        "email enviado com sucesso!",
         {
-        "email": "daviviana2602@gmail.com"
+            "email": receive_email.email
+        }
+    )
+    
+    
+
+def redefinir_senha_service(
+    redefinir: RedefinirSenhaSchema,
+    db: Session
+):
+
+    usuario = db.query(UserTable).filter_by(
+        reset_token=redefinir.token
+    ).first()
+
+
+    if not usuario:
+        raise HTTPException(status_code=400, detail="token inválido")
+
+
+    if datetime.utcnow() > usuario.reset_token_expira_em:
+        raise HTTPException(status_code=400, detail="token expirado")
+
+
+    nova_senha_criptografada = argon_context.hash(redefinir.nova_senha)
+
+    usuario.senha = nova_senha_criptografada
+
+    usuario.reset_token = None
+    
+    usuario.reset_token_expira_em = None
+
+    db.commit()
+
+
+    return resposta_sucesso(
+        "senha redefinida com sucesso!",
+        {
+        "id": usuario.id,
+        "email": usuario.email
         }
     )

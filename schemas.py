@@ -58,3 +58,14 @@ class UpdateProfileSchema(BaseModel):
     email: Optional[EmailStr] = None
     senha: Optional[str] = None
     senha_atual: Optional[str] = None
+    
+    
+    
+class EsqueciSenhaSchema(BaseModel):
+    email: EmailStr
+    
+
+
+class RedefinirSenhaSchema(BaseModel):
+    token: str
+    nova_senha: str
