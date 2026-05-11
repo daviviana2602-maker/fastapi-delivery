@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Redefinir Senha</title>
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .error-msg {
+      background: #ef4444;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .success-msg {
+      background: #22c55e;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="card">
+
+      <h1>Redefinir senha</h1>
+      <p>Digite sua nova senha</p>
+
+      <div id="msg"></div>
+
+      <input id="senha" type="password" placeholder="Nova senha">
+
+      <button onclick="resetSenha()">Salvar nova senha</button>
+
+    </div>
+  </div>
+
+  <script src="../js/config.js"></script>
+
+  <script>
+    const AUTH_API = API_BASE + "/auth";
+
+    function getTokenFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("token");
+    }
+
+    async function resetSenha() {
+      const senha = document.getElementById("senha").value;
+      const msg = document.getElementById("msg");
+      msg.innerHTML = "";
+
+      const token = getTokenFromURL();
+
+      if (!token) {
+        msg.innerHTML = `<div class="error-msg">Token inválido</div>`;
+        return;
+      }
+
+      if (!senha) {
+        msg.innerHTML = `<div class="error-msg">Digite a nova senha</div>`;
+        return;
+      }
+
+      let res, data;
+
+      try {
+        res = await fetch(`${AUTH_API}/redefinir_senha`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            token: token,
+            nova_senha: senha
+          })
+        });
+
+        data = await res.json();
+      } catch (err) {
+        msg.innerHTML = `<div class="error-msg">Erro de conexão</div>`;
+        return;
+      }
+
+      if (!res.ok) {
+        msg.innerHTML = `<div class="error-msg">${data?.detail || "Erro ao redefinir senha"}</div>`;
+        return;
+      }
+
+      msg.innerHTML = `<div class="success-msg">Senha alterada com sucesso!</div>`;
+
+      setTimeout(() => {
+        window.location.href = "/pages/login.html";
+      }, 1500);
+    }
+  </script>
+
+</body>
+</html>

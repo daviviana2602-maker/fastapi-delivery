@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Recuperar Senha</title>
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .error-msg {
+      background: #ef4444;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .success-msg {
+      background: #22c55e;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="card">
+
+      <h1>Recuperar senha</h1>
+      <p>Digite seu email para receber o link</p>
+
+      <div id="msg"></div>
+
+      <input id="email" type="email" placeholder="Seu email">
+
+      <button onclick="enviar()">Enviar link</button>
+
+      <p><a href="login.html">Voltar para login</a></p>
+
+    </div>
+  </div>
+
+  <script src="../js/config.js"></script>
+
+  <script>
+    const AUTH_API = API_BASE + "/auth";
+
+    async function enviar() {
+      const email = document.getElementById("email").value;
+      const msg = document.getElementById("msg");
+
+      msg.innerHTML = "";
+
+      if (!email) {
+        msg.innerHTML = `<div class="error-msg">Digite seu email</div>`;
+        return;
+      }
+
+      let res, data;
+
+      try {
+        res = await fetch(`${AUTH_API}/esqueci_a_senha`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email: email
+          })
+        });
+
+        data = await res.json();
+      } catch (err) {
+        msg.innerHTML = `<div class="error-msg">Erro de conexão</div>`;
+        return;
+      }
+
+      if (!res.ok) {
+        msg.innerHTML = `<div class="error-msg">${data?.detail || "Erro ao enviar email"}</div>`;
+        return;
+      }
+
+      msg.innerHTML = `<div class="success-msg">Se o email existir, enviamos um link de recuperação</div>`;
+    }
+  </script>
+
+</body>
+</html>

@@ -48,7 +48,7 @@ def resposta_sucesso(msg: str, data=None):
 # função para envio de email (recuperação de conta)
 def reset_email(to_email: str, token: str):
 
-    reset_link = f"http://localhost:5500/reset-password.html?token={token}"
+    reset_link = f"http://localhost:5500/pages/reset-senha.html?token={token}"
 
     resend.Emails.send({
         "from": "onboarding@resend.dev",
