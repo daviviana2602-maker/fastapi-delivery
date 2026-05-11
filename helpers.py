@@ -8,7 +8,9 @@ from db.models import UserTable
 
 import resend
 
-from config import RESEND_API_KEY
+import os
+
+from config import RESEND_API_KEY, FRONT_URL
 resend.api_key = RESEND_API_KEY
 
 
@@ -48,7 +50,7 @@ def resposta_sucesso(msg: str, data=None):
 # função para envio de email (recuperação de conta)
 def reset_email(to_email: str, token: str):
 
-    reset_link = f"http://localhost:5500/pages/reset-senha.html?token={token}"
+    reset_link = f"{FRONT_URL}/pages/reset-senha.html?token={token}"
 
     resend.Emails.send({
         "from": "onboarding@resend.dev",
@@ -56,7 +58,6 @@ def reset_email(to_email: str, token: str):
         "subject": "Recuperação de senha",
         "html": f"""
             <h1>Recuperação de senha</h1>
-
             <a href="{reset_link}">
                 Redefinir senha
             </a>
