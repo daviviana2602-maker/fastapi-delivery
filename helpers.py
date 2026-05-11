@@ -6,6 +6,11 @@ from dependencies import get_db, usuario_logado
 
 from db.models import UserTable
 
+import resend
+
+from config import RESEND_API_KEY
+resend.api_key = RESEND_API_KEY
+
 
 # Não é uma dependência, porque depende de recurso_usuario_id, que muda dependendo da utilização
 def checar_dono_ou_admin(
@@ -38,3 +43,22 @@ def resposta_sucesso(msg: str, data=None):
         response["data"] = data    # se data não for vazio é inserido no response
 
     return response
+
+
+# função para envio de email (recuperação de conta)
+def reset_email(to_email: str, token: str):
+
+    reset_link = f"http://localhost:5500/reset-password.html?token={token}"
+
+    resend.Emails.send({
+        "from": "onboarding@resend.dev",
+        "to": [to_email],
+        "subject": "Recuperação de senha",
+        "html": f"""
+            <h1>Recuperação de senha</h1>
+
+            <a href="{reset_link}">
+                Redefinir senha
+            </a>
+        """
+    })

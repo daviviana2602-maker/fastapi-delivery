@@ -18,6 +18,8 @@ class UserTable(Base):
     status = Column(String, nullable=False, default="ATIVO")
     admin = Column(Boolean, nullable=False, default=False)
     criado_em = Column(DateTime(timezone=True), server_default=func.now())  # garante que o banco já coloque o horário correto quando criar algum registro
+    reset_token = Column(String, nullable=True)
+    reset_token_expira_em = Column(DateTime, nullable=True)
     
 STATUS_USUARIO_VALIDOS = ("ATIVO", "DESATIVADO", "EXCLUIDO")
 

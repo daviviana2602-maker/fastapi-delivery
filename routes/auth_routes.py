@@ -1,4 +1,4 @@
-from services.auth_services import criar_conta_services, login_services, use_refresh_token_services, me_service
+from services.auth_services import criar_conta_services, login_services, use_refresh_token_services, me_service, esqueci_senha_service
 
 from sqlalchemy.orm import Session
 
@@ -7,6 +7,8 @@ from dependencies import get_db, usuario_logado
 from schemas import CreateUserSchema, LoginSchema, TokenSchema
 
 from response_schemas import CommonResponse
+
+import secrets
 
 from fastapi import APIRouter, Depends
 
@@ -27,9 +29,9 @@ def criar_conta(
 
 @auth_router.post("/login", response_model=CommonResponse) 
 def login(
-                user_login: LoginSchema,
-                db: Session = Depends(get_db)
-                ):
+        user_login: LoginSchema,
+        db: Session = Depends(get_db)
+        ):
 
     return login_services(user_login, db)
     
@@ -49,5 +51,13 @@ def use_refresh_token(
 def me(
     usuario_id: int = Depends(usuario_logado),
     db: Session = Depends(get_db)
-):
+    ):
+    
     return me_service(usuario_id, db)
+
+
+
+@auth_router.post("/esqueci_a_senha")
+def recuperar_conta():
+
+    return esqueci_senha_service()

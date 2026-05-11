@@ -4,7 +4,7 @@ from db.models import UserTable
 
 from schemas import CreateUserSchema, LoginSchema, TokenSchema
 
-from helpers import resposta_sucesso
+from helpers import resposta_sucesso, reset_email
 
 from security import argon_context
 
@@ -13,6 +13,12 @@ from token_utils import criar_token, verificar_token
 from datetime import timedelta
 
 from fastapi import HTTPException
+
+import secrets
+
+import resend
+
+from config import RESEND_API_KEY
 
 
 
@@ -143,5 +149,22 @@ def me_service(usuario_id: int, db: Session):
         "id": usuario.id,
         "email": usuario.email,
         "admin": usuario.admin
+        }
+    )
+
+
+def esqueci_senha_service():
+
+    token = secrets.token_urlsafe(32)
+
+    reset_email(
+        to_email="daviviana2602@gmail.com",
+        token=token
+    )
+
+    return resposta_sucesso(            
+        f"email enviado com sucesso!",
+        {
+        "email": "daviviana2602@gmail.com"
         }
     )
