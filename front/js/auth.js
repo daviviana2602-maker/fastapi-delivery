@@ -5,13 +5,18 @@ var AUTH_API = API_BASE + "/auth";
 // --------------------
 function traduzirErro(msg) {
   if (!msg) return "Erro desconhecido";
+
   const lower = msg.toLowerCase();
+
+  // erros reais de email inválido vindos do Pydantic
   if (
-    lower.includes("email") ||
-    lower.includes("@-sign") ||
-    lower.includes("valid email") ||
-    lower.includes("e-mail")
-  ) return "Informe um endereço de email válido.";
+    lower === "value is not a valid email address" ||
+    lower.includes("value is not a valid email address") ||
+    lower.includes("an email address must have an @-sign")
+  ) {
+    return "Informe um endereço de email válido.";
+  }
+
   return msg;
 }
 
