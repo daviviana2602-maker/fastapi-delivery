@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Recuperar Senha</title>
+
   <link rel="stylesheet" href="../css/style.css">
 
   <style>
@@ -32,60 +33,106 @@
     <div class="card">
 
       <h1>Recuperar senha</h1>
+
       <p>Digite seu email para receber o link</p>
 
       <div id="msg"></div>
 
-      <input id="email" type="email" placeholder="Seu email">
+      <input
+        id="email"
+        type="email"
+        placeholder="Seu email"
+      >
 
-      <button onclick="enviar()">Enviar link</button>
+      <button onclick="enviar()">
+        Enviar link
+      </button>
 
-      <p><a href="login.html">Voltar para login</a></p>
+      <p>
+        <a href="login.html">
+          Voltar para login
+        </a>
+      </p>
 
     </div>
   </div>
 
   <script src="../js/config.js"></script>
+  <script src="../js/auth.js"></script>
 
   <script>
-    const AUTH_API = API_BASE + "/auth";
-
     async function enviar() {
-      const email = document.getElementById("email").value;
+
+      const email = document
+        .getElementById("email")
+        .value
+        .trim();
+
       const msg = document.getElementById("msg");
 
       msg.innerHTML = "";
 
       if (!email) {
-        msg.innerHTML = `<div class="error-msg">Digite seu email</div>`;
+        msg.innerHTML = `
+          <div class="error-msg">
+            Digite seu email
+          </div>
+        `;
         return;
       }
 
-      let res, data;
+      let res;
+      let data;
 
       try {
+
         res = await fetch(`${AUTH_API}/esqueci_a_senha`, {
           method: "POST",
+
           headers: {
             "Content-Type": "application/json"
           },
+
           body: JSON.stringify({
             email: email
           })
         });
 
         data = await res.json();
+
       } catch (err) {
-        msg.innerHTML = `<div class="error-msg">Erro de conexão</div>`;
+
+        msg.innerHTML = `
+          <div class="error-msg">
+            Erro de conexão
+          </div>
+        `;
+
         return;
       }
 
       if (!res.ok) {
-        msg.innerHTML = `<div class="error-msg">${data?.detail || "Erro ao enviar email"}</div>`;
+
+        const erro =
+          data?.detail?.[0]?.msg ||
+          data?.detail ||
+          data?.message ||
+          "Erro desconhecido";
+
+        msg.innerHTML = `
+          <div class="error-msg">
+            ${traduzirErro(erro)}
+          </div>
+        `;
+
         return;
       }
 
-      msg.innerHTML = `<div class="success-msg">Se o email existir, enviamos um link de recuperação</div>`;
+      msg.innerHTML = `
+        <div class="success-msg">
+          Se o email existir, enviamos um link de recuperação
+        </div>
+      `;
     }
   </script>
 
