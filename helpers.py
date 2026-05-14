@@ -53,7 +53,7 @@ def reset_email(to_email: str, token: str):
     reset_link = f"{FRONT_URL}/pages/reset-senha.html?token={token}"
 
     resend.Emails.send({
-        "from": "onboarding@resend.dev",
+        "from": "Vossodelivery <no-reply@vossodelivery.com.br>",
         "to": [to_email],
         "subject": "Recuperação de senha",
         "html": f"""
