@@ -1,7 +1,7 @@
 var API_BASE =
   window.location.hostname === "localhost"
     ? "http://localhost:8000"
-    : "https://fastapi-delivery-production.up.railway.app";
+    : "https://fastapi-delivery-wwlo-production.up.railway.app";
 
 // --------------------
 // MSG GLOBAL
