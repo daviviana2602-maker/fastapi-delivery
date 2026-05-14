@@ -4,7 +4,9 @@ from db.models import UserTable
 
 from schemas import CreateUserSchema, LoginSchema, TokenSchema, EsqueciSenhaSchema, RedefinirSenhaSchema
 
-from helpers import resposta_sucesso, reset_email
+from helpers import resposta_sucesso
+
+from emails import reset_email, verification_email
 
 from security import argon_context
 
@@ -33,11 +35,19 @@ def criar_conta_services(
     
     senha_criptografada = argon_context.hash(create_user.senha)    # criptografando senha
     
+    
     novo_usuario = UserTable(
         nome = create_user.nome,
         email = create_user.email,
         senha = senha_criptografada,
     )  
+    
+    
+    token = secrets.token_urlsafe(32)
+
+    novo_usuario.email_verificado = False
+    novo_usuario.email_verification_token = token
+    novo_usuario.email_verification_expira_em = datetime.utcnow() + timedelta(minutes=10)
     
     
     try:
@@ -49,16 +59,24 @@ def criar_conta_services(
 
         db.commit()
         db.refresh(novo_usuario)
+            
     except Exception:
         db.rollback()
         raise
+    
+    
+    verification_email(
+        to_email=create_user.email,
+        token=token
+    )
         
     
     if novo_usuario.admin:
         return resposta_sucesso(           
         f"usuário {create_user.nome} criado com sucesso como admin!",   
         {
-            "id": novo_usuario.id,
+        "id": novo_usuario.id,
+        "email": novo_usuario.email
         }
         )
     
@@ -66,7 +84,8 @@ def criar_conta_services(
     return resposta_sucesso(            
         f"usuário {create_user.nome} criado com sucesso!",   
         {
-            "id": novo_usuario.id,
+        "id": novo_usuario.id,
+        "email": novo_usuario.email
         }
     )
 
@@ -90,6 +109,9 @@ def login_services(
     
     if usuario.status == "EXCLUIDO":
         raise HTTPException(status_code=403, detail="usuário excluído") 
+    
+    if not usuario.email_verificado:
+        raise HTTPException(status_code=403, detail="confirme seu email antes de acessar")
     
     if not argon_context.verify(user_login.senha, usuario.senha):     # verifica se a senha está correta, mesmo estando criptografada por comparação de hash
         raise HTTPException(status_code=400, detail="email ou senha inválidos")     
@@ -222,3 +244,30 @@ def redefinir_senha_service(
         "email": usuario.email
         }
     )
+    
+    
+
+def verify_email_service(token: str, db: Session):
+
+    usuario = db.query(UserTable).filter_by(
+        email_verification_token=token
+    ).first()
+
+    if not usuario:
+        raise HTTPException(status_code=400, detail="token inválido")
+
+    if datetime.utcnow() > usuario.email_verification_expira_em:
+        raise HTTPException(status_code=400, detail="token expirado")
+
+    usuario.email_verificado = True
+    usuario.email_verification_token = None
+    usuario.email_verification_expira_em = None
+
+    db.commit()
+
+    return resposta_sucesso(
+        "email verificado com sucesso!",
+        {
+        "id": usuario.id,
+        "email": usuario.email
+        })

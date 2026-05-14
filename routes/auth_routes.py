@@ -1,4 +1,4 @@
-from services.auth_services import criar_conta_services, login_services, use_refresh_token_services, me_service, esqueci_senha_service, redefinir_senha_service
+from services.auth_services import criar_conta_services, login_services, use_refresh_token_services, me_service, esqueci_senha_service, redefinir_senha_service, verify_email_service
 
 from sqlalchemy.orm import Session
 
@@ -72,3 +72,13 @@ def redefinir_senha(
 ):
 
     return redefinir_senha_service(redefinir, db)
+
+
+
+@auth_router.get("/verify-email")
+def verify_email(
+    token: str,
+    db: Session = Depends(get_db)
+    ):
+    
+    return verify_email_service(token, db)
