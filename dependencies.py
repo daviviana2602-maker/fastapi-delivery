@@ -38,6 +38,9 @@ def usuario_logado(
     if usuario.status == "EXCLUIDO":
         raise HTTPException(status_code=403, detail="usuário excluído")
     
+    if not usuario.email_verificado:
+        raise HTTPException(status_code=403, detail="conta não verificada")
+    
     
     return usuario_id
 
