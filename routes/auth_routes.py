@@ -75,7 +75,7 @@ def redefinir_senha(
 
 
 
-@auth_router.get("/verify-email")
+@auth_router.get("/verify_email")
 def verify_email(
     token: str,
     db: Session = Depends(get_db)

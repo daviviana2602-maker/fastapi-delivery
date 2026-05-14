@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirme seu Email</title>
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    .info-msg {
+      background: #3b82f6;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .error-msg {
+      background: #ef4444;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .success-msg {
+      background: #22c55e;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="card">
+
+      <h1>Confirmando email...</h1>
+      <p>Estamos ativando sua conta</p>
+
+      <div id="msg"></div>
+
+    </div>
+  </div>
+
+  <script src="../js/config.js"></script>
+
+  <script>
+    const AUTH_API = API_BASE + "/auth";
+
+    function getTokenFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("token");
+    }
+
+    async function verifyEmail() {
+      const msg = document.getElementById("msg");
+
+      const token = getTokenFromURL();
+
+      if (!token) {
+        msg.innerHTML = `<div class="error-msg">Token inválido</div>`;
+        return;
+      }
+
+      msg.innerHTML = `<div class="info-msg">Verificando email...</div>`;
+
+      let res, data;
+
+      try {
+        res = await fetch(`${AUTH_API}/verify_email?token=${token}`, {
+          method: "GET"
+        });
+
+        data = await res.json();
+      } catch (err) {
+        msg.innerHTML = `<div class="error-msg">Erro de conexão</div>`;
+        return;
+      }
+
+      if (!res.ok) {
+        msg.innerHTML = `<div class="error-msg">${data?.detail || "Erro ao verificar email"}</div>`;
+        return;
+      }
+
+      msg.innerHTML = `<div class="success-msg">Email confirmado com sucesso!</div>`;
+
+      setTimeout(() => {
+        window.location.href = "/pages/login.html";
+      }, 1500);
+    }
+
+    verifyEmail();
+  </script>
+
+</body>
+</html>

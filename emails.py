@@ -24,8 +24,7 @@ def reset_email(to_email: str, token: str):
     
     
 def verification_email(to_email: str, token: str):
-    print("olá")
-
+ 
     verify_link = f"{FRONT_URL}/pages/verify-email.html?token={token}"
 
     resend.Emails.send({
